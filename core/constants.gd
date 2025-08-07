@@ -68,3 +68,11 @@ enum ShopRarity {
 	uncommon,
 	rare,
 }
+
+
+enum Menu {
+	none,
+	main,
+	gameplay,
+	options
+}

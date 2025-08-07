@@ -1,6 +1,11 @@
-[gd_scene format=3 uid="uid://bemqunpfd5kep"]
+[gd_scene load_steps=4 format=3 uid="uid://bemqunpfd5kep"]
+
+[ext_resource type="Script" uid="uid://bi4qkdu7t5ds0" path="res://main/main.gd" id="1_53q0u"]
+[ext_resource type="PackedScene" uid="uid://d2nutkcy8wtoq" path="res://menus/options/options_menu.tscn" id="2_xwkvk"]
+[ext_resource type="PackedScene" uid="uid://cu56mp574gs5d" path="res://menus/main/main_menu.tscn" id="3_c651c"]
 
 [node name="Main" type="Node"]
+script = ExtResource("1_53q0u")
 
 [node name="BGLayer" type="CanvasLayer" parent="."]
 
@@ -10,6 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+color = Color(0.0980392, 0.313726, 0.203922, 1)
 
 [node name="WorldLayer" type="CanvasLayer" parent="."]
 
@@ -21,8 +27,6 @@ grow_vertical = 2
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
-[node name="MainMenu" type="Control" parent="UILayer"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="OptionsMenu" parent="UILayer" instance=ExtResource("2_xwkvk")]
+
+[node name="MainMenu" parent="UILayer" instance=ExtResource("3_c651c")]

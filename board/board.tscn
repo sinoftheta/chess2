@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://yrsr5vndikk"]
+
+[ext_resource type="Script" uid="uid://dtfi40saggsgn" path="res://board/board.gd" id="1_5c38k"]
+
+[node name="Board" type="ColorRect"]
+mouse_filter = 1
+script = ExtResource("1_5c38k")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

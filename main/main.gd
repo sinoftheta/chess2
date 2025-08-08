@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 func _ready() -> void:
 	match OS.get_name():

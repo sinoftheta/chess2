@@ -1,6 +1,6 @@
 extends Node
 
-const GRID_SIZE:float = 32
+const GRID_SIZE:float = 48
 const CENTER:Vector2i     = Vector2i.ZERO
 const UP:Vector2i         = Vector2i( 0,-1)
 const DOWN:Vector2i       = Vector2i( 0, 1)
@@ -15,6 +15,7 @@ enum BoardID {
 	game,
 	shop,
 	sell,
+	none,
 }
 
 enum AbilityID {
@@ -44,7 +45,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		true, ## is_ally
 		ShopRarity.common, ## shop_rarity
 		1,  ## base_shop_price
-		null, ## texture
+		load("res://texture/test.png"), ## texture
 		null ## tooltip_texture
 	),
 	UnitID.test_healer: UnitData.new(

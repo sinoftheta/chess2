@@ -1,0 +1,133 @@
+[gd_scene load_steps=7 format=3 uid="uid://xrdgyjq45cts"]
+
+[ext_resource type="Script" uid="uid://ctoejpy8mm8pn" path="res://world/world.gd" id="1_4717r"]
+[ext_resource type="Texture2D" uid="uid://h2bathwhiea4" path="res://texture/layout.png" id="2_h5o24"]
+[ext_resource type="PackedScene" uid="uid://yrsr5vndikk" path="res://board/board.tscn" id="3_mmdvd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4717r"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4717r"]
+bg_color = Color(0.730725, 0, 0.306299, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h5o24"]
+bg_color = Color(0.349496, 0.695422, 0.26875, 1)
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_4717r")
+
+[node name="Temp" type="Sprite2D" parent="."]
+texture = ExtResource("2_h5o24")
+metadata/_edit_lock_ = true
+
+[node name="TurnText" type="Label" parent="."]
+offset_left = 11.0
+offset_top = -178.0
+offset_right = 52.0
+offset_bottom = -155.0
+text = "Turn:"
+
+[node name="TurnValue" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = 56.0
+offset_top = -178.0
+offset_right = 96.0
+offset_bottom = -155.0
+text = "000"
+
+[node name="RoundText" type="Label" parent="."]
+offset_left = -158.0
+offset_top = -178.0
+offset_right = -111.0
+offset_bottom = -155.0
+text = "Round:"
+
+[node name="RoundValue" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = -99.0
+offset_top = -178.0
+offset_right = -37.0
+offset_bottom = -155.0
+text = "000/000"
+
+[node name="MoneyValue" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = 157.0
+offset_top = -178.0
+offset_right = 197.0
+offset_bottom = -155.0
+text = "$000"
+
+[node name="Test" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Play" type="Button" parent="."]
+offset_left = -128.0
+offset_top = 147.0
+offset_right = -66.0
+offset_bottom = 178.0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_4717r")
+theme_override_styles/normal = SubResource("StyleBoxFlat_4717r")
+text = "Send It"
+
+[node name="Reroll" type="Button" parent="."]
+offset_left = 87.0
+offset_top = 147.0
+offset_right = 181.0
+offset_bottom = 178.0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_4717r")
+theme_override_styles/normal = SubResource("StyleBoxFlat_h5o24")
+text = "Reroll $000"
+
+[node name="ShopLabel" type="Label" parent="."]
+offset_left = 128.0
+offset_top = -57.0
+offset_right = 168.0
+offset_bottom = -34.0
+text = "Shop"
+
+[node name="SellLabel" type="Label" parent="."]
+offset_left = 151.0
+offset_top = 103.0
+offset_right = 191.0
+offset_bottom = 126.0
+text = "Sell"
+
+[node name="BonusLabel" type="Label" parent="."]
+offset_left = 128.0
+offset_top = 23.0
+offset_right = 177.0
+offset_bottom = 46.0
+text = "Bonus"
+
+[node name="BonusBoard" parent="." instance=ExtResource("3_mmdvd")]
+offset_left = 176.0
+offset_top = 4.0
+offset_right = 176.0
+offset_bottom = 4.0
+id = 3
+logical_size = Vector2i(2, 1)
+
+[node name="SellBoard" parent="." instance=ExtResource("3_mmdvd")]
+offset_left = 175.0
+offset_top = 84.0
+offset_right = 175.0
+offset_bottom = 84.0
+color = Color(1, 0.137255, 0.176471, 0)
+id = 2
+logical_size = Vector2i(1, 1)
+
+[node name="PlayBoard" parent="." instance=ExtResource("3_mmdvd")]
+offset_left = -32.0
+offset_top = -4.0
+offset_right = -32.0
+offset_bottom = -4.0
+color = Color(0.847059, 0.313726, 0.552941, 0)
+logical_size = Vector2i(6, 6)
+
+[node name="ShopBoard" parent="." instance=ExtResource("3_mmdvd")]
+offset_left = 176.0
+offset_top = -100.0
+offset_right = 176.0
+offset_bottom = -100.0
+id = 1
+logical_size = Vector2i(2, 2)

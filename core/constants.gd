@@ -12,9 +12,10 @@ const DOWN_RIGHT:Vector2i = DOWN + RIGHT
 const DOWN_LEFT:Vector2i  = DOWN + LEFT
 
 enum BoardID {
-	game,
+	play,
 	shop,
 	sell,
+	bonus,
 	none,
 }
 

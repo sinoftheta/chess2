@@ -12,6 +12,7 @@ func _on_menu_updated(menu:Constants.Menu) -> void:
 
 
 func _on_play_pressed() -> void:
+	SignalBus.start_game.emit()
 	MenuLogic.push(Constants.Menu.gameplay)
 
 func _on_options_pressed() -> void:

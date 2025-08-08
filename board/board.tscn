@@ -4,6 +4,7 @@
 
 [node name="Board" type="ColorRect"]
 mouse_filter = 1
+color = Color(1, 1, 1, 0)
 script = ExtResource("1_5c38k")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

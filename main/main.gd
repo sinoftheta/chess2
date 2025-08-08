@@ -23,3 +23,7 @@ func _notification(what) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		## quit handler
 		get_tree().quit()
+
+
+#func _process(delta: float) -> void:
+#	%Test.position.y = 10*sin(Engine.get_frames_drawn()* 0.1)

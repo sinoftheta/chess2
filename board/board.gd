@@ -13,5 +13,5 @@ func _ready() -> void:
 
 func _on_mouse_entered() -> void:
 	## update a global cur_board_id
-	GameLogic.hovered_board_id = id
+	GameLogic.board_under_cursor = id
 	#print("mouse in board: ", Constants.BoardID.keys()[id])

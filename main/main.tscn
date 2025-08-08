@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bemqunpfd5kep"]
 
 [ext_resource type="Script" uid="uid://bi4qkdu7t5ds0" path="res://main/main.gd" id="1_53q0u"]
-[ext_resource type="PackedScene" uid="uid://yrsr5vndikk" path="res://board/board.tscn" id="2_c651c"]
+[ext_resource type="PackedScene" uid="uid://xrdgyjq45cts" path="res://world/world.tscn" id="2_c651c"]
 [ext_resource type="PackedScene" uid="uid://d2nutkcy8wtoq" path="res://menus/options/options_menu.tscn" id="2_xwkvk"]
 [ext_resource type="PackedScene" uid="uid://cu56mp574gs5d" path="res://menus/main/main_menu.tscn" id="3_c651c"]
 
@@ -22,19 +22,7 @@ metadata/_edit_lock_ = true
 
 [node name="Camera" type="Camera2D" parent="."]
 
-[node name="World" type="Node2D" parent="."]
-metadata/_edit_lock_ = true
-
-[node name="GameBoard" parent="World" instance=ExtResource("2_c651c")]
-logical_size = Vector2i(6, 6)
-
-[node name="ShopBoard" parent="World" instance=ExtResource("2_c651c")]
-offset_left = 192.0
-offset_top = -48.0
-offset_right = 192.0
-offset_bottom = -48.0
-id = 1
-logical_size = Vector2i(1, 4)
+[node name="World" parent="." instance=ExtResource("2_c651c")]
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 

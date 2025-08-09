@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://d0kairdgbeo8o"]
+
+[ext_resource type="Script" uid="uid://d1crt85jlpphd" path="res://aoe_preview/aoe_preview.gd" id="1_djllu"]
+
+[node name="AoePreview" type="Sprite2D"]
+script = ExtResource("1_djllu")

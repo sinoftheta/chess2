@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://bulfda27piwfl"]
+
+[ext_resource type="Script" uid="uid://cgdns5lta4qis" path="res://tile_preview/tile_preview.gd" id="1_ajfxm"]
+[ext_resource type="Texture2D" uid="uid://b5apcic0grtvu" path="res://texture/tile_indicator.png" id="1_x7i1v"]
+
+[node name="TilePreview" type="Sprite2D"]
+texture = ExtResource("1_x7i1v")
+script = ExtResource("1_ajfxm")

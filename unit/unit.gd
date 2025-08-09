@@ -23,10 +23,12 @@ func cursor_inside() -> bool:
 	return Rect2(%Interaction.global_position, %Interaction.size).has_point(get_global_mouse_position())
 func _on_interaction_mouse_entered() -> void:
 	hovered = true
+	SignalBus.tooltip_try_open.emit(self)
 func _on_interaction_mouse_exited() -> void:
 	if dragging:
 		return
 	hovered = false
+	SignalBus.tooltip_try_close.emit(self)
 func _on_interaction_button_down() -> void:
 	hovered = true
 	dragging = true
@@ -57,5 +59,11 @@ func _process(delta: float) -> void:
 
 #endregion
 
+#region tooltip
+func tooltip_focus_gained() -> void:
+	pass
+func tooltip_focus_lost() -> void:
+	pass
+#endregion
 #region Animations
 #endregion

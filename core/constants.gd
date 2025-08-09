@@ -27,13 +27,14 @@ enum UnitType {
 	attacker,
 	healer,
 	multiplier,
-	none,
+	boss,
+	#empty, so we can use its AOE for an effect or something idk
 }
 enum UnitID {
 	test_attacker,
 	test_healer,
 	test_multiplier,
-	test_none,
+	test_boss,
 }
 var unit_data:Dictionary[UnitID,UnitData] = {
 	UnitID.test_attacker: UnitData.new(
@@ -43,11 +44,10 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		false, ## is_aoe_absolute
 		[], ## base_abilities.
 		10, ## base_health
-		true, ## is_ally
 		ShopRarity.common, ## shop_rarity
 		1,  ## base_shop_price
-		load("res://texture/test.png"), ## texture
-		null ## tooltip_texture
+		load("res://texture/test_attack.png"), ## texture
+		#null ## tooltip_texture
 	),
 	UnitID.test_healer: UnitData.new(
 		"test healer",  ## title
@@ -56,11 +56,34 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		false, ## is_aoe_absolute
 		[], ## base_abilities.
 		10, ## base_health
-		true, ## is_ally
 		ShopRarity.common, ## shop_rarity
 		1,  ## base_shop_price
-		null, ## texture
-		null ## tooltip_texture
+		load("res://texture/test_heal.png"), ## texture
+		#null ## tooltip_texture
+	),
+	UnitID.test_multiplier: UnitData.new(
+		"test multiplier",  ## title
+		UnitType.healer, ## type
+		[],## aoe
+		false, ## is_aoe_absolute
+		[], ## base_abilities.
+		10, ## base_health
+		ShopRarity.common, ## shop_rarity
+		1,  ## base_shop_price
+		load("res://texture/test_mult.png"), ## texture
+		#null ## tooltip_texture
+	),
+	UnitID.test_boss: UnitData.new(
+		"test boss",  ## title
+		UnitType.boss, ## type
+		[],## aoe
+		false, ## is_aoe_absolute
+		[], ## base_abilities.
+		10, ## base_health
+		ShopRarity.common, ## shop_rarity
+		1,  ## base_shop_price
+		load("res://texture/test_mult.png"), ## texture
+		#null ## tooltip_texture
 	),
 }
 

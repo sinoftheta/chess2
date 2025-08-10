@@ -6,7 +6,6 @@ extends ColorRect
 func _ready() -> void:
 	GameLogic.boards[id] = self
 	size = Vector2(logical_size) * Constants.GRID_SIZE
-	position -= size * 0.5
 	
 
 

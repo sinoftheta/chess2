@@ -40,7 +40,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	UnitID.test_attacker: UnitData.new(
 		"test attacker",  ## title
 		UnitType.attacker, ## type
-		[],## aoe
+		AOE_KERNEL_1x1_MOORE,## aoe
 		false, ## is_aoe_absolute
 		[], ## base_abilities.
 		10, ## base_health
@@ -52,7 +52,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	UnitID.test_healer: UnitData.new(
 		"test healer",  ## title
 		UnitType.healer, ## type
-		[],## aoe
+		AOE_KERNEL_1x1_MOORE,## aoe
 		false, ## is_aoe_absolute
 		[], ## base_abilities.
 		10, ## base_health
@@ -64,7 +64,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	UnitID.test_multiplier: UnitData.new(
 		"test multiplier",  ## title
 		UnitType.healer, ## type
-		[],## aoe
+		AOE_KERNEL_1x1_MOORE,## aoe
 		false, ## is_aoe_absolute
 		[], ## base_abilities.
 		10, ## base_health
@@ -101,3 +101,14 @@ enum Menu {
 	gameplay,
 	options
 }
+
+const AOE_KERNEL_1x1_VON:Array[Vector2i] = [
+					 Vector2i( 0,-1),
+	Vector2i(-1, 0),                  Vector2i( 1, 0),
+					 Vector2i( 0, 1),
+]
+const AOE_KERNEL_1x1_MOORE:Array[Vector2i] = [
+	Vector2i(-1,-1), Vector2i( 0,-1), Vector2i( 1,-1),
+	Vector2i(-1, 0),                  Vector2i( 1, 0),
+	Vector2i(-1, 1), Vector2i( 0, 1), Vector2i( 1, 1),
+]

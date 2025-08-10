@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://xrdgyjq45cts"]
+[gd_scene load_steps=10 format=3 uid="uid://xrdgyjq45cts"]
 
 [ext_resource type="Script" uid="uid://ctoejpy8mm8pn" path="res://world/world.gd" id="1_4717r"]
 [ext_resource type="PackedScene" uid="uid://bulfda27piwfl" path="res://tile_preview/tile_preview.tscn" id="2_fn3g3"]
 [ext_resource type="Texture2D" uid="uid://h2bathwhiea4" path="res://texture/layout.png" id="2_h5o24"]
 [ext_resource type="PackedScene" uid="uid://bl7yw07rwfxj0" path="res://tooltip/tooltip.tscn" id="2_mmdvd"]
 [ext_resource type="PackedScene" uid="uid://yrsr5vndikk" path="res://board/board.tscn" id="3_mmdvd"]
+[ext_resource type="PackedScene" uid="uid://d0kairdgbeo8o" path="res://aoe_preview/aoe_preview.tscn" id="6_fn3g3"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4717r"]
 
@@ -112,35 +113,41 @@ offset_bottom = 46.0
 text = "Bonus"
 
 [node name="BonusBoard" parent="." instance=ExtResource("3_mmdvd")]
-offset_left = 208.0
-offset_top = 4.0
-offset_right = 208.0
-offset_bottom = 4.0
+offset_left = 160.0
+offset_top = -20.0
+offset_right = 160.0
+offset_bottom = -20.0
+color = Color(0, 0, 0, 0)
 id = 3
 logical_size = Vector2i(2, 1)
 
 [node name="SellBoard" parent="." instance=ExtResource("3_mmdvd")]
-offset_left = 207.0
-offset_top = 84.0
-offset_right = 207.0
-offset_bottom = 84.0
-color = Color(1, 0.137255, 0.176471, 0)
+offset_left = 183.0
+offset_top = 60.0
+offset_right = 183.0
+offset_bottom = 60.0
+color = Color(0, 0, 0, 0)
 id = 2
 logical_size = Vector2i(1, 1)
 
 [node name="PlayBoard" parent="." instance=ExtResource("3_mmdvd")]
-offset_top = -4.0
-offset_bottom = -4.0
-color = Color(0.847059, 0.313726, 0.552941, 0)
+offset_left = -144.0
+offset_top = -148.0
+offset_right = -144.0
+offset_bottom = -148.0
+color = Color(0, 0, 0, 0)
 logical_size = Vector2i(6, 6)
 
 [node name="ShopBoard" parent="." instance=ExtResource("3_mmdvd")]
-offset_left = 208.0
-offset_top = -100.0
-offset_right = 208.0
-offset_bottom = -100.0
+offset_left = 160.0
+offset_top = -148.0
+offset_right = 160.0
+offset_bottom = -148.0
+color = Color(0, 0, 0, 0)
 id = 1
 logical_size = Vector2i(2, 2)
+
+[node name="AoePreview" parent="." instance=ExtResource("6_fn3g3")]
 
 [connection signal="pressed" from="Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="Reroll" to="." method="_on_reroll_pressed"]

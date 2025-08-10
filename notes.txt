@@ -1,0 +1,3 @@
+have the grid be 42x if you want a 7x7 board
+have the grid be 58x if you want a 5x5 board
+6x6 board looks kinda weird, having a center would be really nice

@@ -5,7 +5,8 @@ func _ready() -> void:
 	SignalBus.tooltip_try_open.connect(_on_tooltip_try_open)
 	SignalBus.tooltip_closed.connect(_on_tooltip_closed)
 	SignalBus.logical_mouse_location_updated.connect(_on_logical_mouse_position_updated)
-	
+	visible = false
+
 func _on_tooltip_try_open(focused_unit:Unit) -> void:
 	unit = focused_unit
 	visible = true

@@ -5,6 +5,7 @@ var unit:Unit
 func _ready() -> void:
 	SignalBus.tooltip_try_open.connect(_on_tooltip_try_open)
 	SignalBus.tooltip_try_close.connect(_on_tooltip_try_close)
+	visible = false
 
 func _on_tooltip_try_open(opened_unit:Unit) -> void:
 	if unit:

@@ -23,6 +23,7 @@ enum AbilityID {
 	## I'm not implementing these yet
 }
 
+## The UnitTypes are like the card evaluations in balatro, they are guarenteed to happen a finite amount of times
 enum UnitType {
 	attacker,
 	healer,
@@ -40,7 +41,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	UnitID.test_attacker: UnitData.new(
 		"test attacker",  ## title
 		UnitType.attacker, ## type
-		AOE_KERNEL_1x1_MOORE,## aoe
+		AOE_KERNEL_1x1_VON,## aoe
 		false, ## is_aoe_absolute
 		[], ## base_abilities.
 		10, ## base_health
@@ -82,7 +83,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		10, ## base_health
 		ShopRarity.common, ## shop_rarity
 		1,  ## base_shop_price
-		load("res://texture/test_mult.png"), ## texture
+		load("res://texture/test_boss.png"), ## texture
 		#null ## tooltip_texture
 	),
 }

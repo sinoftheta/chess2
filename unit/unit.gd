@@ -12,8 +12,8 @@ var logical_position:Vector2i:
 		logical_position = value
 		name = Util.coord_to_name(logical_position)
 		#z_index = value.y
-var stat:int
-var hp:int
+var stat:float = 1.0
+var hp:float = 10.0
 #endregion
 
 #region Cursor interactions
@@ -65,5 +65,41 @@ func tooltip_focus_gained() -> void:
 func tooltip_focus_lost() -> void:
 	pass
 #endregion
+
 #region Animations
+var tween:Tween
+func animate_test(units_evaluated:int) -> void:
+	%OrdinalValue.text = Util.int_ordinal_suffix(units_evaluated + 1) 
+	const t:float = 0.25
+	if tween: tween.kill()
+	tween = create_tween().set_parallel(true)
+	tween.tween_property(%Sprite, "scale", Vector2.ONE, t)\
+	.from(Vector2(0.5,2.0))\
+	.set_ease(Tween.EASE_OUT)\
+	.set_trans(Tween.TRANS_ELASTIC)\
+	.set_delay(units_evaluated * t)
+	
+	tween.tween_property(%OrdinalCard, "modulate:a", 1.0, 0.0)\
+	.from(0.0).set_delay(units_evaluated * t)
+	tween.tween_property(%OrdinalCard, "modulate:a", 0.0, 0.0)\
+	.from(1.0).set_delay((units_evaluated + 1) * t)
+	
+func animate_attacking(units_evaluated:int) -> void:
+	pass
+func animate_attacked(units_evaluated:int) -> void:
+	pass
+
+func animate_multiplying(units_evaluated:int) -> void:
+	pass
+func animate_multiplied(units_evaluated:int) -> void:
+	pass
+
+func animate_healing(units_evaluated:int) -> void:
+	pass
+func animate_healed(units_evaluated:int) -> void:
+	pass
+
+#func animate_effect(units_evaluated:int) -> void:
+	#pass
+	
 #endregion

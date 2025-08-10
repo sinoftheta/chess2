@@ -6,6 +6,8 @@ var unit_tscn:PackedScene = preload("res://unit/unit.tscn")
 func _ready() -> void:
 	SignalBus.move_unit_to_cursor.connect(_on_move_unit_to_cursor)
 	SignalBus.start_game.connect(_on_start_game)
+	SignalBus.play_button_pressed.connect(_on_play_button_pressed)
+	SignalBus.reroll_button_pressed.connect(_on_reroll_button_pressed)
 
 func _on_start_game() -> void:
 	executing = false
@@ -23,6 +25,11 @@ func _on_start_game() -> void:
 	play_board.add_child(unit2)
 	unit2.id = Constants.UnitID.test_healer
 	unit2.logical_position = Vector2i(1,1)
+	
+	var unit3:Unit = unit_tscn.instantiate()
+	play_board.add_child(unit3)
+	unit3.id = Constants.UnitID.test_multiplier
+	unit3.logical_position = Vector2i(2,2)
 	
 	round = 1
 	turn = 1
@@ -64,7 +71,9 @@ func _process(delta: float) -> void:
 				coord_under_cursor,
 				board_has_coord(prev_board_under_cursor,coord_under_cursor)
 			)
-			
+	debug_spawn()
+	debug_delete()
+	
 #endregion
 
 #region Animation
@@ -120,14 +129,83 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 		from_board.remove_child(unit)
 		to_board.add_child(unit)
 	unit.logical_position = to_coord
-	unit.global_position = gp
+	unit.global_position  = gp
 
-func execute_shop_reroll() -> void:
+
+func _on_play_button_pressed() -> void:
+	if executing:return
+	executing = true
+	
+	for unit:Unit in play_board.get_children():
+		unit.stat = 1.0
+	
+	var units_evaluated:int = 0
+	## evaluate each tile on the board
+	for eval_coord:Vector2i in Util.board_evaluation_order(6):
+		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
+		if not unit: continue
+		
+		var data:UnitData = Constants.unit_data[unit.id]
+		
+		assert(unit.logical_position == eval_coord)
+		
+		unit.animate_test(units_evaluated)
+		
+		## evaluate each coord in the units AoE
+		## so these are supposed to happen in parallel
+		for aoe_coord:Vector2i in data.aoe:
+			var affected_coord:Vector2i = aoe_coord
+			if not data.aoe_is_absolute:
+				affected_coord += unit.logical_position
+			
+			var affected_unit:Unit = unit_at(affected_coord, Constants.BoardID.play)
+			match data.type:
+				Constants.UnitType.attacker:
+					pass
+				Constants.UnitType.healer:
+					pass
+				Constants.UnitType.multiplier:
+					pass
+				Constants.UnitType.boss:
+					pass
+		units_evaluated += 1
+	
+	executing = false
+func _on_reroll_button_pressed() -> void:
+	if executing:return
+	
+	if money < reroll_price:
+		#SignalBus.cant_afford_reroll.emit()
+		return
 	executing = true
 	executing = false
 
-func execute_turn() -> void:
-	executing = true
-	executing = false
 
+#endregion
+
+#region debug
+var debug_unit_id:Constants.UnitID
+func debug_spawn() -> void:
+	if not Input.is_action_just_pressed("debug_spawn_unit"):
+		return
+	if not board_has_coord(board_under_cursor,coord_under_cursor):
+		return
+	if unit_at(coord_under_cursor, board_under_cursor):
+		return
+	var unit:Unit = unit_tscn.instantiate()
+	boards[board_under_cursor].add_child(unit)
+	unit.id = debug_unit_id
+	unit.logical_position = coord_under_cursor
+func debug_delete() -> void:
+	if not Input.is_action_just_pressed("debug_delete_unit"):
+		return
+	if not board_has_coord(board_under_cursor,coord_under_cursor):
+		return
+	if not unit_at(coord_under_cursor, board_under_cursor):
+		return
+	
+	var unit:Unit = unit_at(coord_under_cursor, board_under_cursor)
+	boards[board_under_cursor].remove_child(unit)
+	unit.queue_free()
+	
 #endregion

@@ -70,19 +70,22 @@ func tooltip_focus_lost() -> void:
 var tween:Tween
 func animate_test(units_evaluated:int) -> void:
 	%OrdinalValue.text = Util.int_ordinal_suffix(units_evaluated + 1) 
-	const t:float = 0.25
 	if tween: tween.kill()
 	tween = create_tween().set_parallel(true)
-	tween.tween_property(%Sprite, "scale", Vector2.ONE, t)\
+	tween.tween_property(%Sprite, "scale", Vector2.ONE, Constants.UNIT_EVALUATION_TIME * 0.75)\
 	.from(Vector2(0.5,2.0))\
 	.set_ease(Tween.EASE_OUT)\
 	.set_trans(Tween.TRANS_ELASTIC)\
-	.set_delay(units_evaluated * t)
+	.set_delay(units_evaluated * Constants.UNIT_EVALUATION_TIME)
 	
 	tween.tween_property(%OrdinalCard, "modulate:a", 1.0, 0.0)\
-	.from(0.0).set_delay(units_evaluated * t)
+	.from(0.0).set_delay(units_evaluated * Constants.UNIT_EVALUATION_TIME)
 	tween.tween_property(%OrdinalCard, "modulate:a", 0.0, 0.0)\
-	.from(1.0).set_delay((units_evaluated + 1) * t)
+	.from(1.0).set_delay((units_evaluated + 1) * Constants.UNIT_EVALUATION_TIME)
+	
+	
+	tween.tween_callback(func () -> void: SignalBus.animate_unit_aoe.emit(self))\
+	.set_delay(units_evaluated * Constants.UNIT_EVALUATION_TIME)
 	
 func animate_attacking(units_evaluated:int) -> void:
 	pass

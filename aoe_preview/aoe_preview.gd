@@ -1,28 +1,50 @@
 extends Node2D
 
-var unit:Unit
+## the AOE preview has two modes of operation
+## one when an animation is animating, and one when not
+
+var focused_unit:Unit
 func _ready() -> void:
 	SignalBus.tooltip_try_open.connect(_on_tooltip_try_open)
 	SignalBus.tooltip_closed.connect(_on_tooltip_closed)
 	SignalBus.logical_mouse_location_updated.connect(_on_logical_mouse_position_updated)
+	
+	SignalBus.animating_state_updated.connect(_on_animating_state_updated)
+	SignalBus.animate_unit_aoe.connect(_on_animate_unit_aoe)
 	visible = false
 
-func _on_tooltip_try_open(focused_unit:Unit) -> void:
-	unit = focused_unit
+#region standby behavior
+func _on_tooltip_try_open(_focused_unit:Unit) -> void:
+	if GameLogic.animating: return
+	focused_unit = _focused_unit
 	visible = true
 	
-
 func _on_tooltip_closed() -> void:
-	unit = null
+	if GameLogic.animating: return
+	focused_unit = null
 	visible = false
 
 func _on_logical_mouse_position_updated(board_id:Constants.BoardID, coord:Vector2i, in_bounds:bool) -> void:
-	if not unit:
-		return
-	#print("board: ", board, " coord: ", coord, " in_bounds: ", in_bounds)
+	if GameLogic.animating: return
+	if not focused_unit: return
+	show_aoe(focused_unit, board_id, coord)
+
+#endregion
+
+#region animating behavior
+func _on_animating_state_updated(animating:bool) -> void:
+	if not animating:
+		visible = false
+
+func _on_animate_unit_aoe(unit:Unit) -> void:
+	assert(GameLogic.animating)
+	visible = true
+	show_aoe(unit, (unit.get_parent() as Board).id, unit.logical_position)
+#endregion
+
+func show_aoe(unit:Unit, board_id:Constants.BoardID, coord:Vector2i) -> void:
 	var board_node:Board = GameLogic.boards[board_id]
 	position = board_node.position
-	
 	
 	var data:UnitData = Constants.unit_data[unit.id]
 	var aoe:Array[Vector2i] = data.aoe
@@ -45,5 +67,3 @@ func _on_logical_mouse_position_updated(board_id:Constants.BoardID, coord:Vector
 		else:
 			tile.visible = false
 		i += 1
-		
-	

@@ -1,4 +1,5 @@
 extends Node
+const UNIT_EVALUATION_TIME:float = 0.5
 
 const GRID_SIZE:float = 48
 const CENTER:Vector2i     = Vector2i.ZERO

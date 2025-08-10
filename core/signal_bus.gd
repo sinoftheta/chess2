@@ -16,6 +16,8 @@ signal turn_changed(turns:int)
 signal round_changed(round:int)
 signal reroll_price_changed(price:int)
 signal game_started()
+
+signal animating_state_updated(animating:bool)
 #endregion
 
 #region tooltip
@@ -24,6 +26,15 @@ signal tooltip_try_close(unit:Unit)
 signal tooltip_closed()
 
 signal logical_mouse_location_updated(board:Constants.BoardID, coord:Vector2i, in_bounds:bool)
+#endregion
+
+#region animations
+signal animate_unit_aoe(unit:Unit)
+#animate money change
+#animate turn change
+#animate round change
+#animate stats modal
+#animate run end modal
 #endregion
 
 #region application

@@ -10,7 +10,7 @@ func _ready() -> void:
 	SignalBus.reroll_button_pressed.connect(_on_reroll_button_pressed)
 
 func _on_start_game() -> void:
-	executing = false
+	animating = false
 	for board:Board in boards.values():
 		for unit:Unit in board.get_children():
 			board.remove_child(unit)
@@ -77,7 +77,13 @@ func _process(delta: float) -> void:
 #endregion
 
 #region Animation
-var executing:bool
+var tween:Tween
+var animating:bool:
+	set(value):
+		var prev:bool = animating
+		animating = value
+		if value != prev:
+			SignalBus.animating_state_updated.emit(value)
 #endregion
 
 #region Run State
@@ -133,13 +139,16 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 
 
 func _on_play_button_pressed() -> void:
-	if executing:return
-	executing = true
+	if animating:return
+	if tween: tween.kill()
+	animating = true
+	var units_evaluated :int = 0
 	
 	for unit:Unit in play_board.get_children():
 		unit.stat = 1.0
 	
-	var units_evaluated:int = 0
+	#var targets_affected:int = 0
+	
 	## evaluate each tile on the board
 	for eval_coord:Vector2i in Util.board_evaluation_order(6):
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
@@ -153,12 +162,15 @@ func _on_play_button_pressed() -> void:
 		
 		## evaluate each coord in the units AoE
 		## so these are supposed to happen in parallel
+		var aoe_contains_target:bool = false
 		for aoe_coord:Vector2i in data.aoe:
 			var affected_coord:Vector2i = aoe_coord
 			if not data.aoe_is_absolute:
 				affected_coord += unit.logical_position
 			
 			var affected_unit:Unit = unit_at(affected_coord, Constants.BoardID.play)
+			if not affected_unit:continue
+			aoe_contains_target = true
 			match data.type:
 				Constants.UnitType.attacker:
 					pass
@@ -168,17 +180,22 @@ func _on_play_button_pressed() -> void:
 					pass
 				Constants.UnitType.boss:
 					pass
+		#if aoe_contains_target: units_evaluated += 1
 		units_evaluated += 1
 	
-	executing = false
+	
+	tween = create_tween()
+	tween.tween_callback(func () -> void: animating = false)\
+	.set_delay(units_evaluated * Constants.UNIT_EVALUATION_TIME)
+	
 func _on_reroll_button_pressed() -> void:
-	if executing:return
+	if animating:return
 	
 	if money < reroll_price:
 		#SignalBus.cant_afford_reroll.emit()
 		return
-	executing = true
-	executing = false
+	animating = true
+	animating = false
 
 
 #endregion

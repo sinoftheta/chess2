@@ -1,0 +1,45 @@
+[gd_scene load_steps=6 format=3 uid="uid://bt6n8ds1s1nrm"]
+
+[ext_resource type="Script" uid="uid://bx3miuibbbbhf" path="res://projectile/projectile.gd" id="1_makwg"]
+[ext_resource type="Texture2D" uid="uid://cvgx1doxyb544" path="res://texture/type_projectile.png" id="2_dr2av"]
+
+[sub_resource type="Curve" id="Curve_hrg8b"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.75056, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_2ul3e"]
+curve = SubResource("Curve_hrg8b")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_3dxjh"]
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 5.0
+emission_ring_inner_radius = 0.0
+emission_ring_cone_angle = 90.0
+angle_min = 1.07288e-05
+angle_max = 720.0
+spread = 180.0
+initial_velocity_min = 2.0
+initial_velocity_max = 20.0
+angular_velocity_min = -200.0
+angular_velocity_max = 200.0
+gravity = Vector3(0, 20, 0)
+scale_min = 2.0
+scale_max = 5.0
+scale_curve = SubResource("CurveTexture_2ul3e")
+
+[node name="Projectile" type="GPUParticles2D"]
+top_level = true
+amount = 32
+use_fixed_seed = true
+seed = 1
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_3dxjh")
+script = ExtResource("1_makwg")
+
+[node name="Core" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+scale = Vector2(10, 10)
+texture = ExtResource("2_dr2av")

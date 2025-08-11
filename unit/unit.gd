@@ -67,42 +67,74 @@ func tooltip_focus_lost() -> void:
 #endregion
 
 #region Animations
-var tween:Tween
-func animate_test(units_evaluated:int) -> void:
-	%OrdinalValue.text = Util.int_ordinal_suffix(units_evaluated + 1) 
-	if tween: tween.kill()
-	tween = create_tween().set_parallel(true)
-	tween.tween_property(%Sprite, "scale", Vector2.ONE, Constants.UNIT_EVALUATION_TIME * 0.75)\
+func animate_test(tween:Tween, animation_tick:int, units_evaluated:int) -> void:
+	%OrdinalValue.text = Util.int_ordinal_suffix(units_evaluated + 1)
+	
+	tween.tween_property(%Sprite, "scale", Vector2.ONE, Constants.ANIMATION_TICK_TIME * 0.75)\
 	.from(Vector2(0.5,2.0))\
 	.set_ease(Tween.EASE_OUT)\
 	.set_trans(Tween.TRANS_ELASTIC)\
-	.set_delay(units_evaluated * Constants.UNIT_EVALUATION_TIME)
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 	
 	tween.tween_property(%OrdinalCard, "modulate:a", 1.0, 0.0)\
-	.from(0.0).set_delay(units_evaluated * Constants.UNIT_EVALUATION_TIME)
+	.from(0.0).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 	tween.tween_property(%OrdinalCard, "modulate:a", 0.0, 0.0)\
-	.from(1.0).set_delay((units_evaluated + 1) * Constants.UNIT_EVALUATION_TIME)
+	.from(1.0).set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
 	
 	
 	tween.tween_callback(func () -> void: SignalBus.animate_unit_aoe.emit(self))\
-	.set_delay(units_evaluated * Constants.UNIT_EVALUATION_TIME)
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 	
-func animate_attacking(units_evaluated:int) -> void:
-	pass
-func animate_attacked(units_evaluated:int) -> void:
+func animate_attacking(tween:Tween, animation_tick:int) -> void:
 	pass
 
-func animate_multiplying(units_evaluated:int) -> void:
+func animate_attacked(tween:Tween, animation_tick:int, source_coord:Vector2i) -> void:
+	assert(animation_tick > 0)
+	
+	projectile_animation(tween, animation_tick, source_coord, Constants.UnitType.attacker)
+	
+	
+	tween.tween_property(%Sprite, "scale", Vector2.ONE, Constants.ANIMATION_TICK_TIME * 0.75)\
+	.from(Vector2(0.5,2.0))\
+	.set_ease(Tween.EASE_OUT)\
+	.set_trans(Tween.TRANS_ELASTIC)\
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
+
+func animate_multiplying(tween:Tween, animation_tick:int) -> void:
 	pass
-func animate_multiplied(units_evaluated:int) -> void:
+func animate_multiplied(tween:Tween, animation_tick:int, source_coord:Vector2i) -> void:
+	assert(animation_tick > 0)
+
+func animate_healing(animation_tick:int) -> void:
 	pass
 
-func animate_healing(units_evaluated:int) -> void:
-	pass
-func animate_healed(units_evaluated:int) -> void:
-	pass
+func animate_healed(tween:Tween, animation_tick:int, source_coord:Vector2i) -> void:
+	assert(animation_tick > 0)
 
-#func animate_effect(units_evaluated:int) -> void:
+
+func projectile_animation(tween:Tween, animation_tick:int, source_coord:Vector2i, type:Constants.UnitType) -> void:
+
+	tween.tween_callback(func() -> void:
+		(%Projectile as Projectile).visible = true
+		(%Projectile as Projectile).type = type
+	)\
+	.set_delay((animation_tick - 1) * Constants.ANIMATION_TICK_TIME)
+	
+	tween.tween_property(
+		%Projectile, "position", 
+		(get_parent() as Board).position + (Vector2(logical_position) + Vector2(0.5,0.5)) * Constants.GRID_SIZE,
+			Constants.ANIMATION_TICK_TIME)\
+	.from(
+		(get_parent() as Board).position + (Vector2(source_coord    ) + Vector2(0.5,0.5)) * Constants.GRID_SIZE
+	)\
+	.set_delay((animation_tick - 1) * Constants.ANIMATION_TICK_TIME)\
+	.set_ease(Tween.EASE_IN)\
+	.set_trans(Tween.TRANS_EXPO)
+		
+	tween.tween_callback(func() -> void:%Projectile.visible = false)\
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+#func animate_effect(animation_tick:int) -> void:
 	#pass
 	
 #endregion

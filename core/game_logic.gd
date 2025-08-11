@@ -141,13 +141,13 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 func _on_play_button_pressed() -> void:
 	if animating:return
 	if tween: tween.kill()
+	tween = create_tween().set_parallel()
 	animating = true
-	var units_evaluated :int = 0
+	var animation_tick :int = 0
+	var units_evaluated:int = 0
 	
 	for unit:Unit in play_board.get_children():
 		unit.stat = 1.0
-	
-	#var targets_affected:int = 0
 	
 	## evaluate each tile on the board
 	for eval_coord:Vector2i in Util.board_evaluation_order(6):
@@ -158,10 +158,12 @@ func _on_play_button_pressed() -> void:
 		
 		assert(unit.logical_position == eval_coord)
 		
-		unit.animate_test(units_evaluated)
+		unit.animate_test(tween, animation_tick, units_evaluated)
 		
 		## evaluate each coord in the units AoE
-		## so these are supposed to happen in parallel
+		
+		## first, we check if any units are in the AoE
+		## we do this so we can increase the animation tick for them
 		var aoe_contains_target:bool = false
 		for aoe_coord:Vector2i in data.aoe:
 			var affected_coord:Vector2i = aoe_coord
@@ -169,24 +171,37 @@ func _on_play_button_pressed() -> void:
 				affected_coord += unit.logical_position
 			
 			var affected_unit:Unit = unit_at(affected_coord, Constants.BoardID.play)
-			if not affected_unit:continue
-			aoe_contains_target = true
+			if affected_unit: 
+				aoe_contains_target = true
+				break
+
+		if aoe_contains_target: animation_tick += 1
+		
+		for aoe_coord:Vector2i in data.aoe:
+			var affected_coord:Vector2i = aoe_coord
+			if not data.aoe_is_absolute:
+				affected_coord += unit.logical_position
+			
+			var affected_unit:Unit = unit_at(affected_coord, Constants.BoardID.play)
+			if not affected_unit: continue
+			
 			match data.type:
 				Constants.UnitType.attacker:
-					pass
+					affected_unit.animate_attacked(tween, animation_tick, unit.logical_position)
 				Constants.UnitType.healer:
 					pass
 				Constants.UnitType.multiplier:
 					pass
 				Constants.UnitType.boss:
 					pass
-		#if aoe_contains_target: units_evaluated += 1
+		
+		animation_tick  += 1
 		units_evaluated += 1
 	
 	
-	tween = create_tween()
+	
 	tween.tween_callback(func () -> void: animating = false)\
-	.set_delay(units_evaluated * Constants.UNIT_EVALUATION_TIME)
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 	
 func _on_reroll_button_pressed() -> void:
 	if animating:return

@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://je4xne0s26pp"]
+[gd_scene load_steps=5 format=3 uid="uid://je4xne0s26pp"]
 
 [ext_resource type="Script" uid="uid://1goxqi70cjt0" path="res://unit/unit.gd" id="1_hy15m"]
 [ext_resource type="Texture2D" uid="uid://blc853bi1wn0a" path="res://texture/test_attack.png" id="2_3k25b"]
+[ext_resource type="PackedScene" uid="uid://bt6n8ds1s1nrm" path="res://projectile/projectile.tscn" id="3_hs7ws"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hy15m"]
 
@@ -55,6 +56,19 @@ text = "1st"
 horizontal_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Projectile" parent="." instance=ExtResource("3_hs7ws")]
+unique_name_in_owner = true
+visible = false
+
+[node name="HPBar" type="ColorRect" parent="."]
+unique_name_in_owner = true
+offset_left = -20.0
+offset_top = -24.0
+offset_right = 20.0
+offset_bottom = -17.0
+mouse_filter = 2
+color = Color(1, 0.176471, 0, 1)
 
 [connection signal="button_down" from="Interaction" to="." method="_on_interaction_button_down"]
 [connection signal="button_up" from="Interaction" to="." method="_on_interaction_button_up"]

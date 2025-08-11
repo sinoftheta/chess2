@@ -120,6 +120,8 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 	var to_coord:Vector2i            = coord_under_cursor
 	var same_boards:bool = to_board != from_board
 	
+	if animating: return
+	
 	if not board_has_coord(to_board.id, to_coord):
 		## trying to move oob
 		return
@@ -153,12 +155,13 @@ func _on_play_button_pressed() -> void:
 	for eval_coord:Vector2i in Util.board_evaluation_order(6):
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
 		if not unit: continue
+		if unit.hp == 0: continue
 		
 		var data:UnitData = Constants.unit_data[unit.id]
 		
 		assert(unit.logical_position == eval_coord)
 		
-		unit.animate_test(tween, animation_tick, units_evaluated)
+		unit.animate_type_effect(tween, animation_tick, units_evaluated)
 		
 		## evaluate each coord in the units AoE
 		
@@ -177,6 +180,7 @@ func _on_play_button_pressed() -> void:
 
 		if aoe_contains_target: animation_tick += 1
 		
+		var unit_died:bool = false
 		for aoe_coord:Vector2i in data.aoe:
 			var affected_coord:Vector2i = aoe_coord
 			if not data.aoe_is_absolute:
@@ -184,24 +188,42 @@ func _on_play_button_pressed() -> void:
 			
 			var affected_unit:Unit = unit_at(affected_coord, Constants.BoardID.play)
 			if not affected_unit: continue
+			if unit.hp == 0: continue
 			
 			match data.type:
 				Constants.UnitType.attacker:
-					affected_unit.animate_attacked(tween, animation_tick, unit.logical_position)
+					## apply damage
+					var prev_hp:float = affected_unit.hp
+					affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
+					
+					## animate
+					affected_unit.animate_attacked(tween, animation_tick, unit.logical_position, prev_hp)
+					
+					## check for death
+					if affected_unit.hp == 0:
+						unit_died = true
+						affected_unit.animate_dead(tween, animation_tick)
+						
 				Constants.UnitType.healer:
 					pass
 				Constants.UnitType.multiplier:
 					pass
 				Constants.UnitType.boss:
 					pass
-		
+		if unit_died: animation_tick  += 1
 		animation_tick  += 1
 		units_evaluated += 1
 	
 	
 	
-	tween.tween_callback(func () -> void: animating = false)\
-	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	tween.tween_callback(func () -> void: 
+		animating = false
+		## check for dead units and delete them
+		for unit:Unit in play_board.get_children():
+			if unit.hp == 0:
+				play_board.remove_child(unit)
+				unit.queue_free()
+	).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 	
 func _on_reroll_button_pressed() -> void:
 	if animating:return

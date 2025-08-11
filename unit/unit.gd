@@ -14,6 +14,7 @@ var logical_position:Vector2i:
 		#z_index = value.y
 var stat:float = 1.0
 var hp:float = 10.0
+var max_hp:float = 10.0
 #endregion
 
 #region Cursor interactions
@@ -67,32 +68,47 @@ func tooltip_focus_lost() -> void:
 #endregion
 
 #region Animations
-func animate_test(tween:Tween, animation_tick:int, units_evaluated:int) -> void:
-	%OrdinalValue.text = Util.int_ordinal_suffix(units_evaluated + 1)
+func animate_type_effect(tween:Tween, animation_tick:int, units_evaluated:int) -> void:
 	
+	match Constants.unit_data[id].type:
+		Constants.UnitType.attacker:
+			message_animation(tween, animation_tick, "ATCK: " + str(stat) + "!")
+		Constants.UnitType.healer:
+			message_animation(tween, animation_tick, "HEAL: " + str(stat) + "!")
+		Constants.UnitType.multiplier:
+			message_animation(tween, animation_tick, "MULT: " + str(stat) + "!")
+		Constants.UnitType.boss:
+			pass
+	
+	## move order indicator
+	
+	tween.tween_callback(func () -> void: 
+		%OrdinalValue.text = Util.int_ordinal_suffix(units_evaluated + 1)
+		%OrdinalValue.visible = true
+	).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
+	tween.tween_callback(func () -> void: 
+		%OrdinalValue.visible = false
+	).set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
+	
+	## show the units AoE
+	tween.tween_callback(func () -> void: SignalBus.animate_unit_aoe.emit(self))\
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
+	## make the unit bounce
 	tween.tween_property(%Sprite, "scale", Vector2.ONE, Constants.ANIMATION_TICK_TIME * 0.75)\
 	.from(Vector2(0.5,2.0))\
 	.set_ease(Tween.EASE_OUT)\
 	.set_trans(Tween.TRANS_ELASTIC)\
 	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 	
-	tween.tween_property(%OrdinalCard, "modulate:a", 1.0, 0.0)\
-	.from(0.0).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
-	tween.tween_property(%OrdinalCard, "modulate:a", 0.0, 0.0)\
-	.from(1.0).set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
-	
-	
-	tween.tween_callback(func () -> void: SignalBus.animate_unit_aoe.emit(self))\
-	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
-	
-func animate_attacking(tween:Tween, animation_tick:int) -> void:
-	pass
 
-func animate_attacked(tween:Tween, animation_tick:int, source_coord:Vector2i) -> void:
+func animate_attacked(tween:Tween, animation_tick:int, source_coord:Vector2i, prev_hp:float) -> void:
 	assert(animation_tick > 0)
 	
 	projectile_animation(tween, animation_tick, source_coord, Constants.UnitType.attacker)
 	
+	message_animation(tween, animation_tick, "-" + str(prev_hp - hp) + "!")
 	
 	tween.tween_property(%Sprite, "scale", Vector2.ONE, Constants.ANIMATION_TICK_TIME * 0.75)\
 	.from(Vector2(0.5,2.0))\
@@ -100,23 +116,89 @@ func animate_attacked(tween:Tween, animation_tick:int, source_coord:Vector2i) ->
 	.set_trans(Tween.TRANS_ELASTIC)\
 	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 	
+	tween.tween_callback(func() -> void:%HPBar.visible = true)\
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
+	tween.tween_property(%HPBar, "size:x", hp_bar_length(hp), Constants.ANIMATION_TICK_TIME * 0.25)\
+	.from(hp_bar_length(prev_hp))\
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
+	tween.tween_callback(func() -> void:%HPBar.visible = false)\
+	.set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
+	
+	
 
-func animate_multiplying(tween:Tween, animation_tick:int) -> void:
-	pass
-func animate_multiplied(tween:Tween, animation_tick:int, source_coord:Vector2i) -> void:
+func animate_multiplied(tween:Tween, animation_tick:int, source_coord:Vector2i, prev_stat:float) -> void:
 	assert(animation_tick > 0)
 
-func animate_healing(animation_tick:int) -> void:
-	pass
-
-func animate_healed(tween:Tween, animation_tick:int, source_coord:Vector2i) -> void:
+func animate_healed(tween:Tween, animation_tick:int, source_coord:Vector2i, prev_hp:float) -> void:
 	assert(animation_tick > 0)
+	
+	projectile_animation(tween, animation_tick, source_coord, Constants.UnitType.healer)
+	
+	message_animation(tween, animation_tick, "+" + str(hp - prev_hp) + "!")
+	
+	## the bounce
+	tween.tween_property(%Sprite, "scale", Vector2.ONE, Constants.ANIMATION_TICK_TIME * 0.75)\
+	.from(Vector2(0.5,2.0))\
+	.set_ease(Tween.EASE_OUT)\
+	.set_trans(Tween.TRANS_ELASTIC)\
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
+	tween.tween_callback(func() -> void:%HPBar.visible = true)\
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
+	tween.tween_property(%HPBar, "size:x", hp_bar_length(hp), Constants.ANIMATION_TICK_TIME * 0.25)\
+	.from(hp_bar_length(prev_hp))\
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
+	tween.tween_callback(func() -> void:%HPBar.visible = false)\
+	.set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
 
+func animate_dead(tween:Tween, animation_tick:int) -> void:
+	message_animation(tween, animation_tick, "DIED!")
+	%Interaction
+	tween.tween_callback(func() -> void:
+		%Sprite.visible = false
+		%Interaction.visible = false
+		hovered = false
+		dragging = false
+		SignalBus.tooltip_try_close.emit(self)
+		%DeadParticles.emitting = true
+	).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 
+## animation helpers
+func message_animation(tween:Tween, animation_tick:int, message:String) -> void:
+	tween.tween_callback(func() -> void:
+		%Message.visible = true
+		%Message.text = message
+	).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
+	tween.tween_property(%Message, "rotation", 0.0, Constants.ANIMATION_TICK_TIME)\
+	.from(randf_range(-0.2,0.2))\
+	.set_ease(Tween.EASE_OUT)\
+	.set_trans(Tween.TRANS_ELASTIC)\
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
+	tween.tween_property(%Message, "scale", Vector2.ONE, Constants.ANIMATION_TICK_TIME)\
+	.from(Vector2(randf_range(1.75,2.0), randf_range(0.45,0.55)))\
+	.set_ease(Tween.EASE_OUT)\
+	.set_trans(Tween.TRANS_ELASTIC)\
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
+	tween.tween_callback(func() -> void:
+		%Message.visible = false
+	).set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
+	
+func hp_bar_length(given_hp:float) -> float:
+	return given_hp/max_hp * 50.0
+	
 func projectile_animation(tween:Tween, animation_tick:int, source_coord:Vector2i, type:Constants.UnitType) -> void:
 
 	tween.tween_callback(func() -> void:
+		### TODO: we gotta only change the visibility of the core, this should go in Projectile
 		(%Projectile as Projectile).visible = true
+		(%Projectile as Projectile).restart()
 		(%Projectile as Projectile).type = type
 	)\
 	.set_delay((animation_tick - 1) * Constants.ANIMATION_TICK_TIME)

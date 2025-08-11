@@ -33,8 +33,6 @@ scale_curve = SubResource("CurveTexture_2ul3e")
 [node name="Projectile" type="GPUParticles2D"]
 top_level = true
 amount = 32
-use_fixed_seed = true
-seed = 1
 fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_3dxjh")
 script = ExtResource("1_makwg")

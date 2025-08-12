@@ -28,7 +28,7 @@ func _on_start_game() -> void:
 	
 	var unit3:Unit = unit_tscn.instantiate()
 	play_board.add_child(unit3)
-	unit3.id = Constants.UnitID.test_multiplier
+	unit3.id = Constants.UnitID.test_boss
 	unit3.logical_position = Vector2i(2,2)
 	
 	round = 1
@@ -129,6 +129,10 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 	if unit_at(to_coord,to_board.id):
 		## already something there
 		return
+		
+	## we can't move bosses
+	if Constants.unit_data[unit.id].type == Constants.UnitType.boss:
+		return
 	
 	var gp:Vector2 = unit.global_position
 	
@@ -138,24 +142,25 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 		to_board.add_child(unit)
 	unit.logical_position = to_coord
 	unit.global_position  = gp
+	
+	SignalBus.unit_moved.emit(unit, from_coord, from_board)
 
-
+var animation_tick :int = 0
+var units_evaluated:int = 0
 func _on_play_button_pressed() -> void:
 	if animating:return
 	if tween: tween.kill()
 	tween = create_tween().set_parallel()
 	animating = true
-	var animation_tick :int = 0
-	var units_evaluated:int = 0
-	
-	for unit:Unit in play_board.get_children():
-		unit.stat = 1.0
+
+	animation_tick = 0
+	units_evaluated = 0
 	
 	## evaluate each tile on the board
 	for eval_coord:Vector2i in Util.board_evaluation_order(6):
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
 		if not unit: continue
-		if unit.hp == 0: continue
+		if unit.dead: continue
 		
 		var data:UnitData = Constants.unit_data[unit.id]
 		
@@ -187,14 +192,20 @@ func _on_play_button_pressed() -> void:
 				affected_coord += unit.logical_position
 			
 			var affected_unit:Unit = unit_at(affected_coord, Constants.BoardID.play)
-			if not affected_unit: continue
-			if unit.hp == 0: continue
+			if not affected_unit:     continue
+			if affected_unit.dead:    continue
+			if unit == affected_unit: continue
 			
 			match data.type:
-				Constants.UnitType.attacker:
-					## apply damage
+				Constants.UnitType.attacker,Constants.UnitType.boss:
 					var prev_hp:float = affected_unit.hp
-					affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
+					
+					## apply damage
+					match unit.id:
+						Constants.UnitID.test_boss:
+							affected_unit.hp = maxf(affected_unit.hp - unit.stat * 10 / unit.logical_position.distance_to(affected_unit.logical_position), 0.0)
+						_:
+							affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
 					
 					## animate
 					affected_unit.animate_attacked(tween, animation_tick, unit.logical_position, prev_hp)
@@ -203,13 +214,19 @@ func _on_play_button_pressed() -> void:
 					if affected_unit.hp == 0:
 						unit_died = true
 						affected_unit.animate_dead(tween, animation_tick)
+						affected_unit.dead = true
 						
 				Constants.UnitType.healer:
-					pass
+					var prev_hp:float = affected_unit.hp
+					affected_unit.hp = minf(affected_unit.hp + unit.stat, affected_unit.max_hp)
+					
+					affected_unit.animate_healed(tween, animation_tick, unit.logical_position, prev_hp)
 				Constants.UnitType.multiplier:
-					pass
-				Constants.UnitType.boss:
-					pass
+					var prev_stat:float = affected_unit.stat
+					print("second ", unit.stat)
+					affected_unit.stat *= unit.stat
+					affected_unit.animate_multiplied(tween, animation_tick, unit.logical_position, unit.stat)
+					
 		if unit_died: animation_tick  += 1
 		animation_tick  += 1
 		units_evaluated += 1
@@ -220,7 +237,7 @@ func _on_play_button_pressed() -> void:
 		animating = false
 		## check for dead units and delete them
 		for unit:Unit in play_board.get_children():
-			if unit.hp == 0:
+			if unit.dead:
 				play_board.remove_child(unit)
 				unit.queue_free()
 	).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
@@ -235,6 +252,19 @@ func _on_reroll_button_pressed() -> void:
 	animating = false
 
 
+#endregion
+
+#region Boss mechanics
+func evaluate_boss(boss:Unit) -> void:
+	for eval_coord:Vector2i in Util.board_evaluation_order(6):
+		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
+		if not unit: continue
+		if unit.hp == 0: continue
+		
+		var data:UnitData = Constants.unit_data[unit.id]
+		if data.type == Constants.UnitType.boss: continue
+		match unit.id:
+			_:pass
 #endregion
 
 #region debug

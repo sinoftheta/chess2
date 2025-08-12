@@ -18,6 +18,7 @@ signal reroll_price_changed(price:int)
 signal game_started()
 
 signal animating_state_updated(animating:bool)
+signal unit_moved(unit:Unit, prev_coord:Vector2i, prev_board:Board)
 #endregion
 
 #region tooltip

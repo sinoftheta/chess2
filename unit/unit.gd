@@ -1,20 +1,31 @@
 class_name Unit
 extends Node2D
 
+
+func _ready() -> void:
+	SignalBus.animating_state_updated.connect(_on_animation_state_updated)
+func _on_animation_state_updated(animating:bool) -> void:
+	stat = init_stat
 #region Game logic
 var id:Constants.UnitID:
 	set(value):
 		id = value
 		var data:UnitData = Constants.unit_data[value]
 		%Sprite.texture = data.texture
+		max_hp = data.base_health
+		hp = data.base_health
+		init_stat = data.base_stat
+		stat = data.base_stat
 var logical_position:Vector2i:
 	set(value):
 		logical_position = value
 		name = Util.coord_to_name(logical_position)
 		#z_index = value.y
+var init_stat:float = 1.0
 var stat:float = 1.0
 var hp:float = 10.0
 var max_hp:float = 10.0
+var dead:bool = false
 #endregion
 
 #region Cursor interactions
@@ -84,11 +95,11 @@ func animate_type_effect(tween:Tween, animation_tick:int, units_evaluated:int) -
 	
 	tween.tween_callback(func () -> void: 
 		%OrdinalValue.text = Util.int_ordinal_suffix(units_evaluated + 1)
-		%OrdinalValue.visible = true
+		%OrdinalCard.visible = true
 	).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 	
 	tween.tween_callback(func () -> void: 
-		%OrdinalValue.visible = false
+		%OrdinalCard.visible = false
 	).set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
 	
 	## show the units AoE
@@ -128,8 +139,18 @@ func animate_attacked(tween:Tween, animation_tick:int, source_coord:Vector2i, pr
 	
 	
 
-func animate_multiplied(tween:Tween, animation_tick:int, source_coord:Vector2i, prev_stat:float) -> void:
+func animate_multiplied(tween:Tween, animation_tick:int, source_coord:Vector2i, factor:float) -> void:
 	assert(animation_tick > 0)
+	projectile_animation(tween, animation_tick, source_coord, Constants.UnitType.multiplier)
+	message_animation(tween, animation_tick, "x" + str(factor) + "!")
+
+	## the bounce
+	tween.tween_property(%Sprite, "scale", Vector2.ONE, Constants.ANIMATION_TICK_TIME * 0.75)\
+	.from(Vector2(0.5,2.0))\
+	.set_ease(Tween.EASE_OUT)\
+	.set_trans(Tween.TRANS_ELASTIC)\
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
 
 func animate_healed(tween:Tween, animation_tick:int, source_coord:Vector2i, prev_hp:float) -> void:
 	assert(animation_tick > 0)

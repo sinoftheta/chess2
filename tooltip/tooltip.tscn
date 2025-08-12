@@ -14,4 +14,55 @@ offset_top = 3.0
 offset_right = 196.0
 offset_bottom = 357.0
 mouse_filter = 2
-color = Color(0.97243, 0.524626, 0.755248, 1)
+color = Color(0, 0, 0, 0.670588)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="ColorRect/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+text = "test title"
+
+[node name="Rarity" type="Label" parent="ColorRect/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+text = "Rare as shit"
+
+[node name="Type" type="Label" parent="ColorRect/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+text = "test type"
+
+[node name="TypeDescription" type="Label" parent="ColorRect/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+text = "type description this
+one is pretty long"
+
+[node name="Stat" type="Label" parent="ColorRect/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+text = "stat: 0"
+
+[node name="HP" type="Label" parent="ColorRect/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+text = "HP: 10/10"
+
+[node name="SellValue" type="Label" parent="ColorRect/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+text = "Sell Value: $10.0"

@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://k0l1vk00ly8h"]
+
+[ext_resource type="Script" uid="uid://cwjviq2pl1x0c" path="res://movement_failure_message/movement_failure_message.gd" id="1_eqrlj"]
+
+[node name="MovementFailureMessage" type="Label"]
+offset_left = -194.0
+offset_top = -12.0
+offset_right = 194.0
+offset_bottom = 11.0
+pivot_offset = Vector2(194, 12)
+theme_override_colors/font_color = Color(1, 0.437735, 0.339795, 1)
+theme_override_constants/outline_size = 8
+text = "test message"
+horizontal_alignment = 1
+script = ExtResource("1_eqrlj")

@@ -6,11 +6,15 @@ var unit_tscn:PackedScene = preload("res://unit/unit.tscn")
 func _ready() -> void:
 	SignalBus.move_unit_to_cursor.connect(_on_move_unit_to_cursor)
 	SignalBus.start_game.connect(_on_start_game)
+	
 	SignalBus.play_button_pressed.connect(_on_play_button_pressed)
+	SignalBus.next_turn_pressed.connect(_on_next_turn_pressed)
+	SignalBus.continue_run_pressed.connect(_on_continue_run_pressed)
 	SignalBus.reroll_button_pressed.connect(_on_reroll_button_pressed)
+	
 
 func _on_start_game() -> void:
-	animating = false
+	
 	for board:Board in boards.values():
 		for unit:Unit in board.get_children():
 			board.remove_child(unit)
@@ -21,20 +25,31 @@ func _on_start_game() -> void:
 	unit.id = Constants.UnitID.test_attacker
 	unit.logical_position = Vector2i(0,0)
 	
-	var unit2:Unit = unit_tscn.instantiate()
-	play_board.add_child(unit2)
-	unit2.id = Constants.UnitID.test_healer
-	unit2.logical_position = Vector2i(1,1)
+	#var unit2:Unit = unit_tscn.instantiate()
+	#play_board.add_child(unit2)
+	#unit2.id = Constants.UnitID.test_healer
+	#unit2.logical_position = Vector2i(1,1)
+	#
+	#var unit3:Unit = unit_tscn.instantiate()
+	#play_board.add_child(unit3)
+	#unit3.id = Constants.UnitID.test_boss
+	#unit3.logical_position = Vector2i(2,2)
 	
-	var unit3:Unit = unit_tscn.instantiate()
-	play_board.add_child(unit3)
-	unit3.id = Constants.UnitID.test_boss
-	unit3.logical_position = Vector2i(2,2)
 	
+	common_shop_pool = Constants.default_common_shop_pool.duplicate()
+	uncommon_shop_pool = Constants.default_uncommon_shop_pool.duplicate()
+	rare_shop_pool = Constants.default_rare_shop_pool.duplicate()
+	available_boss_pool = Constants.default_boss_pool.duplicate()
+	defeated_boss_pool = []
+	available_bonus_pool = Constants.default_bonus_pool.duplicate()
+	unlocked_bonus_pool = []
+	
+	animating = false
 	round = 1
 	turn = 1
 	money = 10
 	reroll_price = 5
+	phase = Constants.GamePhase.shop
 	SignalBus.game_started.emit()
 #endregion
 
@@ -87,6 +102,7 @@ var animating:bool:
 #endregion
 
 #region Run State
+
 var max_rounds:int = 5
 var round:int:
 	set(value):
@@ -105,6 +121,20 @@ var reroll_price:int:
 	set(value):
 		reroll_price = value
 		SignalBus.reroll_price_changed.emit(value)
+var phase:Constants.GamePhase:
+	set(value):
+		phase = value
+		SignalBus.phase_changed.emit(value)
+#endregion
+
+#region Unit pools
+var common_shop_pool:Array[Constants.UnitID]
+var uncommon_shop_pool:Array[Constants.UnitID]
+var rare_shop_pool:Array[Constants.UnitID]
+var available_boss_pool:Array[Constants.UnitID]
+var defeated_boss_pool:Array[Constants.UnitID]
+var available_bonus_pool:Array[Constants.UnitID]
+var unlocked_bonus_pool:Array[Constants.UnitID]
 #endregion
 
 #region helpers
@@ -114,6 +144,7 @@ func unit_at(coord:Vector2i, board_id:Constants.BoardID) -> Unit:
 
 #region Game logic
 func _on_move_unit_to_cursor(unit:Unit) -> void:
+	
 	var from_board:Board             = unit.get_parent()
 	var from_coord:Vector2i          = unit.logical_position
 	var to_board:Board               = boards[board_under_cursor]
@@ -121,18 +152,12 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 	var same_boards:bool = to_board != from_board
 	
 	if animating: return
-	
-	if not board_has_coord(to_board.id, to_coord):
-		## trying to move oob
-		return
-	
-	if unit_at(to_coord,to_board.id):
-		## already something there
-		return
-		
-	## we can't move bosses
-	if Constants.unit_data[unit.id].type == Constants.UnitType.boss:
-		return
+	if phase != Constants.GamePhase.shop: return
+	if not board_has_coord(to_board.id, to_coord): return ## trying to move oob
+	if unit_at(to_coord,to_board.id): return ## already something there
+	if Constants.unit_data[unit.id].type == Constants.UnitType.boss: 
+		SignalBus.movement_failed.emit(Constants.MovementFailureReason.unit_is_boss)
+		return ## we can't move bosses
 	
 	var gp:Vector2 = unit.global_position
 	
@@ -149,12 +174,15 @@ var animation_tick :int = 0
 var units_evaluated:int = 0
 func _on_play_button_pressed() -> void:
 	if animating:return
+	if phase != Constants.GamePhase.shop: return
 	if tween: tween.kill()
 	tween = create_tween().set_parallel()
 	animating = true
 
 	animation_tick = 0
 	units_evaluated = 0
+	
+	var next_phase:Constants.GamePhase = Constants.GamePhase.end_of_turn
 	
 	## evaluate each tile on the board
 	for eval_coord:Vector2i in Util.board_evaluation_order(6):
@@ -236,6 +264,7 @@ func _on_play_button_pressed() -> void:
 	
 	tween.tween_callback(func () -> void: 
 		animating = false
+		phase = next_phase
 		## check for dead units and delete them
 		for unit:Unit in play_board.get_children():
 			if unit.dead:
@@ -245,6 +274,7 @@ func _on_play_button_pressed() -> void:
 	
 func _on_reroll_button_pressed() -> void:
 	if animating:return
+	if phase != Constants.GamePhase.shop: return
 	
 	if money < reroll_price:
 		#SignalBus.cant_afford_reroll.emit()
@@ -252,6 +282,16 @@ func _on_reroll_button_pressed() -> void:
 	animating = true
 	animating = false
 
+
+func _on_next_turn_pressed() -> void:
+	if animating:return
+	if phase != Constants.GamePhase.end_of_turn: return
+	phase = Constants.GamePhase.shop
+
+func _on_continue_run_pressed() -> void:
+	if animating:return
+	if phase != Constants.GamePhase.run_won: return
+	phase = Constants.GamePhase.end_of_turn
 
 #endregion
 
@@ -266,6 +306,12 @@ func evaluate_boss(boss:Unit) -> void:
 		if data.type == Constants.UnitType.boss: continue
 		match unit.id:
 			_:pass
+#endregion
+#region Ability Mechanics
+func evaluate_ability(id:Constants.UnitID) -> Dictionary:
+	## check if any units have the id
+	## if yes, execute the ability & return any data needed
+	return {}
 #endregion
 
 #region debug

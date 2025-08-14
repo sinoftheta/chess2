@@ -1,0 +1,52 @@
+[gd_scene load_steps=3 format=3 uid="uid://ctucg0vqcgkw7"]
+
+[ext_resource type="Texture2D" uid="uid://coy8on0q13wac" path="res://texture/phase_ui_panel.png" id="1_pvmbl"]
+[ext_resource type="Script" uid="uid://d32n1wpa87hrp" path="res://turn_end_ui/turn_end_ui.gd" id="1_uosyl"]
+
+[node name="TurnEndUI" type="Sprite2D"]
+self_modulate = Color(7.82125e-08, 0.249934, 0.143077, 1)
+texture = ExtResource("1_pvmbl")
+script = ExtResource("1_uosyl")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 92.0
+offset_top = -159.0
+offset_right = 200.0
+offset_bottom = -119.0
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Turn Results"
+horizontal_alignment = 1
+
+[node name="Units" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Units:"
+horizontal_alignment = 1
+
+[node name="UnitsLost" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Lost: 00"
+
+[node name="UnitsBought" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Bought: 00"
+
+[node name="UnitsSold" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Sold: 00"
+
+[node name="RoundPassed" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Round
+Cleared!"
+horizontal_alignment = 1
+
+[node name="NextTurnButton" type="Button" parent="."]
+offset_left = -50.0
+offset_top = 130.0
+offset_right = 49.0
+offset_bottom = 161.0
+text = "Exit to shop"
+
+[connection signal="pressed" from="NextTurnButton" to="." method="_on_next_turn_button_pressed"]

@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://bo7cpc44ywfib"]
+
+[ext_resource type="Texture2D" uid="uid://coy8on0q13wac" path="res://texture/phase_ui_panel.png" id="1_7kqmi"]
+[ext_resource type="Script" uid="uid://d2o05insrnay1" path="res://run_end_ui/run_end_ui.gd" id="2_sagi2"]
+
+[node name="RunEndUI" type="Sprite2D"]
+self_modulate = Color(0.33784, 0, 0.159253, 1)
+texture = ExtResource("1_7kqmi")
+script = ExtResource("2_sagi2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 92.0
+offset_top = -159.0
+offset_right = 200.0
+offset_bottom = -119.0
+
+[node name="RunOver" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "RUN OVER!"
+horizontal_alignment = 1
+
+[node name="Message" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "You Won!"
+horizontal_alignment = 1
+
+[node name="Endless" type="Button" parent="."]
+unique_name_in_owner = true
+offset_left = 35.0
+offset_top = 130.0
+offset_right = 150.0
+offset_bottom = 161.0
+text = "Endless Mode"
+
+[node name="NewRun" type="Button" parent="."]
+offset_left = -115.0
+offset_top = 130.0
+offset_bottom = 161.0
+text = "New Run"
+
+[connection signal="pressed" from="Endless" to="." method="_on_endless_pressed"]
+[connection signal="pressed" from="NewRun" to="." method="_on_new_run_pressed"]

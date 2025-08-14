@@ -12,6 +12,14 @@ const UP_LEFT:Vector2i    = UP   + LEFT
 const DOWN_RIGHT:Vector2i = DOWN + RIGHT
 const DOWN_LEFT:Vector2i  = DOWN + LEFT
 
+
+enum GamePhase {
+	shop,
+	#betting,
+	end_of_turn,
+	run_won,
+	run_lost
+}
 enum BoardID {
 	play,
 	shop,
@@ -20,17 +28,42 @@ enum BoardID {
 	none,
 }
 
-enum AbilityID {
-	## I'm not implementing these yet
-}
-
 ## The UnitTypes are like the card evaluations in balatro, they are guarenteed to happen a finite amount of times
 enum UnitType {
 	attacker,
 	healer,
 	multiplier,
 	boss,
+	bonus
 }
+enum ShopRarity {
+	unavailable,
+	common,
+	uncommon,
+	rare,
+}
+var default_boss_pool:Array[UnitID]
+var default_bonus_pool:Array[UnitID]
+var default_common_shop_pool:Array[UnitID]
+var default_uncommon_shop_pool:Array[UnitID]
+var default_rare_shop_pool:Array[UnitID]
+func _ready() -> void:
+	for id:UnitID in UnitID.values():
+		var data:UnitData = unit_data[id]
+		match data.type:
+			UnitType.boss:
+				default_boss_pool.push_back(id)
+			UnitType.bonus:
+				default_bonus_pool.push_back(id)
+			_:match data.shop_rarity:
+				ShopRarity.common:
+					default_common_shop_pool.push_back(id)
+				ShopRarity.uncommon:
+					default_uncommon_shop_pool.push_back(id)
+				ShopRarity.rare:
+					default_rare_shop_pool.push_back(id)
+
+
 const type_descriptions:Dictionary[UnitType,String] = {
 	UnitType.attacker:   "Deals its Stat as\ndamage to \ntarget units HP",
 	UnitType.healer:     "Heals target units\nHP by its Stat",
@@ -89,7 +122,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		UnitType.boss, ## type
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
-		10, ## base_health
+		5, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
 		1,  ## base_shop_price
@@ -98,12 +131,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	),
 }
 
-enum ShopRarity {
-	unavailable,
-	common,
-	uncommon,
-	rare,
-}
 
 
 enum Menu {
@@ -111,6 +138,12 @@ enum Menu {
 	main,
 	gameplay,
 	options
+}
+
+enum MovementFailureReason {
+	unit_is_boss,
+	not_enough_money_for_purchase
+	## board_at_capacity
 }
 
 const AOE_KERNEL_1x1_VON:Array[Vector2i] = [

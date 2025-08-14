@@ -1,11 +1,14 @@
-[gd_scene load_steps=10 format=3 uid="uid://xrdgyjq45cts"]
+[gd_scene load_steps=13 format=3 uid="uid://xrdgyjq45cts"]
 
 [ext_resource type="Script" uid="uid://ctoejpy8mm8pn" path="res://world/world.gd" id="1_4717r"]
 [ext_resource type="PackedScene" uid="uid://bulfda27piwfl" path="res://tile_preview/tile_preview.tscn" id="2_fn3g3"]
 [ext_resource type="Texture2D" uid="uid://h2bathwhiea4" path="res://texture/layout.png" id="2_h5o24"]
 [ext_resource type="PackedScene" uid="uid://bl7yw07rwfxj0" path="res://tooltip/tooltip.tscn" id="2_mmdvd"]
 [ext_resource type="PackedScene" uid="uid://yrsr5vndikk" path="res://board/board.tscn" id="3_mmdvd"]
+[ext_resource type="PackedScene" uid="uid://ctucg0vqcgkw7" path="res://turn_end_ui/turn_end_ui.tscn" id="5_sc4t8"]
+[ext_resource type="PackedScene" uid="uid://bo7cpc44ywfib" path="res://run_end_ui/run_end_ui.tscn" id="6_ai45w"]
 [ext_resource type="PackedScene" uid="uid://d0kairdgbeo8o" path="res://aoe_preview/aoe_preview.tscn" id="6_fn3g3"]
+[ext_resource type="PackedScene" uid="uid://k0l1vk00ly8h" path="res://movement_failure_message/movement_failure_message.tscn" id="9_4papg"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4717r"]
 
@@ -112,6 +115,12 @@ offset_right = 209.0
 offset_bottom = 46.0
 text = "Bonus"
 
+[node name="TurnEndUI" parent="." instance=ExtResource("5_sc4t8")]
+position = Vector2(56, 16)
+
+[node name="RunEndUI" parent="." instance=ExtResource("6_ai45w")]
+position = Vector2(56, 16)
+
 [node name="BonusBoard" parent="." instance=ExtResource("3_mmdvd")]
 offset_left = 160.0
 offset_top = -20.0
@@ -148,6 +157,8 @@ id = 1
 logical_size = Vector2i(2, 2)
 
 [node name="AoePreview" parent="." instance=ExtResource("6_fn3g3")]
+
+[node name="MovementFailureMessage" parent="." instance=ExtResource("9_4papg")]
 
 [connection signal="pressed" from="Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="Reroll" to="." method="_on_reroll_pressed"]

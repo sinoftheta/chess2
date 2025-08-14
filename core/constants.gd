@@ -46,6 +46,7 @@ enum UnitID {
 var unit_data:Dictionary[UnitID,UnitData] = {
 	UnitID.test_attacker: UnitData.new(
 		"test attacker",  ## title
+		"", ## description
 		UnitType.attacker, ## type
 		AOE_KERNEL_1x1_VON,## aoe
 		false, ## is_aoe_absolute
@@ -58,6 +59,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	),
 	UnitID.test_healer: UnitData.new(
 		"test healer",  ## title
+		"", ## description
 		UnitType.healer, ## type
 		AOE_KERNEL_1x1_VON,## aoe
 		false, ## is_aoe_absolute
@@ -70,6 +72,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	),
 	UnitID.test_multiplier: UnitData.new(
 		"test multiplier",  ## title
+		"", ## description
 		UnitType.multiplier, ## type
 		AOE_KERNEL_1x1_VON,## aoe
 		false, ## is_aoe_absolute
@@ -82,6 +85,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	),
 	UnitID.test_boss: UnitData.new(
 		"test boss",  ## title
+		"deals 3 damage\nto each target", ## description
 		UnitType.boss, ## type
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute

@@ -203,7 +203,8 @@ func _on_play_button_pressed() -> void:
 					## apply damage
 					match unit.id:
 						Constants.UnitID.test_boss:
-							affected_unit.hp = maxf(affected_unit.hp - unit.stat * 10 / unit.logical_position.distance_to(affected_unit.logical_position), 0.0)
+							#affected_unit.hp = maxf(affected_unit.hp - unit.stat * 10 / unit.logical_position.distance_to(affected_unit.logical_position), 0.0)
+							affected_unit.hp = maxf(affected_unit.hp - 3.0, 0.0)
 						_:
 							affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
 					

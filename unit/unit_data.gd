@@ -1,6 +1,7 @@
 class_name UnitData
 
 var title:String
+var description:String
 var type:Constants.UnitType
 var aoe:Array[Vector2i]
 var aoe_is_absolute:bool
@@ -13,6 +14,7 @@ var texture:Texture2D
 
 func _init(
 	_title:String,
+	_description:String,
 	_type:Constants.UnitType,
 	_aoe:Array[Vector2i],
 	_aoe_is_absolute:bool,
@@ -24,6 +26,7 @@ func _init(
 	#_tooltip_texture:Texture2D,
 ) -> void:
 	title           = _title
+	description     = _description
 	type            = _type
 	aoe             = _aoe
 	aoe_is_absolute = _aoe_is_absolute

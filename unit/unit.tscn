@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://je4xne0s26pp"]
+[gd_scene load_steps=10 format=3 uid="uid://je4xne0s26pp"]
 
 [ext_resource type="Script" uid="uid://1goxqi70cjt0" path="res://unit/unit.gd" id="1_hy15m"]
 [ext_resource type="Texture2D" uid="uid://blc853bi1wn0a" path="res://texture/test_attack.png" id="2_3k25b"]
 [ext_resource type="PackedScene" uid="uid://bt6n8ds1s1nrm" path="res://projectile/projectile.tscn" id="3_hs7ws"]
+[ext_resource type="Script" uid="uid://bnjqwxxwvexo4" path="res://unit/targeted_indicator.gd" id="3_japly"]
+[ext_resource type="Texture2D" uid="uid://cnon8p3m7tbvk" path="res://texture/targeted_indicator.png" id="3_s1ym6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hy15m"]
 
@@ -108,6 +110,21 @@ grow_vertical = 2
 text = "1st"
 horizontal_alignment = 1
 
+[node name="TargetedIndicator" type="Sprite2D" parent="DragMotionTX/CursorTX"]
+unique_name_in_owner = true
+visible = false
+position = Vector2(0, 20)
+texture = ExtResource("3_s1ym6")
+script = ExtResource("3_japly")
+
+[node name="Label" type="Label" parent="DragMotionTX/CursorTX/TargetedIndicator"]
+offset_left = -23.0
+offset_top = -7.0
+offset_right = 24.0
+offset_bottom = 16.0
+theme_override_constants/outline_size = 5
+text = "target"
+
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="Projectile" parent="." instance=ExtResource("3_hs7ws")]
@@ -128,3 +145,4 @@ process_material = SubResource("ParticleProcessMaterial_s1ym6")
 [connection signal="button_up" from="Interaction" to="." method="_on_interaction_button_up"]
 [connection signal="mouse_entered" from="Interaction" to="." method="_on_interaction_mouse_entered"]
 [connection signal="mouse_exited" from="Interaction" to="." method="_on_interaction_mouse_exited"]
+[connection signal="visibility_changed" from="DragMotionTX/CursorTX/TargetedIndicator" to="DragMotionTX/CursorTX/TargetedIndicator" method="_on_visibility_changed"]

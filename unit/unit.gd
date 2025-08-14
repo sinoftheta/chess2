@@ -2,8 +2,16 @@ class_name Unit
 extends Node2D
 
 
+
 func _ready() -> void:
 	SignalBus.animating_state_updated.connect(_on_animation_state_updated)
+
+#region target preview
+var target:bool:
+	set(value):
+		%TargetedIndicator.visible = value
+#endregion
+
 func _on_animation_state_updated(animating:bool) -> void:
 	stat = init_stat
 #region Game logic
@@ -233,7 +241,7 @@ func projectile_animation(tween:Tween, animation_tick:int, source_coord:Vector2i
 	)\
 	.set_delay((animation_tick - 1) * Constants.ANIMATION_TICK_TIME)\
 	.set_ease(Tween.EASE_IN)\
-	.set_trans(Tween.TRANS_EXPO)
+	.set_trans(Tween.TRANS_CUBIC)
 		
 	tween.tween_callback(func() -> void:%Projectile.visible = false)\
 	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)

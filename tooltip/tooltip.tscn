@@ -66,3 +66,9 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 0
 text = "Sell Value: $10.0"
+
+[node name="SpecialAbility" type="Label" parent="ColorRect/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Ability: 
+uhh something"

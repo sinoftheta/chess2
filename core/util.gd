@@ -62,3 +62,12 @@ static func int_ordinal_suffix(i:int) -> String:
 	if j == 3 and k != 13:
 		return str(i) + "rd"
 	return str(i) + "th"
+
+static func format_number(num:Variant) -> String:
+	if not(num is float) and not(num is int):
+		return "err"
+	var text:String = String.num(num, 3)
+	text = text.trim_suffix(".0")
+	if absf(num) > 1.0E10:
+		text = String.num_scientific(num)
+	return text

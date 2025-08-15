@@ -1,7 +1,8 @@
 extends Node
 
 var unit_tscn:PackedScene = preload("res://unit/unit.tscn")
-
+var shop_rng:RandomNumberGenerator
+var combat_rng:RandomNumberGenerator
 #region Setup
 func _ready() -> void:
 	SignalBus.move_unit_to_cursor.connect(_on_move_unit_to_cursor)
@@ -30,10 +31,10 @@ func _on_start_game() -> void:
 	#unit2.id = Constants.UnitID.test_healer
 	#unit2.logical_position = Vector2i(1,1)
 	#
-	#var unit3:Unit = unit_tscn.instantiate()
-	#play_board.add_child(unit3)
-	#unit3.id = Constants.UnitID.test_boss
-	#unit3.logical_position = Vector2i(2,2)
+	var unit3:Unit = unit_tscn.instantiate()
+	play_board.add_child(unit3)
+	unit3.id = Constants.UnitID.test_boss
+	unit3.logical_position = Vector2i(2,2)
 	
 	
 	common_shop_pool = Constants.default_common_shop_pool.duplicate()
@@ -44,7 +45,10 @@ func _on_start_game() -> void:
 	available_bonus_pool = Constants.default_bonus_pool.duplicate()
 	unlocked_bonus_pool = []
 	
+	shop_rng   = RandomNumberGenerator.new()
+	combat_rng = RandomNumberGenerator.new()
 	animating = false
+	shop_size = 3
 	round = 1
 	turn = 1
 	money = 10
@@ -103,7 +107,9 @@ var animating:bool:
 
 #region Run State
 
+
 var max_rounds:int = 5
+var shop_size:int = 2
 var round:int:
 	set(value):
 		round = value
@@ -156,8 +162,13 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 	if not board_has_coord(to_board.id, to_coord): return ## trying to move oob
 	if unit_at(to_coord,to_board.id): return ## already something there
 	if Constants.unit_data[unit.id].type == Constants.UnitType.boss: 
-		SignalBus.movement_failed.emit(Constants.MovementFailureReason.unit_is_boss)
+		SignalBus.failed_to_move_boss.emit()
 		return ## we can't move bosses
+		
+		
+	if to_board == play_board and from_board == shop_board:
+		
+		pass
 	
 	var gp:Vector2 = unit.global_position
 	
@@ -277,8 +288,81 @@ func _on_reroll_button_pressed() -> void:
 	if phase != Constants.GamePhase.shop: return
 	
 	if money < reroll_price:
-		#SignalBus.cant_afford_reroll.emit()
+		SignalBus.cant_afford_reroll.emit()
 		return
+	else:
+		money = money - reroll_price
+		reroll_price = reroll_price + 1
+	
+	## remove prev units
+	for unit:Unit in shop_board.get_children():
+		shop_board.remove_child(unit)
+		unit.queue_free()
+	
+	## generate new shop contents
+	var shop_coords:Array[Vector2i] = [
+		Vector2i(0,0),Vector2i(1,0),
+		Vector2i(0,1),Vector2i(1,1)
+	]
+	shop_coords.shuffle()
+	var shop_contents:Array[Constants.UnitID]
+	for i:int in range(shop_size):
+		
+		## choose the rarity of the unit
+		var rarity:int = shop_rng.randi_range(0,99)
+		var selected_pool:Array[Constants.UnitID]
+		if   rarity < 92:
+			print("gen shop common")
+			selected_pool = common_shop_pool
+		elif rarity < 97:
+			print("gen shop uncommon")
+			selected_pool = uncommon_shop_pool
+		else:
+			print("gen shop rare") 
+			selected_pool = rare_shop_pool
+		
+		## filter the pool
+		var filtered_pool:Array[Constants.UnitID] = selected_pool.duplicate()
+		
+		## filter the board contents from the pool
+		for unit:Unit in play_board.get_children():
+			## filter the id from the pool by swapping the element to the back and popping it
+			var filter_index:int = filtered_pool.find(unit.id)
+			if filter_index != -1:
+				var temp:Constants.UnitID = filtered_pool.back()
+				filtered_pool[filtered_pool.size() - 1] = filtered_pool[filter_index]
+				filtered_pool[filter_index] = temp
+				filtered_pool.pop_back()
+		
+		## filter the shop contents from the pool
+		for id:Constants.UnitID in shop_contents:
+			## filter the id from the pool by swapping the element to the back and popping it
+			var filter_index:int = filtered_pool.find(id)
+			if filter_index != -1:
+				var temp:Constants.UnitID = filtered_pool.back()
+				filtered_pool[filtered_pool.size() - 1] = filtered_pool[filter_index]
+				filtered_pool[filter_index] = temp
+				filtered_pool.pop_back()
+				
+		if filtered_pool.size() > 0:
+			var rand_index:int = shop_rng.randi_range(0, filtered_pool.size() - 1)
+			shop_contents.push_back(filtered_pool[rand_index])
+		elif selected_pool.size() > 0:
+			print("shop filtering failed")
+			shop_contents.push_back(selected_pool[0])
+		else:
+			print("no units of that rarity")
+			shop_contents.push_back(Constants.UnitID.test_attacker)
+	
+	print(shop_contents)
+	for id:Constants.UnitID in shop_contents:
+		var unit:Unit = unit_tscn.instantiate()
+		shop_board.add_child(unit)
+		unit.id = id
+		unit.logical_position = shop_coords.pop_back()
+		
+		
+	
 	animating = true
 	animating = false
 

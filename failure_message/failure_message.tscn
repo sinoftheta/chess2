@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://k0l1vk00ly8h"]
 
-[ext_resource type="Script" uid="uid://cwjviq2pl1x0c" path="res://movement_failure_message/movement_failure_message.gd" id="1_eqrlj"]
+[ext_resource type="Script" uid="uid://cwjviq2pl1x0c" path="res://failure_message/failure_message.gd" id="1_eqrlj"]
 
 [node name="MovementFailureMessage" type="Label"]
 offset_left = -194.0

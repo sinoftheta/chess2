@@ -16,3 +16,10 @@ func _on_logical_mouse_position_updated(board:Constants.BoardID, coord:Vector2i,
 
 func _on_unit_id_item_selected(index: int) -> void:
 	GameLogic.debug_unit_id = index
+
+
+func _on_add_20_money_pressed() -> void:
+	GameLogic.money += 20 
+
+func _on_reset_money_pressed() -> void:
+	GameLogic.money = 0

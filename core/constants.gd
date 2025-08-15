@@ -140,11 +140,6 @@ enum Menu {
 	options
 }
 
-enum MovementFailureReason {
-	unit_is_boss,
-	not_enough_money_for_purchase
-	## board_at_capacity
-}
 
 const AOE_KERNEL_1x1_VON:Array[Vector2i] = [
 					 Vector2i( 0,-1),

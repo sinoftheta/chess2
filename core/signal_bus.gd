@@ -18,12 +18,17 @@ signal money_changed(new:int,prev:int)
 signal turn_changed(turns:int)
 signal round_changed(round:int)
 signal reroll_price_changed(price:int)
+
 signal phase_changed(phase:Constants.GamePhase)
 signal game_started()
 
 signal animating_state_updated(animating:bool)
 signal unit_moved(unit:Unit, prev_coord:Vector2i, prev_board:Board)
-signal movement_failed(reason:Constants.MovementFailureReason)
+
+##input failures
+signal failed_to_move_boss()
+signal cant_afford_purchase()
+signal cant_afford_reroll()
 #endregion
 
 #region tooltip

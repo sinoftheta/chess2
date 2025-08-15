@@ -2,15 +2,17 @@ extends Label
 
 var tween:Tween
 func _ready() -> void:
-	SignalBus.movement_failed.connect(_on_movement_failed)
+	SignalBus.failed_to_move_boss.connect(_on_failed_to_move_boss)
+	SignalBus.cant_afford_purchase.connect(_on_cant_afford_purchase)
 	visible = false
-func _on_movement_failed(reason:Constants.MovementFailureReason) -> void:
-	match reason:
-		Constants.MovementFailureReason.unit_is_boss:
-			text = "Bosses can't be moved"
-		Constants.MovementFailureReason.not_enough_money_for_purchase:
-			text = "Not enough money"
-		_:return
+
+func _on_cant_afford_purchase() -> void:
+	play_message_under_cursor("Not enough money")
+func _on_failed_to_move_boss() -> void:
+	play_message_under_cursor("Bosses can't move")
+
+func play_message_under_cursor(message:String) -> void:
+	text = message
 	position = get_global_mouse_position() - size * 0.5
 	visible = true
 	if tween: tween.kill()

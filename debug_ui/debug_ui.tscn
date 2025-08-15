@@ -9,4 +9,14 @@ script = ExtResource("1_uym8b")
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="Add20Money" type="Button" parent="."]
+layout_mode = 2
+text = "+$20"
+
+[node name="ResetMoney" type="Button" parent="."]
+layout_mode = 2
+text = "$ = 0"
+
 [connection signal="item_selected" from="UnitID" to="." method="_on_unit_id_item_selected"]
+[connection signal="pressed" from="Add20Money" to="." method="_on_add_20_money_pressed"]
+[connection signal="pressed" from="ResetMoney" to="." method="_on_reset_money_pressed"]

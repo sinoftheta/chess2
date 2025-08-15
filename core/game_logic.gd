@@ -1,7 +1,8 @@
 extends Node
 
 var unit_tscn:PackedScene = preload("res://unit/unit.tscn")
-var shop_rng:RandomNumberGenerator
+var shop_rng  :RandomNumberGenerator
+var bonus_rng :RandomNumberGenerator
 var combat_rng:RandomNumberGenerator
 #region Setup
 func _ready() -> void:
@@ -47,6 +48,7 @@ func _on_start_game() -> void:
 	
 	shop_rng   = RandomNumberGenerator.new()
 	combat_rng = RandomNumberGenerator.new()
+	bonus_rng  = RandomNumberGenerator.new()
 	animating = false
 	shop_size = 3
 	round = 1
@@ -189,6 +191,9 @@ func _on_play_button_pressed() -> void:
 	if tween: tween.kill()
 	tween = create_tween().set_parallel()
 	animating = true
+	
+	## we could also do this at the end of the animation
+	clear_shop()
 
 	animation_tick = 0
 	units_evaluated = 0
@@ -290,15 +295,37 @@ func _on_reroll_button_pressed() -> void:
 	if money < reroll_price:
 		SignalBus.cant_afford_reroll.emit()
 		return
-	else:
-		money = money - reroll_price
-		reroll_price = reroll_price + 1
+
+	money = money - reroll_price
+	reroll_price = reroll_price + 1
 	
+	clear_shop()
+	cycle_shop()
+	
+	animating = true
+	animating = false
+
+
+func _on_next_turn_pressed() -> void:
+	if animating:return
+	if phase != Constants.GamePhase.end_of_turn: return
+	phase = Constants.GamePhase.shop
+	
+	cycle_shop()
+
+func _on_continue_run_pressed() -> void:
+	if animating:return
+	if phase != Constants.GamePhase.run_won: return
+	phase = Constants.GamePhase.end_of_turn
+
+func clear_shop() -> void:
 	## remove prev units
 	for unit:Unit in shop_board.get_children():
 		shop_board.remove_child(unit)
 		unit.queue_free()
-	
+
+##TODO: this will be animated?
+func cycle_shop() -> void:
 	## generate new shop contents
 	var shop_coords:Array[Vector2i] = [
 		Vector2i(0,0),Vector2i(1,0),
@@ -360,23 +387,8 @@ func _on_reroll_button_pressed() -> void:
 		shop_board.add_child(unit)
 		unit.id = id
 		unit.logical_position = shop_coords.pop_back()
-		
-		
-	
-	animating = true
-	animating = false
-
-
-func _on_next_turn_pressed() -> void:
-	if animating:return
-	if phase != Constants.GamePhase.end_of_turn: return
-	phase = Constants.GamePhase.shop
-
-func _on_continue_run_pressed() -> void:
-	if animating:return
-	if phase != Constants.GamePhase.run_won: return
-	phase = Constants.GamePhase.end_of_turn
-
+func cycle_bonus() -> void:
+	pass
 #endregion
 
 #region Boss mechanics

@@ -157,7 +157,7 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 	var from_coord:Vector2i          = unit.logical_position
 	var to_board:Board               = boards[board_under_cursor]
 	var to_coord:Vector2i            = coord_under_cursor
-	var same_boards:bool = to_board != from_board
+	var same_boards:bool             = to_board == from_board
 	
 	if animating: return
 	if phase != Constants.GamePhase.shop: return
@@ -169,19 +169,28 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 		
 		
 	if to_board == play_board and from_board == shop_board:
+		if money < Constants.unit_data[unit.id].base_shop_price:
+			SignalBus.cant_afford_purchase.emit()
+			
+	if to_board == sell_board:
+		var sale_price:int = maxi(Constants.unit_data[unit.id].base_shop_price >> 1, 1)
+		SignalBus.unit_sold.emit(sale_price)
+		money += sale_price
 		
-		pass
 	
 	var gp:Vector2 = unit.global_position
 	
-	if same_boards:
-		
+
+	if not same_boards:
 		from_board.remove_child(unit)
 		to_board.add_child(unit)
 	unit.logical_position = to_coord
 	unit.global_position  = gp
 	
 	SignalBus.unit_moved.emit(unit, from_coord, from_board)
+	
+	if to_board == sell_board:
+		unit.queue_free()
 
 var animation_tick :int = 0
 var units_evaluated:int = 0
@@ -205,6 +214,7 @@ func _on_play_button_pressed() -> void:
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
 		if not unit: continue
 		if unit.dead: continue
+		
 		
 		var data:UnitData = Constants.unit_data[unit.id]
 		
@@ -276,6 +286,11 @@ func _on_play_button_pressed() -> void:
 		animation_tick  += 1
 		units_evaluated += 1
 	
+	
+	## update unit data
+	for unit:Unit in play_board.get_children():
+		unit.turns_in_play += 1
+		unit.prev_logical_position = unit.logical_position
 	
 	
 	tween.tween_callback(func () -> void: 

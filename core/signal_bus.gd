@@ -24,6 +24,7 @@ signal game_started()
 
 signal animating_state_updated(animating:bool)
 signal unit_moved(unit:Unit, prev_coord:Vector2i, prev_board:Board)
+signal unit_sold(sale_price:int)
 
 ##input failures
 signal failed_to_move_boss()

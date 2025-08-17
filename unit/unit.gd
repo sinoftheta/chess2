@@ -29,6 +29,8 @@ var logical_position:Vector2i:
 		logical_position = value
 		name = Util.coord_to_name(logical_position)
 		#z_index = value.y
+var turns_in_play:int = 0
+var prev_logical_position:Vector2i
 var init_stat:float = 1.0
 var stat:float = 1.0
 var hp:float = 10.0

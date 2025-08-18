@@ -115,6 +115,7 @@ var shop_size:int = 2
 var round:int:
 	set(value):
 		round = value
+		print("turn ", value)
 		SignalBus.round_changed.emit(value)
 var turn:int:
 	set(value):
@@ -191,6 +192,8 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 	
 	if to_board == sell_board:
 		unit.queue_free()
+		
+	#update_moves_made()
 
 var animation_tick :int = 0
 var units_evaluated:int = 0
@@ -270,15 +273,18 @@ func _on_play_button_pressed() -> void:
 						unit_died = true
 						affected_unit.animate_dead(tween, animation_tick)
 						affected_unit.dead = true
-						
+
 				Constants.UnitType.healer:
 					var prev_hp:float = affected_unit.hp
 					affected_unit.hp = minf(affected_unit.hp + unit.stat, affected_unit.max_hp)
 					
 					affected_unit.animate_healed(tween, animation_tick, unit.logical_position, prev_hp)
+				Constants.UnitType.adder:
+					var prev_stat:float = affected_unit.stat
+					affected_unit.stat += unit.stat
+					affected_unit.animate_added(tween, animation_tick, unit.logical_position, unit.stat)
 				Constants.UnitType.multiplier:
 					var prev_stat:float = affected_unit.stat
-					print("second ", unit.stat)
 					affected_unit.stat *= unit.stat
 					affected_unit.animate_multiplied(tween, animation_tick, unit.logical_position, unit.stat)
 					
@@ -286,15 +292,28 @@ func _on_play_button_pressed() -> void:
 		animation_tick  += 1
 		units_evaluated += 1
 	
-	
+	var boss_remaining  :bool = false
+	var allies_remaining:bool = false
 	## update unit data
 	for unit:Unit in play_board.get_children():
 		unit.turns_in_play += 1
 		unit.prev_logical_position = unit.logical_position
+		if not unit.dead:
+			boss_remaining   = boss_remaining   or Constants.unit_data[unit.id].type == Constants.UnitType.boss
+			allies_remaining = allies_remaining or Constants.unit_data[unit.id].type != Constants.UnitType.boss
 	
 	
 	tween.tween_callback(func () -> void: 
 		animating = false
+		
+		if not allies_remaining:
+			next_phase = Constants.GamePhase.run_lost
+		elif not boss_remaining:
+			round += 1
+			if round == max_rounds:
+				next_phase = Constants.GamePhase.run_won
+		turn += 1
+		
 		phase = next_phase
 		## check for dead units and delete them
 		for unit:Unit in play_board.get_children():

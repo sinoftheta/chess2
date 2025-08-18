@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://je4xne0s26pp"]
+[gd_scene load_steps=11 format=3 uid="uid://je4xne0s26pp"]
 
 [ext_resource type="Script" uid="uid://1goxqi70cjt0" path="res://unit/unit.gd" id="1_hy15m"]
 [ext_resource type="Texture2D" uid="uid://blc853bi1wn0a" path="res://texture/test_attack.png" id="2_3k25b"]
 [ext_resource type="PackedScene" uid="uid://bt6n8ds1s1nrm" path="res://projectile/projectile.tscn" id="3_hs7ws"]
 [ext_resource type="Script" uid="uid://bnjqwxxwvexo4" path="res://unit/targeted_indicator.gd" id="3_japly"]
 [ext_resource type="Texture2D" uid="uid://cnon8p3m7tbvk" path="res://texture/targeted_indicator.png" id="3_s1ym6"]
+[ext_resource type="Texture2D" uid="uid://dw5qaybqq8tqx" path="res://texture/moved_indicator.png" id="5_7oxhv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hy15m"]
 
@@ -57,6 +58,11 @@ unique_name_in_owner = true
 [node name="Sprite" type="Sprite2D" parent="DragMotionTX/CursorTX"]
 unique_name_in_owner = true
 texture = ExtResource("2_3k25b")
+
+[node name="MovedInidicator" type="Sprite2D" parent="DragMotionTX/CursorTX"]
+unique_name_in_owner = true
+position = Vector2(18, 18)
+texture = ExtResource("5_7oxhv")
 
 [node name="Message" type="Label" parent="DragMotionTX/CursorTX"]
 unique_name_in_owner = true

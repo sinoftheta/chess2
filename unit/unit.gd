@@ -28,9 +28,14 @@ var logical_position:Vector2i:
 	set(value):
 		logical_position = value
 		name = Util.coord_to_name(logical_position)
+		%MovedInidicator.visible = logical_position != prev_logical_position
 		#z_index = value.y
+var prev_logical_position:Vector2i:
+	set(value):
+		prev_logical_position = value
+		%MovedInidicator.visible = logical_position != prev_logical_position
+
 var turns_in_play:int = 0
-var prev_logical_position:Vector2i
 var init_stat:float = 1.0
 var stat:float = 1.0
 var hp:float = 10.0
@@ -153,6 +158,18 @@ func animate_multiplied(tween:Tween, animation_tick:int, source_coord:Vector2i, 
 	assert(animation_tick > 0)
 	projectile_animation(tween, animation_tick, source_coord, Constants.UnitType.multiplier)
 	message_animation(tween, animation_tick, "x" + str(factor) + "!")
+
+	## the bounce
+	tween.tween_property(%Sprite, "scale", Vector2.ONE, Constants.ANIMATION_TICK_TIME * 0.75)\
+	.from(Vector2(0.5,2.0))\
+	.set_ease(Tween.EASE_OUT)\
+	.set_trans(Tween.TRANS_ELASTIC)\
+	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+
+func animate_added(tween:Tween, animation_tick:int, source_coord:Vector2i, addend:float) -> void:
+	assert(animation_tick > 0)
+	projectile_animation(tween, animation_tick, source_coord, Constants.UnitType.adder)
+	message_animation(tween, animation_tick, "+" + str(addend) + "!")
 
 	## the bounce
 	tween.tween_property(%Sprite, "scale", Vector2.ONE, Constants.ANIMATION_TICK_TIME * 0.75)\

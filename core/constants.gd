@@ -33,6 +33,7 @@ enum UnitType {
 	attacker,
 	healer,
 	multiplier,
+	adder,
 	boss,
 	bonus
 }
@@ -65,15 +66,17 @@ func _ready() -> void:
 
 
 const type_descriptions:Dictionary[UnitType,String] = {
-	UnitType.attacker:   "Deals its Stat as\ndamage to \ntarget units HP",
+	UnitType.attacker:   "Deals it's Stat as\ndamage to \ntarget units HP",
 	UnitType.healer:     "Heals target units\nHP by its Stat",
 	UnitType.multiplier: "Multiplies target\nunits Stat\nby its own Stat",
+	UnitType.adder:      "Adds it's Stat to\ntarget units Stat",
 	UnitType.boss:       "Defeat this unit to\nwin the round!"
 }
 enum UnitID {
 	test_attacker,
 	test_healer,
 	test_multiplier,
+	test_adder,
 	test_boss,
 }
 var unit_data:Dictionary[UnitID,UnitData] = {
@@ -114,6 +117,19 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		ShopRarity.common, ## shop_rarity
 		1,  ## base_shop_price
 		load("res://texture/test_mult.png"), ## texture
+		#null ## tooltip_texture
+	),
+	UnitID.test_adder: UnitData.new(
+		"test boss",  ## title
+		"deals 3 damage\nto each target", ## description
+		UnitType.adder, ## type
+		[Vector2i(0,1),Vector2i(2,0)],## aoe
+		false, ## is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.common, ## shop_rarity
+		1,  ## base_shop_price
+		load("res://texture/test_add.png"), ## texture
 		#null ## tooltip_texture
 	),
 	UnitID.test_boss: UnitData.new(

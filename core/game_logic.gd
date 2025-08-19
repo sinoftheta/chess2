@@ -24,7 +24,7 @@ func _on_start_game() -> void:
 	
 	var unit:Unit = unit_tscn.instantiate()
 	play_board.add_child(unit)
-	unit.id = Constants.UnitID.test_attacker
+	unit.id = Constants.UnitID.attacker1
 	unit.logical_position = Vector2i(0,0)
 	
 	#var unit2:Unit = unit_tscn.instantiate()
@@ -34,7 +34,7 @@ func _on_start_game() -> void:
 	#
 	var unit3:Unit = unit_tscn.instantiate()
 	play_board.add_child(unit3)
-	unit3.id = Constants.UnitID.test_boss
+	#unit3.id = Constants.UnitID.test_boss
 	unit3.logical_position = Vector2i(2,2)
 	
 	
@@ -258,12 +258,12 @@ func _on_play_button_pressed() -> void:
 					var prev_hp:float = affected_unit.hp
 					
 					## apply damage
-					match unit.id:
-						Constants.UnitID.test_boss:
-							#affected_unit.hp = maxf(affected_unit.hp - unit.stat * 10 / unit.logical_position.distance_to(affected_unit.logical_position), 0.0)
-							affected_unit.hp = maxf(affected_unit.hp - 3.0, 0.0)
-						_:
-							affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
+					#match unit.id:
+						##Constants.UnitID.test_boss:
+							##affected_unit.hp = maxf(affected_unit.hp - unit.stat * 10 / unit.logical_position.distance_to(affected_unit.logical_position), 0.0)
+							#affected_unit.hp = maxf(affected_unit.hp - 3.0, 0.0)
+						#_:
+							#affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
 					
 					## animate
 					affected_unit.animate_attacked(tween, animation_tick, unit.logical_position, prev_hp)
@@ -413,7 +413,7 @@ func cycle_shop() -> void:
 			shop_contents.push_back(selected_pool[0])
 		else:
 			print("no units of that rarity")
-			shop_contents.push_back(Constants.UnitID.test_attacker)
+			#shop_contents.push_back(Constants.UnitID.test_attacker)
 	
 	print(shop_contents)
 	for id:Constants.UnitID in shop_contents:

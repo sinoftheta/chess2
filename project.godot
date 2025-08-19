@@ -17,12 +17,12 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GameLogic="*res://core/game_logic.gd"
+Util="*res://core/util.gd"
+Constants="*res://core/constants.gd"
 MenuLogic="*res://core/menu_logic.gd"
 Options="*res://core/options.gd"
 SignalBus="*res://core/signal_bus.gd"
-Constants="*res://core/constants.gd"
-Util="*res://core/util.gd"
+GameLogic="*res://core/game_logic.gd"
 
 [display]
 

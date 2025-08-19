@@ -71,3 +71,31 @@ static func format_number(num:Variant) -> String:
 	if absf(num) > 1.0E10:
 		text = String.num_scientific(num)
 	return text
+	
+static func string_to_aoe(string:String) -> Array[Vector2i]:
+	var r:Array[Vector2i] = []
+	var s:String = string.dedent()
+	if s.begins_with("\n"):
+		s = s.substr(1)
+	var width:int = s.find("\n")
+	print(width)
+	var i:int = 0
+	
+	var center:Vector2i = Vector2i((width >> 1) + 1, (width >> 1) + 1)
+	
+	for row:int in range(width):
+		for col:int in range(width):
+			match s[i]:
+				"x":
+					center = Vector2i(row,col)
+				"0":
+					r.push_back(Vector2i(row,col))
+				_:pass
+			
+			i += 1
+		i += 1
+	
+	for j:int in range(r.size()):
+		r[j] -= center
+	
+	return r

@@ -49,6 +49,12 @@ var default_common_shop_pool:Array[UnitID]
 var default_uncommon_shop_pool:Array[UnitID]
 var default_rare_shop_pool:Array[UnitID]
 func _ready() -> void:
+	
+	#print(Util.string_to_aoe("
+		#000
+		#0x0
+		#000
+#"))
 	for id:UnitID in UnitID.values():
 		var data:UnitData = unit_data[id]
 		match data.type:
@@ -73,76 +79,238 @@ const type_descriptions:Dictionary[UnitType,String] = {
 	UnitType.boss:       "Defeat this unit to\nwin the round!"
 }
 enum UnitID {
-	test_attacker,
-	test_healer,
-	test_multiplier,
-	test_adder,
-	test_boss,
+	
+	boss1,
+	boss2,
+	boss3,
+	
+	adder1,
+	adder2,
+	adder3,
+	adder4,
+	#adder5,
+	#adder6,
+	#adder7,
+	
+	attacker1,
+	attacker2,
+	attacker3,
+	#attacker4,
+	#attacker5,
+	#attacker6,
+	#attacker7,
+	
+	#healer1,
+	#healer2,
+	#healer3,
+	#healer4,
+	#healer5,
+	#healer6,
+	#healer7,
+	#healer8,
+	
+	mult1,
+	mult2,
+	#mult3,
+	#mult4,
+	#mult5,
+	#mult6,
+	#mult7
 }
 var unit_data:Dictionary[UnitID,UnitData] = {
-	UnitID.test_attacker: UnitData.new(
-		"test attacker",  ## title
-		"", ## description
-		UnitType.attacker, ## type
-		AOE_KERNEL_1x1_VON,## aoe
-		false, ## is_aoe_absolute
-		10, ## base_health
-		1.0, ## base stat
-		ShopRarity.common, ## shop_rarity
-		1,  ## base_shop_price
-		load("res://texture/test_attack.png"), ## texture
-		#null ## tooltip_texture
-	),
-	UnitID.test_healer: UnitData.new(
-		"test healer",  ## title
-		"", ## description
-		UnitType.healer, ## type
-		AOE_KERNEL_1x1_VON,## aoe
-		false, ## is_aoe_absolute
-		10, ## base_health
-		1.0, ## base stat
-		ShopRarity.common, ## shop_rarity
-		1,  ## base_shop_price
-		load("res://texture/test_heal.png"), ## texture
-		#null ## tooltip_texture
-	),
-	UnitID.test_multiplier: UnitData.new(
-		"test multiplier",  ## title
-		"", ## description
-		UnitType.multiplier, ## type
-		AOE_KERNEL_1x1_VON,## aoe
-		false, ## is_aoe_absolute
-		10, ## base_health
-		1.5, ## base stat
-		ShopRarity.common, ## shop_rarity
-		1,  ## base_shop_price
-		load("res://texture/test_mult.png"), ## texture
-		#null ## tooltip_texture
-	),
-	UnitID.test_adder: UnitData.new(
-		"test boss",  ## title
-		"deals 3 damage\nto each target", ## description
-		UnitType.adder, ## type
-		[Vector2i(0,1),Vector2i(2,0)],## aoe
-		false, ## is_aoe_absolute
-		10, ## base_health
-		1.0, ## base stat
-		ShopRarity.common, ## shop_rarity
-		1,  ## base_shop_price
-		load("res://texture/test_add.png"), ## texture
-		#null ## tooltip_texture
-	),
-	UnitID.test_boss: UnitData.new(
-		"test boss",  ## title
-		"deals 3 damage\nto each target", ## description
+
+	UnitID.boss1: UnitData.new(
+		"Cat",  ## title
+		"Deals 3 damage to each target", ## description
 		UnitType.boss, ## type
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
-		5, ## base_health
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.unavailable, ## shop_rarity
+		1,  ## base_shop_price
+		load("res://texture/units/cat.png"), ## texture
+		#null ## tooltip_texture
+	),
+	UnitID.boss2: UnitData.new(
+		"Brute",  ## title
+		"Deals damage equal to the target's distance from the boss", ## description
+		UnitType.boss, ## type
+		AOE_BOSS_FULL_BOARD,## aoe
+		true, ## is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.unavailable, ## shop_rarity
+		1,  ## base_shop_price
+		load("res://texture/units/brute.png"), ## texture
+		#null ## tooltip_texture
+	),
+	UnitID.boss3: UnitData.new(
+		"Dram",  ## title
+		"Deals damage equal to the target's move order", ## description
+		UnitType.boss, ## type
+		AOE_BOSS_FULL_BOARD,## aoe
+		true, ## is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.unavailable, ## shop_rarity
+		1,  ## base_shop_price
+		load("res://texture/units/dram.png"), ## texture
+		#null ## tooltip_texture
+	),
+	
+	
+	
+	
+	
+	
+	UnitID.adder1: UnitData.new(
+		"Plomp",  ## title
+		"", ## description
+		UnitType.adder, ## type
+		Util.string_to_aoe("
+		0..
+		.x0
+		.0."),## aoe
+		true, ## is_aoe_absolute
+		10, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
 		1,  ## base_shop_price
-		load("res://texture/test_boss.png"), ## texture
+		load("res://texture/units/plomp.png"), ## texture
+		#null ## tooltip_texture
+	),
+	UnitID.adder2: UnitData.new(
+		"Wat",  ## title
+		"", ## description
+		UnitType.adder, ## type
+		Util.string_to_aoe("
+		..0
+		0x.
+		.0."),## aoe
+		true, ## is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.common, ## shop_rarity
+		1,  ## base_shop_price
+		load("res://texture/units/wat.png"), ## texture
+		#null ## tooltip_texture
+	),
+	UnitID.adder3: UnitData.new(
+		"Wot",  ## title
+		"", ## description
+		UnitType.adder, ## type
+		Util.string_to_aoe("
+		.0.
+		0x.
+		..0"),## aoe
+		true, ## is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.common, ## shop_rarity
+		1,  ## base_shop_price
+		load("res://texture/units/wot.png"), ## texture
+		#null ## tooltip_texture
+	),
+	UnitID.adder4: UnitData.new(
+		"Mumpo",  ## title
+		"", ## description
+		UnitType.adder, ## type
+		Util.string_to_aoe("
+		.0.
+		.x0
+		0.."),## aoe
+		true, ## is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.common, ## shop_rarity
+		1,  ## base_shop_price
+		load("res://texture/units/mumpo.png"), ## texture
+		#null ## tooltip_texture
+	),
+	
+	
+	UnitID.attacker1: UnitData.new(
+		"Krata",  ## title
+		"", ## description
+		UnitType.attacker, ## type
+		Util.string_to_aoe("
+		..0..
+		..0..
+		00x00
+		..0..
+		..0.."),## aoe
+		false, ## is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.common, ## shop_rarity
+		1,  ## base_shop_price
+		load("res://texture/units/krata.png"), ## texture
+		#null ## tooltip_texture
+	),
+	UnitID.attacker2: UnitData.new(
+		"Frum",  ## title
+		"", ## description
+		UnitType.attacker, ## type
+		Util.string_to_aoe("
+		0...0
+		.0.0.
+		..x..
+		.0.0.
+		0...0"),## aoe
+		false,# is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.common, ## shop_rarity
+		1,  ## base_shop_price
+		load("res://texture/units/frum.png"), ## texture
+		#null ## tooltip_texture
+	),
+	UnitID.attacker3: UnitData.new(
+		"Klat",  ## title
+		"", ## description
+		UnitType.attacker, ## type
+		Util.string_to_aoe("
+		.0.0.
+		0...0
+		..x..
+		0...0
+		.0.0."),## aoe
+		false,# is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.common, ## shop_rarity
+		1,  ## base_shop_price
+		load("res://texture/units/clat.png"), ## texture
+		#null ## tooltip_texture
+	),
+	
+	
+	
+	UnitID.mult1: UnitData.new(
+		"Tomo",  ## title
+		"", ## description
+		UnitType.multiplier, ## type
+		[Vector2i(1,1),Vector2i(-1,-1)],## aoe
+		true, ## is_aoe_absolute
+		10, ## base_health
+		1.5, ## base stat
+		ShopRarity.uncommon, ## shop_rarity
+		5,  ## base_shop_price
+		load("res://texture/units/tomo.png"), ## texture
+		#null ## tooltip_texture
+	),
+	UnitID.mult2: UnitData.new(
+		"Spine",  ## title
+		"", ## description
+		UnitType.multiplier, ## type
+		[Vector2i(1,-1),Vector2i(-1,1)],## aoe
+		false, ## is_aoe_absolute
+		10, ## base_health
+		1.5, ## base stat
+		ShopRarity.uncommon, ## shop_rarity
+		5,  ## base_shop_price
+		load("res://texture/units/spine.png"), ## texture
 		#null ## tooltip_texture
 	),
 }
@@ -167,6 +335,38 @@ const AOE_KERNEL_1x1_MOORE:Array[Vector2i] = [
 	Vector2i(-1, 0),                  Vector2i( 1, 0),
 	Vector2i(-1, 1), Vector2i( 0, 1), Vector2i( 1, 1),
 ]
+
+const AOE_KERNEL_TRI1:Array[Vector2i] = [
+	Vector2i(-1,-1), 
+									Vector2i(1,0),
+					Vector2i(0,1)
+]
+const AOE_KERNEL_TRI2:Array[Vector2i] = [
+									Vector2i(1,-1),
+	Vector2i(-1,0),
+					Vector2i(0,1)
+]
+const AOE_KERNEL_TRI3:Array[Vector2i] = [
+					Vector2i(0,-1),
+									Vector2i(1,0),
+	Vector2i(-1,1)
+]
+const AOE_KERNEL_TRI4:Array[Vector2i] = [
+					Vector2i(0,-1),
+	Vector2i(-1,0),
+									Vector2i(1,1)
+]
+
+const test_aoe_string:String =\
+"
+. 0 .
+. x .
+. 0 0"
+
+const AOE_KERNEL_BIGTRI1:Array[Vector2i] = []
+const AOE_KERNEL_BIGTRI2:Array[Vector2i] = []
+const AOE_KERNEL_BIGTRI3:Array[Vector2i] = []
+const AOE_KERNEL_BIGTRI4:Array[Vector2i] = []
 
 const AOE_BOSS_FULL_BOARD:Array[Vector2i] = [
 	Vector2i(0,0),Vector2i(1,0),Vector2i(2,0),Vector2i(3,0),Vector2i(4,0),Vector2i(5,0),

@@ -17,6 +17,11 @@ text = "+$20"
 layout_mode = 2
 text = "$ = 0"
 
+[node name="WeakenBoss" type="Button" parent="."]
+layout_mode = 2
+text = "Boss hp = 1"
+
 [connection signal="item_selected" from="UnitID" to="." method="_on_unit_id_item_selected"]
 [connection signal="pressed" from="Add20Money" to="." method="_on_add_20_money_pressed"]
 [connection signal="pressed" from="ResetMoney" to="." method="_on_reset_money_pressed"]
+[connection signal="pressed" from="WeakenBoss" to="." method="_on_weaken_boss_pressed"]

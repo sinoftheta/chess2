@@ -27,9 +27,7 @@ signal unit_moved(unit:Unit, prev_coord:Vector2i, prev_board:Board)
 signal unit_sold(sale_price:int)
 
 ##input failures
-signal failed_to_move_boss()
-signal cant_afford_purchase()
-signal cant_afford_reroll()
+signal message_under_cursor(message:String)
 #endregion
 
 #region tooltip

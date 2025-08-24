@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://di2uhbqpxo505"]
+
+[ext_resource type="FontFile" uid="uid://cn6yn605nbob3" path="res://fonts/tallboi.ttf" id="1_f23pv"]
+
+[resource]
+default_font = ExtResource("1_f23pv")

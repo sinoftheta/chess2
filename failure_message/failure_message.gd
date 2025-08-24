@@ -2,19 +2,14 @@ extends Label
 
 var tween:Tween
 func _ready() -> void:
-	SignalBus.failed_to_move_boss.connect(_on_failed_to_move_boss)
-	SignalBus.cant_afford_purchase.connect(_on_cant_afford_purchase)
+	SignalBus.message_under_cursor.connect(_on_message_under_cursor)
 	visible = false
 
-func _on_cant_afford_purchase() -> void:
-	play_message_under_cursor("Not enough money")
-func _on_failed_to_move_boss() -> void:
-	play_message_under_cursor("Bosses can't move")
-
-func play_message_under_cursor(message:String) -> void:
+func _on_message_under_cursor(message:String) -> void:
+	visible = true
 	text = message
 	position = get_global_mouse_position() - size * 0.5
-	visible = true
+	
 	if tween: tween.kill()
 	tween = create_tween().set_parallel()
 	tween.tween_property(self, "position:y", -20, 0.5)\

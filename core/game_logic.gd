@@ -17,35 +17,7 @@ func _ready() -> void:
 
 func _on_start_game() -> void:
 	
-	for board:Board in boards.values():
-		for unit:Unit in board.get_children():
-			board.remove_child(unit)
-			unit.queue_free()
-	
-	var unit:Unit = unit_tscn.instantiate()
-	play_board.add_child(unit)
-	unit.id = Constants.UnitID.attacker1
-	unit.logical_position = Vector2i(0,0)
-	
-	#var unit2:Unit = unit_tscn.instantiate()
-	#play_board.add_child(unit2)
-	#unit2.id = Constants.UnitID.test_healer
-	#unit2.logical_position = Vector2i(1,1)
-	#
-	var unit3:Unit = unit_tscn.instantiate()
-	play_board.add_child(unit3)
-	#unit3.id = Constants.UnitID.test_boss
-	unit3.logical_position = Vector2i(2,2)
-	
-	
-	common_shop_pool = Constants.default_common_shop_pool.duplicate()
-	uncommon_shop_pool = Constants.default_uncommon_shop_pool.duplicate()
-	rare_shop_pool = Constants.default_rare_shop_pool.duplicate()
-	available_boss_pool = Constants.default_boss_pool.duplicate()
-	defeated_boss_pool = []
-	available_bonus_pool = Constants.default_bonus_pool.duplicate()
-	unlocked_bonus_pool = []
-	
+	## game state
 	shop_rng   = RandomNumberGenerator.new()
 	combat_rng = RandomNumberGenerator.new()
 	bonus_rng  = RandomNumberGenerator.new()
@@ -56,6 +28,52 @@ func _on_start_game() -> void:
 	money = 10
 	reroll_price = 5
 	phase = Constants.GamePhase.shop
+	
+	## unit pools
+	common_shop_pool = Constants.default_common_shop_pool.duplicate()
+	uncommon_shop_pool = Constants.default_uncommon_shop_pool.duplicate()
+	rare_shop_pool = Constants.default_rare_shop_pool.duplicate()
+	available_boss_pool = Constants.default_boss_pool.duplicate()
+	defeated_boss_pool = []
+	available_bonus_pool = Constants.default_bonus_pool.duplicate()
+	unlocked_bonus_pool = []
+	
+	## board setup
+	for board:Board in boards.values():
+		for unit:Unit in board.get_children():
+			board.remove_child(unit)
+			unit.queue_free()
+	
+	var start_unit:Unit = unit_tscn.instantiate()
+	play_board.add_child(start_unit)
+	start_unit.id = shop_rng.randi_range(Constants.UnitID.attacker1, Constants.UnitID.attacker3)
+	var start_unit_positions:Array[Vector2i] = Util.string_to_aoe("
+	x.....
+	.0000.
+	.0..0.
+	.0..0.
+	.0000.
+	......
+	")
+	print(start_unit_positions)
+	start_unit.logical_position = start_unit_positions[shop_rng.randi_range(0, start_unit_positions.size() - 1)]
+	
+	var start_boss:Unit = unit_tscn.instantiate()
+	play_board.add_child(start_boss)
+	start_boss.id = Constants.UnitID.boss1
+
+	var start_boss_positions:Array[Vector2i] = Util.string_to_aoe("
+	x.....
+	......
+	..00..
+	..0...
+	......
+	......
+	")
+	start_boss.logical_position = start_boss_positions[shop_rng.randi_range(0, start_boss_positions.size() - 1)]
+	
+	update_unit_order_badges()
+	
 	SignalBus.game_started.emit()
 #endregion
 
@@ -115,7 +133,7 @@ var shop_size:int = 2
 var round:int:
 	set(value):
 		round = value
-		print("turn ", value)
+		#print("turn ", value)
 		SignalBus.round_changed.emit(value)
 var turn:int:
 	set(value):
@@ -152,6 +170,17 @@ func unit_at(coord:Vector2i, board_id:Constants.BoardID) -> Unit:
 #endregion
 
 #region Game logic
+func update_unit_order_badges() -> void:
+	var i:int = 0
+	for eval_coord:Vector2i in Util.board_evaluation_order(6):
+		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
+		if not unit: continue
+		i += 1
+		unit.play_order = i
+	
+	for unit:Unit in shop_board.get_children():
+		unit.play_order = 0
+
 func _on_move_unit_to_cursor(unit:Unit) -> void:
 	
 	var from_board:Board             = unit.get_parent()
@@ -162,18 +191,53 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 	
 	if animating: return
 	if phase != Constants.GamePhase.shop: return
-	if not board_has_coord(to_board.id, to_coord): return ## trying to move oob
-	if unit_at(to_coord,to_board.id): return ## already something there
+	
+	var unit_at_destination:Unit = unit_at(to_coord,to_board.id)
+	if unit_at_destination == unit:
+		## unit has not moved
+		return
+
 	if Constants.unit_data[unit.id].type == Constants.UnitType.boss: 
-		SignalBus.failed_to_move_boss.emit()
-		return ## we can't move bosses
+		SignalBus.message_under_cursor.emit("Bosses can't move")
+		return
+	if unit_at_destination:
+		SignalBus.message_under_cursor.emit("Space occupied")
+		return
+	if not board_has_coord(to_board.id, to_coord): 
+		SignalBus.message_under_cursor.emit("Out of bounds")
+		return
 		
 		
 	if to_board == play_board and from_board == shop_board:
 		if money < Constants.unit_data[unit.id].base_shop_price:
-			SignalBus.cant_afford_purchase.emit()
+			SignalBus.message_under_cursor.emit("Not enough money")
+			return
+		money -= Constants.unit_data[unit.id].base_shop_price
+		
+	if to_board == shop_board and from_board == play_board:
+		SignalBus.message_under_cursor.emit("Can't go back in shop")
+		return
 			
 	if to_board == sell_board:
+		
+		## check if selling last remaining ally
+		var allies_remaining:int = 0
+		## update unit data
+		for unit_in_play:Unit in play_board.get_children():
+			
+			print(Constants.UnitType.keys()[Constants.unit_data[unit_in_play.id].type])
+			
+			match Constants.unit_data[unit_in_play.id].type:
+				Constants.UnitType.boss:
+					pass
+				_: allies_remaining += 1
+		
+		print(allies_remaining)
+		
+		if allies_remaining == 1:
+			SignalBus.message_under_cursor.emit("That's your last Fighter!")
+			return
+		
 		var sale_price:int = maxi(Constants.unit_data[unit.id].base_shop_price >> 1, 1)
 		SignalBus.unit_sold.emit(sale_price)
 		money += sale_price
@@ -192,6 +256,8 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 	
 	if to_board == sell_board:
 		unit.queue_free()
+	
+	update_unit_order_badges()
 		
 	#update_moves_made()
 
@@ -258,12 +324,16 @@ func _on_play_button_pressed() -> void:
 					var prev_hp:float = affected_unit.hp
 					
 					## apply damage
-					#match unit.id:
-						##Constants.UnitID.test_boss:
-							##affected_unit.hp = maxf(affected_unit.hp - unit.stat * 10 / unit.logical_position.distance_to(affected_unit.logical_position), 0.0)
-							#affected_unit.hp = maxf(affected_unit.hp - 3.0, 0.0)
-						#_:
-							#affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
+					match unit.id:
+						Constants.UnitID.boss1:
+							#affected_unit.hp = maxf(affected_unit.hp - unit.stat * 10 / unit.logical_position.distance_to(affected_unit.logical_position), 0.0)
+							affected_unit.hp = maxf(affected_unit.hp - 3.0, 0.0)
+						Constants.UnitID.boss2:
+							affected_unit.hp = maxf(affected_unit.hp - unit.logical_position.distance_to(affected_unit.logical_position), 0.0)
+						Constants.UnitID.boss3:
+							pass
+						_:
+							affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
 					
 					## animate
 					affected_unit.animate_attacked(tween, animation_tick, unit.logical_position, prev_hp)
@@ -292,23 +362,32 @@ func _on_play_button_pressed() -> void:
 		animation_tick  += 1
 		units_evaluated += 1
 	
-	var boss_remaining  :bool = false
-	var allies_remaining:bool = false
+	var boss_remaining  :int = 0
+	var allies_remaining:int = 0
 	## update unit data
 	for unit:Unit in play_board.get_children():
 		unit.turns_in_play += 1
 		unit.prev_logical_position = unit.logical_position
 		if not unit.dead:
-			boss_remaining   = boss_remaining   or Constants.unit_data[unit.id].type == Constants.UnitType.boss
-			allies_remaining = allies_remaining or Constants.unit_data[unit.id].type != Constants.UnitType.boss
+			match Constants.unit_data[unit.id].type:
+				Constants.UnitType.boss:
+					boss_remaining += 1
+				_:
+					allies_remaining += 1
 	
+	## spawn & animate the new boss
+	if boss_remaining == 0:
+		animation_tick += 1
+		
+		var boss_unit:Unit = unit_tscn.instantiate()
+		#boss_unit.animate_spawn()
 	
 	tween.tween_callback(func () -> void: 
 		animating = false
 		
-		if not allies_remaining:
+		if allies_remaining == 0:
 			next_phase = Constants.GamePhase.run_lost
-		elif not boss_remaining:
+		elif boss_remaining == 0:
 			round += 1
 			if round == max_rounds:
 				next_phase = Constants.GamePhase.run_won
@@ -373,13 +452,13 @@ func cycle_shop() -> void:
 		var rarity:int = shop_rng.randi_range(0,99)
 		var selected_pool:Array[Constants.UnitID]
 		if   rarity < 92:
-			print("gen shop common")
+			#print("gen shop common")
 			selected_pool = common_shop_pool
 		elif rarity < 97:
-			print("gen shop uncommon")
+			#print("gen shop uncommon")
 			selected_pool = uncommon_shop_pool
 		else:
-			print("gen shop rare") 
+			#print("gen shop rare") 
 			selected_pool = rare_shop_pool
 		
 		## filter the pool
@@ -409,18 +488,21 @@ func cycle_shop() -> void:
 			var rand_index:int = shop_rng.randi_range(0, filtered_pool.size() - 1)
 			shop_contents.push_back(filtered_pool[rand_index])
 		elif selected_pool.size() > 0:
-			print("shop filtering failed")
+			#print("shop filtering failed")
 			shop_contents.push_back(selected_pool[0])
 		else:
-			print("no units of that rarity")
+			pass
+			#print("no units of that rarity")
 			#shop_contents.push_back(Constants.UnitID.test_attacker)
 	
-	print(shop_contents)
+	#print(shop_contents)
 	for id:Constants.UnitID in shop_contents:
 		var unit:Unit = unit_tscn.instantiate()
 		shop_board.add_child(unit)
 		unit.id = id
 		unit.logical_position = shop_coords.pop_back()
+	
+	update_unit_order_badges()
 func cycle_bonus() -> void:
 	pass
 #endregion
@@ -457,6 +539,8 @@ func debug_spawn() -> void:
 	boards[board_under_cursor].add_child(unit)
 	unit.id = debug_unit_id
 	unit.logical_position = coord_under_cursor
+	update_unit_order_badges()
+
 func debug_delete() -> void:
 	if not Input.is_action_just_pressed("debug_delete_unit"):
 		return

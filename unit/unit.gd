@@ -5,11 +5,15 @@ extends Node2D
 
 func _ready() -> void:
 	SignalBus.animating_state_updated.connect(_on_animation_state_updated)
-
 #region target preview
 var target:bool:
 	set(value):
 		%TargetedIndicator.visible = value
+var play_order:int:
+	set(value):
+		play_order = value
+		%OrderValue.visible = value > 0
+		%OrderValue.text = str(value)
 #endregion
 
 func _on_animation_state_updated(animating:bool) -> void:
@@ -28,12 +32,12 @@ var logical_position:Vector2i:
 	set(value):
 		logical_position = value
 		name = Util.coord_to_name(logical_position)
-		%MovedInidicator.visible = logical_position != prev_logical_position
+		#%MovedInidicator.visible = logical_position != prev_logical_position
 		#z_index = value.y
 var prev_logical_position:Vector2i:
 	set(value):
 		prev_logical_position = value
-		%MovedInidicator.visible = logical_position != prev_logical_position
+		#%MovedInidicator.visible = logical_position != prev_logical_position
 
 var turns_in_play:int = 0
 var init_stat:float = 1.0
@@ -108,15 +112,15 @@ func animate_type_effect(tween:Tween, animation_tick:int, units_evaluated:int) -
 	
 	## move order indicator
 	
-	tween.tween_callback(func () -> void: 
-		%OrdinalValue.text = Util.int_ordinal_suffix(units_evaluated + 1)
-		%OrdinalCard.visible = true
-	).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
-	
-	tween.tween_callback(func () -> void: 
-		%OrdinalCard.visible = false
-	).set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
-	
+	#tween.tween_callback(func () -> void: 
+		#%OrderValue.text = Util.int_ordinal_suffix(units_evaluated + 1)
+		#%OrderBadge.visible = true
+	#).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	#
+	#tween.tween_callback(func () -> void: 
+		#%OrderBadge.visible = false
+	#).set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
+	#
 	## show the units AoE
 	tween.tween_callback(func () -> void: SignalBus.animate_unit_aoe.emit(self))\
 	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
@@ -212,6 +216,15 @@ func animate_dead(tween:Tween, animation_tick:int) -> void:
 		hovered = false
 		dragging = false
 		SignalBus.tooltip_try_close.emit(self)
+		%DeadParticles.emitting = true
+	).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+
+func animate_spawn(tween:Tween, animation_tick:int) -> void:
+	%Sprite.visible = false
+	%Interaction.visible = false
+	tween.tween_callback(func() -> void:
+		%Sprite.visible = true
+		%Interaction.visible = true
 		%DeadParticles.emitting = true
 	).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 

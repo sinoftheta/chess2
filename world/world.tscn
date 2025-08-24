@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://xrdgyjq45cts"]
+[gd_scene load_steps=14 format=3 uid="uid://xrdgyjq45cts"]
 
 [ext_resource type="Script" uid="uid://ctoejpy8mm8pn" path="res://world/world.gd" id="1_4717r"]
 [ext_resource type="PackedScene" uid="uid://bulfda27piwfl" path="res://tile_preview/tile_preview.tscn" id="2_fn3g3"]
 [ext_resource type="Texture2D" uid="uid://h2bathwhiea4" path="res://texture/layout.png" id="2_h5o24"]
 [ext_resource type="PackedScene" uid="uid://bl7yw07rwfxj0" path="res://tooltip/tooltip.tscn" id="2_mmdvd"]
 [ext_resource type="PackedScene" uid="uid://yrsr5vndikk" path="res://board/board.tscn" id="3_mmdvd"]
+[ext_resource type="Texture2D" uid="uid://bp08t2bkyfhnr" path="res://texture/arrow_board_test.png" id="4_fyhu2"]
 [ext_resource type="PackedScene" uid="uid://ctucg0vqcgkw7" path="res://turn_end_ui/turn_end_ui.tscn" id="5_sc4t8"]
 [ext_resource type="PackedScene" uid="uid://bo7cpc44ywfib" path="res://run_end_ui/run_end_ui.tscn" id="6_ai45w"]
 [ext_resource type="PackedScene" uid="uid://d0kairdgbeo8o" path="res://aoe_preview/aoe_preview.tscn" id="6_fn3g3"]
@@ -30,6 +31,17 @@ offset_bottom = -179.0
 [node name="Temp" type="Sprite2D" parent="."]
 position = Vector2(32, 0)
 texture = ExtResource("2_h5o24")
+
+[node name="TempBoardTest" type="Sprite2D" parent="."]
+position = Vector2(0, -4)
+texture = ExtResource("4_fyhu2")
+
+[node name="OrderLabel1" type="Label" parent="."]
+offset_left = 51.0
+offset_top = -137.0
+offset_right = 94.0
+offset_bottom = -114.0
+text = "order"
 
 [node name="TilePreview" parent="." instance=ExtResource("2_fn3g3")]
 

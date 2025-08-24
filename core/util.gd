@@ -78,7 +78,6 @@ static func string_to_aoe(string:String) -> Array[Vector2i]:
 	if s.begins_with("\n"):
 		s = s.substr(1)
 	var width:int = s.find("\n")
-	print(width)
 	var i:int = 0
 	
 	var center:Vector2i = Vector2i((width >> 1) + 1, (width >> 1) + 1)

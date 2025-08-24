@@ -49,12 +49,6 @@ var default_common_shop_pool:Array[UnitID]
 var default_uncommon_shop_pool:Array[UnitID]
 var default_rare_shop_pool:Array[UnitID]
 func _ready() -> void:
-	
-	#print(Util.string_to_aoe("
-		#000
-		#0x0
-		#000
-#"))
 	for id:UnitID in UnitID.values():
 		var data:UnitData = unit_data[id]
 		match data.type:
@@ -72,11 +66,11 @@ func _ready() -> void:
 
 
 const type_descriptions:Dictionary[UnitType,String] = {
-	UnitType.attacker:   "Deals it's Stat as\ndamage to \ntarget units HP",
-	UnitType.healer:     "Heals target units\nHP by its Stat",
-	UnitType.multiplier: "Multiplies target\nunits Stat\nby its own Stat",
-	UnitType.adder:      "Adds it's Stat to\ntarget units Stat",
-	UnitType.boss:       "Defeat this unit to\nwin the round!"
+	UnitType.attacker:   "Deal own STAT as damage to targets HP",
+	UnitType.healer:     "Heal targets HP by own STAT",
+	UnitType.multiplier: "Multiply targets Stat by own STAT",
+	UnitType.adder:      "Adds own STAT to targets STAT",
+	UnitType.boss:       "Defeat this BOSS to advance!"
 }
 enum UnitID {
 	
@@ -121,7 +115,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 
 	UnitID.boss1: UnitData.new(
 		"Cat",  ## title
-		"Deals 3 damage to each target", ## description
+		"will deal 3 damage to each target", ## description
 		UnitType.boss, ## type
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
@@ -134,7 +128,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	),
 	UnitID.boss2: UnitData.new(
 		"Brute",  ## title
-		"Deals damage equal to the target's distance from the boss", ## description
+		"will deal damage equal to the target's distance from Brute", ## description
 		UnitType.boss, ## type
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
@@ -147,7 +141,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	),
 	UnitID.boss3: UnitData.new(
 		"Dram",  ## title
-		"Deals damage equal to the target's move order", ## description
+		"will deal damage equal to the target's move order", ## description
 		UnitType.boss, ## type
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
@@ -172,7 +166,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		0..
 		.x0
 		.0."),## aoe
-		true, ## is_aoe_absolute
+		false, ## is_aoe_absolute
 		10, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
@@ -188,7 +182,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		..0
 		0x.
 		.0."),## aoe
-		true, ## is_aoe_absolute
+		false, ## is_aoe_absolute
 		10, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
@@ -204,7 +198,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		.0.
 		0x.
 		..0"),## aoe
-		true, ## is_aoe_absolute
+		false, ## is_aoe_absolute
 		10, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
@@ -220,7 +214,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		.0.
 		.x0
 		0.."),## aoe
-		true, ## is_aoe_absolute
+		false, ## is_aoe_absolute
 		10, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
@@ -292,7 +286,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		"", ## description
 		UnitType.multiplier, ## type
 		[Vector2i(1,1),Vector2i(-1,-1)],## aoe
-		true, ## is_aoe_absolute
+		false, ## is_aoe_absolute
 		10, ## base_health
 		1.5, ## base stat
 		ShopRarity.uncommon, ## shop_rarity

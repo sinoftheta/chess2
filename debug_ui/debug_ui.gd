@@ -23,3 +23,8 @@ func _on_add_20_money_pressed() -> void:
 
 func _on_reset_money_pressed() -> void:
 	GameLogic.money = 0
+
+func _on_weaken_boss_pressed() -> void:
+	for unit:Unit in GameLogic.play_board.get_children():
+		if Constants.unit_data[unit.id].type == Constants.UnitType.boss:
+			unit.hp = 1

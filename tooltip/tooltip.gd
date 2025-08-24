@@ -38,10 +38,10 @@ func tooltip_opened() -> void:
 	%Rarity.visible = not is_boss
 	%Rarity.text = Constants.ShopRarity.keys()[data.shop_rarity]
 	
-	%Type.text = "Type: " + Constants.UnitType.keys()[data.type]
+	%Type.text = Constants.UnitType.keys()[data.type]
 	%TypeDescription.text = Constants.type_descriptions[data.type]
-	%Stat.text = "Stat: " + str(unit.stat)
-	%HP.text = "HP: " + str(unit.hp) + "/" + str(unit.max_hp)
+	%Stat.text = str(unit.stat)
+	%HP.text = str(unit.hp) + "/" + str(unit.max_hp)
 	
 	%SellValue.visible = not is_boss
 	%SellValue.text = "Sell Value: $" + str(maxf(floorf(data.base_shop_price * 0.5),1.0))

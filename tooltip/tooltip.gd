@@ -31,16 +31,37 @@ func _on_tooltip_try_close(closed_unit:Unit) -> void:
 	tooltip_closed()
 
 func tooltip_opened() -> void:
+	var data:UnitData = Constants.unit_data[unit.id]
+	var is_boss:bool = data.type == Constants.UnitType.boss
+	match (unit.get_parent() as Board).id:
+		Constants.BoardID.play:
+			%BuySellTooltip.visible = not is_boss
+			%BuySellText.text = "SELL"
+			%BuySellValue.text = "$" + str(unit.sell_price)
+			
+			%OrderText       .visible = true
+			%OrderContentBack.visible = true
+			%OrderValueBack  .visible = true
+			%Order           .visible = true
+		Constants.BoardID.shop:
+			%BuySellTooltip.visible = true
+			%BuySellText.text = "BUY"
+			%BuySellValue.text = "$" + str(unit.buy_price)
+			
+			%OrderText       .visible = false
+			%OrderContentBack.visible = false
+			%OrderValueBack  .visible = false
+			%Order           .visible = false
+		Constants.BoardID.bonus:
+			%BuySellTooltip.visible = false
+		_:return
 	%StatsTooltip.visible   = true
-	%AbilityTooltip.visible = true
+	%AbilityTooltip.visible = data.description.length() > 0
 	%AoePreview.queue_redraw()
 	
 	
 	
-	var data:UnitData = Constants.unit_data[unit.id]
-	var is_boss:bool = data.type == Constants.UnitType.boss
-	
-	
+	%AbilityText.text = data.description
 	%UnitPreview.texture = data.texture
 	%Title.text = data.title
 	#%Rarity.visible = not is_boss
@@ -50,14 +71,10 @@ func tooltip_opened() -> void:
 	%TypeDescription.text = Constants.type_descriptions[data.type]
 	%Stat.text = str(unit.stat)
 	%HP.text = str(unit.hp) + "/" + str(unit.max_hp)
-	
-	#%SellValue.visible = not is_boss
-	#%SellValue.text = "Sell Value: $" + str(maxf(floorf(data.base_shop_price * 0.5),1.0))
-	
-	#%SpecialAbility.visible = data.description.length() > 0
-	#%SpecialAbility.text    = data.description
+
 	
 func tooltip_closed() -> void:
+	%BuySellTooltip.visible = false
 	%StatsTooltip.visible   = false
 	%AbilityTooltip.visible = false
 	%AoePreview.queue_redraw()

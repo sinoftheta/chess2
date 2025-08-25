@@ -45,6 +45,13 @@ var stat:float = 1.0
 var hp:float = 10.0
 var max_hp:float = 10.0
 var dead:bool = false
+
+var buy_price:int:
+	get():
+		return Constants.unit_data[id].base_shop_price
+var sell_price:int:
+	get():
+		return maxi(Constants.unit_data[id].base_shop_price >> 1, 1)
 #endregion
 
 #region Cursor interactions

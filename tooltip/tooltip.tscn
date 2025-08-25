@@ -42,6 +42,7 @@ patch_margin_bottom = 2
 axis_stretch_vertical = 1
 
 [node name="StatTextBacks" type="Control" parent="VBoxContainer/StatsTooltip"]
+modulate = Color(0.9025, 0.947625, 0.95, 1)
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -101,7 +102,8 @@ patch_margin_top = 2
 patch_margin_right = 2
 patch_margin_bottom = 2
 
-[node name="Panel4" type="NinePatchRect" parent="VBoxContainer/StatsTooltip/TextContentBacks"]
+[node name="OrderContentBack" type="NinePatchRect" parent="VBoxContainer/StatsTooltip/TextContentBacks"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 2.0
 offset_top = 87.0
@@ -169,7 +171,8 @@ patch_margin_top = 2
 patch_margin_right = 2
 patch_margin_bottom = 2
 
-[node name="Panel6" type="NinePatchRect" parent="VBoxContainer/StatsTooltip/StatValueBacks"]
+[node name="OrderValueBack" type="NinePatchRect" parent="VBoxContainer/StatsTooltip/StatValueBacks"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 2.0
 offset_top = 87.0
@@ -288,7 +291,8 @@ offset_bottom = 86.0
 theme = ExtResource("3_cl01w")
 text = "TARGETING"
 
-[node name="Label4" type="Label" parent="VBoxContainer/StatsTooltip/StaticText"]
+[node name="OrderText" type="Label" parent="VBoxContainer/StatsTooltip/StaticText"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 4.0
 offset_top = 89.0
@@ -416,7 +420,7 @@ unique_name_in_owner = true
 modulate = Color(0, 0, 0, 1)
 position = Vector2(44, 44)
 
-[node name="ShopTooltip" type="NinePatchRect" parent="VBoxContainer"]
+[node name="BuySellTooltip" type="NinePatchRect" parent="VBoxContainer"]
 unique_name_in_owner = true
 self_modulate = Color(0.309804, 1, 0.560784, 1)
 custom_minimum_size = Vector2(0, 24)
@@ -428,8 +432,9 @@ patch_margin_right = 2
 patch_margin_bottom = 2
 axis_stretch_vertical = 1
 
-[node name="Panel9" type="NinePatchRect" parent="VBoxContainer/ShopTooltip"]
+[node name="Panel9" type="NinePatchRect" parent="VBoxContainer/BuySellTooltip"]
 modulate = Color(0.7488, 0.96, 0.82976, 1)
+layout_mode = 0
 offset_left = 2.0
 offset_top = 5.0
 offset_right = 163.0
@@ -440,8 +445,9 @@ patch_margin_top = 2
 patch_margin_right = 2
 patch_margin_bottom = 2
 
-[node name="Panel8" type="NinePatchRect" parent="VBoxContainer/ShopTooltip"]
+[node name="Panel8" type="NinePatchRect" parent="VBoxContainer/BuySellTooltip"]
 modulate = Color(0, 0.87, 0.522, 1)
+layout_mode = 0
 offset_left = 2.0
 offset_top = 5.0
 offset_right = 28.0
@@ -452,7 +458,9 @@ patch_margin_top = 2
 patch_margin_right = 2
 patch_margin_bottom = 2
 
-[node name="Label5" type="Label" parent="VBoxContainer/ShopTooltip"]
+[node name="BuySellText" type="Label" parent="VBoxContainer/BuySellTooltip"]
+unique_name_in_owner = true
+layout_mode = 0
 offset_left = 4.0
 offset_top = 7.0
 offset_right = 38.0
@@ -460,8 +468,9 @@ offset_bottom = 23.0
 theme = ExtResource("3_cl01w")
 text = "BUY"
 
-[node name="BuySellValue" type="Label" parent="VBoxContainer/ShopTooltip"]
+[node name="BuySellValue" type="Label" parent="VBoxContainer/BuySellTooltip"]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = 2.0
 offset_top = 7.0
 offset_right = 162.0
@@ -484,7 +493,8 @@ patch_margin_bottom = 2
 axis_stretch_vertical = 1
 
 [node name="Panel9" type="NinePatchRect" parent="VBoxContainer/AbilityTooltip"]
-modulate = Color(0.92832, 0.96, 0.7488, 1)
+modulate = Color(0.96, 0.88256, 0.7488, 1)
+layout_mode = 0
 offset_left = 2.0
 offset_top = 17.0
 offset_right = 163.0
@@ -497,6 +507,7 @@ patch_margin_bottom = 2
 
 [node name="Panel8" type="NinePatchRect" parent="VBoxContainer/AbilityTooltip"]
 modulate = Color(0.87, 0.493, 0, 1)
+layout_mode = 0
 offset_left = 2.0
 offset_top = 5.0
 offset_right = 50.0
@@ -508,6 +519,7 @@ patch_margin_right = 2
 patch_margin_bottom = 2
 
 [node name="Label5" type="Label" parent="VBoxContainer/AbilityTooltip"]
+layout_mode = 0
 offset_left = 4.0
 offset_top = 7.0
 offset_right = 38.0
@@ -515,7 +527,9 @@ offset_bottom = 23.0
 theme = ExtResource("3_cl01w")
 text = "ABILITY"
 
-[node name="BuySellValue" type="Label" parent="VBoxContainer/AbilityTooltip"]
+[node name="AbilityText" type="Label" parent="VBoxContainer/AbilityTooltip"]
+unique_name_in_owner = true
+layout_mode = 0
 offset_left = 3.0
 offset_top = 23.0
 offset_right = 162.0

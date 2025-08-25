@@ -112,10 +112,9 @@ enum UnitID {
 	#mult7
 }
 var unit_data:Dictionary[UnitID,UnitData] = {
-
 	UnitID.boss1: UnitData.new(
 		"Cat",  ## title
-		"will deal 3 damage to each target", ## description
+		"Deals 3 damage to each target", ## description
 		UnitType.boss, ## type
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
@@ -128,7 +127,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	),
 	UnitID.boss2: UnitData.new(
 		"Brute",  ## title
-		"will deal damage equal to the target's distance from Brute", ## description
+		"Deals damage equal to the target's distance from Brute", ## description
 		UnitType.boss, ## type
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
@@ -141,7 +140,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	),
 	UnitID.boss3: UnitData.new(
 		"Dram",  ## title
-		"will deal damage equal to the target's move order", ## description
+		"Deals damage equal to the target's move order", ## description
 		UnitType.boss, ## type
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
@@ -170,7 +169,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		10, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
-		1,  ## base_shop_price
+		3,  ## base_shop_price
 		load("res://texture/units/plomp.png"), ## texture
 		#null ## tooltip_texture
 	),
@@ -186,7 +185,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		10, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
-		1,  ## base_shop_price
+		3,  ## base_shop_price
 		load("res://texture/units/wat.png"), ## texture
 		#null ## tooltip_texture
 	),
@@ -202,7 +201,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		10, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
-		1,  ## base_shop_price
+		3,  ## base_shop_price
 		load("res://texture/units/wot.png"), ## texture
 		#null ## tooltip_texture
 	),
@@ -218,7 +217,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		10, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
-		1,  ## base_shop_price
+		3,  ## base_shop_price
 		load("res://texture/units/mumpo.png"), ## texture
 		#null ## tooltip_texture
 	),
@@ -238,7 +237,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		10, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
-		1,  ## base_shop_price
+		3,  ## base_shop_price
 		load("res://texture/units/krata.png"), ## texture
 		#null ## tooltip_texture
 	),
@@ -256,7 +255,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		10, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
-		1,  ## base_shop_price
+		3,  ## base_shop_price
 		load("res://texture/units/frum.png"), ## texture
 		#null ## tooltip_texture
 	),
@@ -274,7 +273,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		10, ## base_health
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
-		1,  ## base_shop_price
+		3,  ## base_shop_price
 		load("res://texture/units/clat.png"), ## texture
 		#null ## tooltip_texture
 	),

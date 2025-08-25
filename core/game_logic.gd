@@ -208,10 +208,10 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 		
 		
 	if to_board == play_board and from_board == shop_board:
-		if money < Constants.unit_data[unit.id].base_shop_price:
+		if money < unit.buy_price:
 			SignalBus.message_under_cursor.emit("Not enough money")
 			return
-		money -= Constants.unit_data[unit.id].base_shop_price
+		money -= unit.buy_price
 		
 	if to_board == shop_board and from_board == play_board:
 		SignalBus.message_under_cursor.emit("Can't go back in shop")
@@ -237,9 +237,8 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 			SignalBus.message_under_cursor.emit("That's your last Fighter!")
 			return
 		
-		var sale_price:int = maxi(Constants.unit_data[unit.id].base_shop_price >> 1, 1)
-		SignalBus.unit_sold.emit(sale_price)
-		money += sale_price
+		SignalBus.unit_sold.emit(unit.sell_price)
+		money += unit.sell_price
 		
 	
 	var gp:Vector2 = unit.global_position

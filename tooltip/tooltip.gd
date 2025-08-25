@@ -31,7 +31,12 @@ func _on_tooltip_try_close(closed_unit:Unit) -> void:
 	tooltip_closed()
 
 func tooltip_opened() -> void:
-	%StatsTooltip.visible = true
+	%StatsTooltip.visible   = true
+	%AbilityTooltip.visible = true
+	%AoePreview.queue_redraw()
+	
+	
+	
 	var data:UnitData = Constants.unit_data[unit.id]
 	var is_boss:bool = data.type == Constants.UnitType.boss
 	
@@ -51,8 +56,6 @@ func tooltip_opened() -> void:
 	
 	#%SpecialAbility.visible = data.description.length() > 0
 	#%SpecialAbility.text    = data.description
-	
-	%AoePreview.queue_redraw()
 	
 func tooltip_closed() -> void:
 	%StatsTooltip.visible   = false

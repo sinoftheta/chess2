@@ -9,7 +9,10 @@ func _draw() -> void:
 	## Generate the aoe preview
 	#data.aoe_is_absolute
 	if is_boss:
-		pass
+		draw_rect(
+			Rect2(Vector2.ZERO, get_rect().size),
+			color
+		)
 	else:
 		
 		var bounds:Rect2i = Rect2i()

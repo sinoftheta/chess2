@@ -13,18 +13,6 @@ layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_15sfh")
 
-[node name="AbilityTooltip" type="NinePatchRect" parent="."]
-unique_name_in_owner = true
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="ShopTooltip" type="NinePatchRect" parent="."]
-unique_name_in_owner = true
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
 [node name="Panel" type="NinePatchRect" parent="."]
 visible = false
 layout_mode = 0
@@ -421,8 +409,118 @@ texture = ExtResource("3_2g45g")
 centered = false
 script = ExtResource("7_ls6tg")
 tooltip = NodePath("../../..")
+color = Color(0.819608, 0.447059, 0.729412, 0.498039)
 
 [node name="UnitPreview" type="Sprite2D" parent="VBoxContainer/StatsTooltip/AoePreview"]
 unique_name_in_owner = true
 modulate = Color(0, 0, 0, 1)
 position = Vector2(44, 44)
+
+[node name="ShopTooltip" type="NinePatchRect" parent="VBoxContainer"]
+unique_name_in_owner = true
+self_modulate = Color(0.309804, 1, 0.560784, 1)
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+texture = ExtResource("2_tc3y5")
+patch_margin_left = 2
+patch_margin_top = 2
+patch_margin_right = 2
+patch_margin_bottom = 2
+axis_stretch_vertical = 1
+
+[node name="Panel9" type="NinePatchRect" parent="VBoxContainer/ShopTooltip"]
+modulate = Color(0.7488, 0.96, 0.82976, 1)
+offset_left = 2.0
+offset_top = 5.0
+offset_right = 163.0
+offset_bottom = 22.0
+texture = ExtResource("2_w1q1r")
+patch_margin_left = 2
+patch_margin_top = 2
+patch_margin_right = 2
+patch_margin_bottom = 2
+
+[node name="Panel8" type="NinePatchRect" parent="VBoxContainer/ShopTooltip"]
+modulate = Color(0, 0.87, 0.522, 1)
+offset_left = 2.0
+offset_top = 5.0
+offset_right = 28.0
+offset_bottom = 22.0
+texture = ExtResource("2_w1q1r")
+patch_margin_left = 2
+patch_margin_top = 2
+patch_margin_right = 2
+patch_margin_bottom = 2
+
+[node name="Label5" type="Label" parent="VBoxContainer/ShopTooltip"]
+offset_left = 4.0
+offset_top = 7.0
+offset_right = 38.0
+offset_bottom = 23.0
+theme = ExtResource("3_cl01w")
+text = "BUY"
+
+[node name="BuySellValue" type="Label" parent="VBoxContainer/ShopTooltip"]
+unique_name_in_owner = true
+offset_left = 2.0
+offset_top = 7.0
+offset_right = 162.0
+offset_bottom = 23.0
+theme = ExtResource("4_tc3y5")
+text = "$10"
+horizontal_alignment = 2
+autowrap_mode = 2
+
+[node name="AbilityTooltip" type="NinePatchRect" parent="VBoxContainer"]
+unique_name_in_owner = true
+self_modulate = Color(1, 0.839, 0.31, 1)
+custom_minimum_size = Vector2(0, 106)
+layout_mode = 2
+texture = ExtResource("2_tc3y5")
+patch_margin_left = 2
+patch_margin_top = 2
+patch_margin_right = 2
+patch_margin_bottom = 2
+axis_stretch_vertical = 1
+
+[node name="Panel9" type="NinePatchRect" parent="VBoxContainer/AbilityTooltip"]
+modulate = Color(0.92832, 0.96, 0.7488, 1)
+offset_left = 2.0
+offset_top = 17.0
+offset_right = 163.0
+offset_bottom = 104.0
+texture = ExtResource("2_w1q1r")
+patch_margin_left = 2
+patch_margin_top = 2
+patch_margin_right = 2
+patch_margin_bottom = 2
+
+[node name="Panel8" type="NinePatchRect" parent="VBoxContainer/AbilityTooltip"]
+modulate = Color(0.87, 0.493, 0, 1)
+offset_left = 2.0
+offset_top = 5.0
+offset_right = 50.0
+offset_bottom = 22.0
+texture = ExtResource("2_w1q1r")
+patch_margin_left = 2
+patch_margin_top = 2
+patch_margin_right = 2
+patch_margin_bottom = 2
+
+[node name="Label5" type="Label" parent="VBoxContainer/AbilityTooltip"]
+offset_left = 4.0
+offset_top = 7.0
+offset_right = 38.0
+offset_bottom = 23.0
+theme = ExtResource("3_cl01w")
+text = "ABILITY"
+
+[node name="BuySellValue" type="Label" parent="VBoxContainer/AbilityTooltip"]
+offset_left = 3.0
+offset_top = 23.0
+offset_right = 162.0
+offset_bottom = 103.0
+theme = ExtResource("4_tc3y5")
+text = "this guy does some STUFF for real someone should look into this guy, hes absolutely GOONING"
+horizontal_alignment = 1
+autowrap_mode = 2

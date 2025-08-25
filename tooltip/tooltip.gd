@@ -6,7 +6,7 @@ func _ready() -> void:
 	SignalBus.tooltip_try_open.connect(_on_tooltip_try_open)
 	SignalBus.tooltip_try_close.connect(_on_tooltip_try_close)
 	SignalBus.unit_moved.connect(_on_unit_moved)
-	visible = false
+	tooltip_closed()
 
 func _on_unit_moved(moved_unit:Unit, prev_coord:Vector2i, prev_board:Board) -> void:
 	if moved_unit == unit:
@@ -30,24 +30,58 @@ func _on_tooltip_try_close(closed_unit:Unit) -> void:
 	tooltip_closed()
 
 func tooltip_opened() -> void:
-	visible = true
+	%StatsTooltip.visible = true
 	var data:UnitData = Constants.unit_data[unit.id]
 	var is_boss:bool = data.type == Constants.UnitType.boss
+	
+	
+	%UnitPreview.texture = data.texture
 	%Title.text = data.title
-	
-	%Rarity.visible = not is_boss
-	%Rarity.text = Constants.ShopRarity.keys()[data.shop_rarity]
-	
+	#%Rarity.visible = not is_boss
+	#%Rarity.text = Constants.ShopRarity.keys()[data.shop_rarity]
+	%Order.text = Util.int_ordinal_suffix(unit.play_order)
 	%Type.text = Constants.UnitType.keys()[data.type]
 	%TypeDescription.text = Constants.type_descriptions[data.type]
 	%Stat.text = str(unit.stat)
 	%HP.text = str(unit.hp) + "/" + str(unit.max_hp)
 	
-	%SellValue.visible = not is_boss
-	%SellValue.text = "Sell Value: $" + str(maxf(floorf(data.base_shop_price * 0.5),1.0))
+	#%SellValue.visible = not is_boss
+	#%SellValue.text = "Sell Value: $" + str(maxf(floorf(data.base_shop_price * 0.5),1.0))
 	
-	%SpecialAbility.visible = data.description.length() > 0
-	%SpecialAbility.text    = data.description
+	#%SpecialAbility.visible = data.description.length() > 0
+	#%SpecialAbility.text    = data.description
+	
+	queue_redraw()
 	
 func tooltip_closed() -> void:
-	visible = false
+	%StatsTooltip.visible   = false
+	%AbilityTooltip.visible = false
+	queue_redraw()
+	
+
+func _draw() -> void:
+	if not %StatsTooltip.visible:
+		return
+	
+	var data:UnitData = Constants.unit_data[unit.id]
+	var is_boss:bool = data.type == Constants.UnitType.boss
+	## Generate the aoe preview
+	#data.aoe_is_absolute
+	if is_boss:
+		pass
+	else:
+		
+		var bounds:Rect2i = Rect2i()
+		for coord:Vector2i in data.aoe:
+			bounds = bounds.expand(coord)
+		bounds.size.x >> 1
+		bounds.size.y >> 1
+		
+		var sidelength:float =\
+		(%AoeBack as Sprite2D).get_rect().size.x\
+		/\
+		float(maxi(bounds.size.y, bounds.size.x))
+		
+		(%UnitPreview as Sprite2D).scale = Vector2.ONE * sidelength / Constants.GRID_SIZE
+		
+		print(sidelength)

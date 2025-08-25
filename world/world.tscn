@@ -23,9 +23,9 @@ bg_color = Color(0.349496, 0.695422, 0.26875, 1)
 script = ExtResource("1_4717r")
 
 [node name="Tooltip" parent="." instance=ExtResource("2_mmdvd")]
-offset_left = -347.0
+offset_left = -314.0
 offset_top = -179.0
-offset_right = -347.0
+offset_right = -314.0
 offset_bottom = -179.0
 
 [node name="Temp" type="Sprite2D" parent="."]

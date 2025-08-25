@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bl7yw07rwfxj0"]
+[gd_scene load_steps=8 format=3 uid="uid://bl7yw07rwfxj0"]
 
 [ext_resource type="Script" uid="uid://begok5sfyachc" path="res://tooltip/tooltip.gd" id="1_15sfh"]
 [ext_resource type="Texture2D" uid="uid://c3knq4o8drcjy" path="res://texture/tooltip_panel_striped.png" id="2_tc3y5"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://8vme2p4qa57u" path="res://texture/tooltip_panel_aoe.png" id="3_2g45g"]
 [ext_resource type="Theme" uid="uid://di2uhbqpxo505" path="res://tooltip/tooltip_static_text.tres" id="3_cl01w"]
 [ext_resource type="Theme" uid="uid://cenonl8rd5gsc" path="res://tooltip/tooltip_dynamic_text.tres" id="4_tc3y5"]
+[ext_resource type="Script" uid="uid://cnuopmaf3bv35" path="res://tooltip/aoe_preview.gd" id="7_ls6tg"]
 
 [node name="Tooltip" type="Control"]
 layout_mode = 3
@@ -37,8 +38,7 @@ patch_margin_bottom = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
-offset_left = 32.0
-offset_right = 197.0
+offset_right = 165.0
 offset_bottom = 218.0
 
 [node name="StatsTooltip" type="NinePatchRect" parent="VBoxContainer"]
@@ -59,6 +59,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Panel" type="NinePatchRect" parent="VBoxContainer/StatsTooltip/StatTextBacks"]
+layout_mode = 0
 offset_left = 2.0
 offset_top = 175.0
 offset_right = 163.0
@@ -413,13 +414,15 @@ text = "Attacker"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="AoeBack" type="Sprite2D" parent="VBoxContainer/StatsTooltip"]
+[node name="AoePreview" type="Sprite2D" parent="VBoxContainer/StatsTooltip" node_paths=PackedStringArray("tooltip")]
 unique_name_in_owner = true
 position = Vector2(71, 74)
 texture = ExtResource("3_2g45g")
 centered = false
+script = ExtResource("7_ls6tg")
+tooltip = NodePath("../../..")
 
-[node name="UnitPreview" type="Sprite2D" parent="VBoxContainer/StatsTooltip/AoeBack"]
+[node name="UnitPreview" type="Sprite2D" parent="VBoxContainer/StatsTooltip/AoePreview"]
 unique_name_in_owner = true
 modulate = Color(0, 0, 0, 1)
 position = Vector2(44, 44)

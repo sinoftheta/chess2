@@ -1,3 +1,4 @@
+class_name Tooltip
 extends Control
 
 var unit:Unit
@@ -51,37 +52,10 @@ func tooltip_opened() -> void:
 	#%SpecialAbility.visible = data.description.length() > 0
 	#%SpecialAbility.text    = data.description
 	
-	queue_redraw()
+	%AoePreview.queue_redraw()
 	
 func tooltip_closed() -> void:
 	%StatsTooltip.visible   = false
 	%AbilityTooltip.visible = false
-	queue_redraw()
+	%AoePreview.queue_redraw()
 	
-
-func _draw() -> void:
-	if not %StatsTooltip.visible:
-		return
-	
-	var data:UnitData = Constants.unit_data[unit.id]
-	var is_boss:bool = data.type == Constants.UnitType.boss
-	## Generate the aoe preview
-	#data.aoe_is_absolute
-	if is_boss:
-		pass
-	else:
-		
-		var bounds:Rect2i = Rect2i()
-		for coord:Vector2i in data.aoe:
-			bounds = bounds.expand(coord)
-		bounds.size.x >> 1
-		bounds.size.y >> 1
-		
-		var sidelength:float =\
-		(%AoeBack as Sprite2D).get_rect().size.x\
-		/\
-		float(maxi(bounds.size.y, bounds.size.x))
-		
-		(%UnitPreview as Sprite2D).scale = Vector2.ONE * sidelength / Constants.GRID_SIZE
-		
-		print(sidelength)

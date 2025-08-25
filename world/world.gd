@@ -24,3 +24,9 @@ func _on_play_pressed() -> void:
 	SignalBus.play_button_pressed.emit()
 func _on_reroll_pressed() -> void:
 	SignalBus.reroll_button_pressed.emit()
+	
+#func _draw() -> void:
+	#draw_rect(
+		#Rect2(Vector2(100,100), Vector2.ONE * 100),
+		#Color.RED
+	#)

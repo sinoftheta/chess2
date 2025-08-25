@@ -55,7 +55,6 @@ func _on_start_game() -> void:
 	.0000.
 	......
 	")
-	print(start_unit_positions)
 	start_unit.logical_position = start_unit_positions[shop_rng.randi_range(0, start_unit_positions.size() - 1)]
 	
 	var start_boss:Unit = unit_tscn.instantiate()
@@ -225,14 +224,14 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 		## update unit data
 		for unit_in_play:Unit in play_board.get_children():
 			
-			print(Constants.UnitType.keys()[Constants.unit_data[unit_in_play.id].type])
+			#print(Constants.UnitType.keys()[Constants.unit_data[unit_in_play.id].type])
 			
 			match Constants.unit_data[unit_in_play.id].type:
 				Constants.UnitType.boss:
 					pass
 				_: allies_remaining += 1
 		
-		print(allies_remaining)
+		#print(allies_remaining)
 		
 		if allies_remaining == 1:
 			SignalBus.message_under_cursor.emit("That's your last Fighter!")
@@ -495,7 +494,6 @@ func cycle_shop() -> void:
 			#print("no units of that rarity")
 			#shop_contents.push_back(Constants.UnitID.test_attacker)
 	
-	#print(shop_contents)
 	for id:Constants.UnitID in shop_contents:
 		var unit:Unit = unit_tscn.instantiate()
 		shop_board.add_child(unit)

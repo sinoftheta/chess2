@@ -35,7 +35,8 @@ enum UnitType {
 	multiplier,
 	adder,
 	boss,
-	bonus
+	bonus,
+	item
 }
 enum ShopRarity {
 	unavailable,
@@ -70,7 +71,8 @@ const type_descriptions:Dictionary[UnitType,String] = {
 	UnitType.healer:     "Heal targets HP by own STAT",
 	UnitType.multiplier: "Multiply targets Stat by own STAT",
 	UnitType.adder:      "Adds own STAT to targets STAT",
-	UnitType.boss:       "Defeat this BOSS to advance!"
+	UnitType.boss:       "Defeat this BOSS to advance!",
+	UnitType.item:       "Drag onto a target to use"
 }
 enum UnitID {
 	
@@ -110,6 +112,8 @@ enum UnitID {
 	#mult5,
 	#mult6,
 	#mult7
+	
+	#test_item
 }
 var unit_data:Dictionary[UnitID,UnitData] = {
 	UnitID.boss1: UnitData.new(
@@ -306,6 +310,18 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		load("res://texture/units/spine.png"), ## texture
 		#null ## tooltip_texture
 	),
+	#UnitID.test_item: UnitData.new(
+		#"Stat Milk",
+		#"permanently adds 0.5 to the consumers STAT",
+		#UnitType.item,
+		#[Vector2.ZERO],
+		#false,
+		#0.0,
+		#0.0,
+		#ShopRarity.common,
+		#3,
+		#load("res://texture/units/stat_milk.png")
+	#)
 }
 
 

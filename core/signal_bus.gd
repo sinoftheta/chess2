@@ -14,10 +14,12 @@ signal move_unit_to_cursor(unit:Unit)
 
 #region game outputs
 
+
 signal money_changed(new:int,prev:int)
 signal turn_changed(turns:int)
 signal round_changed(round:int)
 signal reroll_price_changed(price:int)
+
 
 signal phase_changed(phase:Constants.GamePhase)
 signal game_started()
@@ -28,6 +30,7 @@ signal unit_sold(sale_price:int)
 
 ##input failures
 signal message_under_cursor(message:String)
+signal cant_afford_reroll()
 #endregion
 
 #region tooltip

@@ -33,6 +33,3 @@ func _draw() -> void:
 				Rect2(get_rect().size * 0.5 + (Vector2(coord) - Vector2.ONE * 0.5) * sidelength, Vector2.ONE * sidelength),
 				color
 			)
-			
-
-		print(sidelength)

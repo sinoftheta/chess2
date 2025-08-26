@@ -14,9 +14,11 @@ func _ready() -> void:
 	visible = false
 
 #region standby behavior
-func _on_tooltip_try_open(_focused_unit:Unit) -> void:
+func _on_tooltip_try_open(opening_unit:Unit) -> void:
 	if GameLogic.animating: return
-	focused_unit = _focused_unit
+	#if (opening_unit.get_parent() as Board).id != Constants.BoardID.play:
+	#	return
+	focused_unit = opening_unit
 	visible = true
 	
 func _on_tooltip_closed() -> void:

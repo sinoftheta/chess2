@@ -83,10 +83,6 @@ offset_right = 229.0
 offset_bottom = -155.0
 text = "$000"
 
-[node name="Test" type="Node2D" parent="."]
-unique_name_in_owner = true
-position = Vector2(32, 0)
-
 [node name="Play" type="Button" parent="."]
 offset_left = -96.0
 offset_top = 147.0
@@ -114,23 +110,18 @@ offset_bottom = -34.0
 text = "Shop"
 
 [node name="SellLabel" type="Label" parent="."]
-offset_left = 183.0
+offset_left = 160.0
 offset_top = 103.0
-offset_right = 223.0
+offset_right = 200.0
 offset_bottom = 126.0
 text = "Sell"
 
-[node name="BonusLabel" type="Label" parent="."]
-offset_left = 160.0
-offset_top = 23.0
-offset_right = 209.0
-offset_bottom = 46.0
-text = "Bonus"
-
 [node name="TurnEndUI" parent="." instance=ExtResource("5_sc4t8")]
+visible = false
 position = Vector2(56, 16)
 
 [node name="RunEndUI" parent="." instance=ExtResource("6_ai45w")]
+visible = false
 position = Vector2(56, 16)
 
 [node name="BonusBoard" parent="." instance=ExtResource("3_mmdvd")]
@@ -140,16 +131,15 @@ offset_right = 160.0
 offset_bottom = -20.0
 color = Color(0, 0, 0, 0)
 id = 3
-logical_size = Vector2i(2, 1)
 
 [node name="SellBoard" parent="." instance=ExtResource("3_mmdvd")]
-offset_left = 183.0
-offset_top = 60.0
-offset_right = 183.0
-offset_bottom = 60.0
+offset_left = 160.0
+offset_top = 12.0
+offset_right = 160.0
+offset_bottom = 12.0
 color = Color(0, 0, 0, 0)
 id = 2
-logical_size = Vector2i(1, 1)
+logical_size = Vector2i(2, 2)
 
 [node name="PlayBoard" parent="." instance=ExtResource("3_mmdvd")]
 offset_left = -144.0

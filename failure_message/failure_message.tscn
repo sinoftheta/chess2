@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://k0l1vk00ly8h"]
+[gd_scene load_steps=3 format=3 uid="uid://k0l1vk00ly8h"]
 
 [ext_resource type="Script" uid="uid://cwjviq2pl1x0c" path="res://failure_message/failure_message.gd" id="1_eqrlj"]
+[ext_resource type="FontFile" uid="uid://cn6yn605nbob3" path="res://fonts/tallboi.ttf" id="1_ktmpc"]
 
 [node name="MovementFailureMessage" type="Label"]
 offset_left = -194.0
@@ -9,7 +10,8 @@ offset_right = 194.0
 offset_bottom = 11.0
 pivot_offset = Vector2(194, 12)
 theme_override_colors/font_color = Color(1, 0.437735, 0.339795, 1)
-theme_override_constants/outline_size = 8
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("1_ktmpc")
 text = "test message"
 horizontal_alignment = 1
 script = ExtResource("1_eqrlj")

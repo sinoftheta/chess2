@@ -220,6 +220,7 @@ func animate_dead(tween:Tween, animation_tick:int) -> void:
 	tween.tween_callback(func() -> void:
 		%Sprite.visible = false
 		%Interaction.visible = false
+		%OrderValue.visible = false
 		hovered = false
 		dragging = false
 		SignalBus.tooltip_try_close.emit(self)

@@ -25,7 +25,7 @@ func _on_start_game() -> void:
 	shop_size = 3
 	round = 1
 	turn = 1
-	money = 10
+	money = 5
 	reroll_price = 5
 	phase = Constants.GamePhase.shop
 	
@@ -60,7 +60,6 @@ func _on_start_game() -> void:
 	var start_boss:Unit = unit_tscn.instantiate()
 	play_board.add_child(start_boss)
 	start_boss.id = Constants.UnitID.boss1
-
 	var start_boss_positions:Array[Vector2i] = Util.string_to_aoe("
 	x.....
 	......
@@ -72,6 +71,7 @@ func _on_start_game() -> void:
 	start_boss.logical_position = start_boss_positions[shop_rng.randi_range(0, start_boss_positions.size() - 1)]
 	
 	update_unit_order_badges()
+	cycle_shop()
 	
 	SignalBus.game_started.emit()
 #endregion
@@ -127,7 +127,7 @@ var animating:bool:
 #region Run State
 
 
-var max_rounds:int = 5
+var max_rounds:int = 3
 var shop_size:int = 2
 var round:int:
 	set(value):
@@ -151,6 +151,11 @@ var phase:Constants.GamePhase:
 	set(value):
 		phase = value
 		SignalBus.phase_changed.emit(value)
+#endregion
+#region turn statistics
+var turn_boss_damage:Array[float] = []
+var turn_dead_allies:Array[int]
+var turn_dead_bosses:Array[int]
 #endregion
 
 #region Unit pools
@@ -195,9 +200,11 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 	if unit_at_destination == unit:
 		## unit has not moved
 		return
-
 	if Constants.unit_data[unit.id].type == Constants.UnitType.boss: 
 		SignalBus.message_under_cursor.emit("Bosses can't move")
+		return
+	if to_board == shop_board and from_board == play_board:
+		SignalBus.message_under_cursor.emit("Can't go back in shop")
 		return
 	if unit_at_destination:
 		SignalBus.message_under_cursor.emit("Space occupied")
@@ -205,17 +212,16 @@ func _on_move_unit_to_cursor(unit:Unit) -> void:
 	if not board_has_coord(to_board.id, to_coord): 
 		SignalBus.message_under_cursor.emit("Out of bounds")
 		return
-		
-		
+	if to_board == sell_board and from_board == shop_board:
+		SignalBus.message_under_cursor.emit("Thats not yours!")
+		return
 	if to_board == play_board and from_board == shop_board:
 		if money < unit.buy_price:
 			SignalBus.message_under_cursor.emit("Not enough money")
 			return
 		money -= unit.buy_price
 		
-	if to_board == shop_board and from_board == play_board:
-		SignalBus.message_under_cursor.emit("Can't go back in shop")
-		return
+
 			
 	if to_board == sell_board:
 		
@@ -276,6 +282,15 @@ func _on_play_button_pressed() -> void:
 	
 	var next_phase:Constants.GamePhase = Constants.GamePhase.end_of_turn
 	
+	## keep track of boss units
+	var boss_units:Array[Unit] = []
+	var boss_init_hp:Array[float] = []
+	for unit:Unit in play_board.get_children():
+		if Constants.unit_data[unit.id].type == Constants.UnitType.boss:
+			boss_units.push_back(unit)
+			boss_init_hp.push_back(unit.hp)
+	print("boss units: ", boss_units)
+	
 	## evaluate each tile on the board
 	for eval_coord:Vector2i in Util.board_evaluation_order(6):
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
@@ -324,10 +339,13 @@ func _on_play_button_pressed() -> void:
 					## apply damage
 					match unit.id:
 						Constants.UnitID.boss1:
-							#affected_unit.hp = maxf(affected_unit.hp - unit.stat * 10 / unit.logical_position.distance_to(affected_unit.logical_position), 0.0)
 							affected_unit.hp = maxf(affected_unit.hp - 3.0, 0.0)
 						Constants.UnitID.boss2:
-							affected_unit.hp = maxf(affected_unit.hp - unit.logical_position.distance_to(affected_unit.logical_position), 0.0)
+							var d:float = (
+								absf(unit.logical_position.x - affected_unit.logical_position.x) + 
+								absf(unit.logical_position.y - affected_unit.logical_position.y)
+							)
+							affected_unit.hp = maxf(affected_unit.hp - d, 0.0)
 						Constants.UnitID.boss3:
 							pass
 						_:
@@ -360,6 +378,12 @@ func _on_play_button_pressed() -> void:
 		animation_tick  += 1
 		units_evaluated += 1
 	
+	## count total boss damage dealt
+	turn_boss_damage.push_back(0.0)
+	for i:int in range(boss_units.size()):
+		turn_boss_damage[turn_boss_damage.size() - 1] += boss_init_hp[i] - boss_units[i].hp
+	
+	
 	var boss_remaining  :int = 0
 	var allies_remaining:int = 0
 	## update unit data
@@ -373,30 +397,28 @@ func _on_play_button_pressed() -> void:
 				_:
 					allies_remaining += 1
 	
-	## spawn & animate the new boss
-	if boss_remaining == 0:
-		animation_tick += 1
-		
-		var boss_unit:Unit = unit_tscn.instantiate()
-		#boss_unit.animate_spawn()
-	
 	tween.tween_callback(func () -> void: 
 		animating = false
 		
-		if allies_remaining == 0:
-			next_phase = Constants.GamePhase.run_lost
-		elif boss_remaining == 0:
-			round += 1
-			if round == max_rounds:
-				next_phase = Constants.GamePhase.run_won
-		turn += 1
-		
-		phase = next_phase
 		## check for dead units and delete them
 		for unit:Unit in play_board.get_children():
 			if unit.dead:
 				play_board.remove_child(unit)
 				unit.queue_free()
+		
+		if allies_remaining == 0:
+			next_phase = Constants.GamePhase.run_lost
+		elif boss_remaining == 0:
+			spawn_bosses()
+			update_unit_order_badges()
+			
+			if round == max_rounds:
+				next_phase = Constants.GamePhase.run_won
+			round += 1
+		turn += 1
+		
+		phase = next_phase
+
 	).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 	
 func _on_reroll_button_pressed() -> void:
@@ -405,9 +427,10 @@ func _on_reroll_button_pressed() -> void:
 	
 	if money < reroll_price:
 		SignalBus.cant_afford_reroll.emit()
+		SignalBus.message_under_cursor.emit("Not enough money!")
 		return
 
-	money = money - reroll_price
+	money -= reroll_price
 	reroll_price = reroll_price + 1
 	
 	clear_shop()
@@ -422,6 +445,7 @@ func _on_next_turn_pressed() -> void:
 	if phase != Constants.GamePhase.end_of_turn: return
 	phase = Constants.GamePhase.shop
 	
+	money += int(turn_boss_damage[turn_boss_damage.size() - 1])
 	cycle_shop()
 
 func _on_continue_run_pressed() -> void:
@@ -434,6 +458,38 @@ func clear_shop() -> void:
 	for unit:Unit in shop_board.get_children():
 		shop_board.remove_child(unit)
 		unit.queue_free()
+		
+func spawn_bosses() -> Array[Unit]:
+	var spawned_bosses:Array[Unit] = []
+	print("spawning boss for round ", round)
+		
+	## determine where to spawn the dang guy
+	var available_spawn_coords:Array[Vector2i]
+	## will spawn over dead units
+	for coord:Vector2i in Util.board_evaluation_order(6):
+		var unit:Unit = unit_at(coord, Constants.BoardID.play)
+		if unit and not unit.dead: continue
+		available_spawn_coords.push_back(coord)
+	
+	var spawn_coord:Vector2i
+	var spawn_coord_chosen:bool = false
+	for coord:Vector2i in available_spawn_coords:
+		if combat_rng.randf_range(0,99) < 33:
+			spawn_coord = coord
+			spawn_coord_chosen = true
+			break
+	
+	## statistically unlikely edge case lol
+	if not spawn_coord_chosen:
+		spawn_coord = available_spawn_coords[combat_rng.randf_range(0,available_spawn_coords.size() - 1)]
+	
+	var boss_unit:Unit = unit_tscn.instantiate()
+	play_board.add_child(boss_unit)
+	boss_unit.id = available_boss_pool[round % available_boss_pool.size()]
+	boss_unit.logical_position = spawn_coord
+	update_unit_order_badges()
+	
+	return [boss_unit]
 
 ##TODO: this will be animated?
 func cycle_shop() -> void:

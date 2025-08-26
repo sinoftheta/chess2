@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://je4xne0s26pp"]
+[gd_scene load_steps=12 format=3 uid="uid://je4xne0s26pp"]
 
 [ext_resource type="Script" uid="uid://1goxqi70cjt0" path="res://unit/unit.gd" id="1_hy15m"]
 [ext_resource type="Texture2D" uid="uid://blc853bi1wn0a" path="res://texture/test_attack.png" id="2_3k25b"]
 [ext_resource type="PackedScene" uid="uid://bt6n8ds1s1nrm" path="res://projectile/projectile.tscn" id="3_hs7ws"]
 [ext_resource type="Script" uid="uid://bnjqwxxwvexo4" path="res://unit/targeted_indicator.gd" id="3_japly"]
 [ext_resource type="Texture2D" uid="uid://cnon8p3m7tbvk" path="res://texture/targeted_indicator.png" id="3_s1ym6"]
+[ext_resource type="FontFile" uid="uid://cn6yn605nbob3" path="res://fonts/tallboi.ttf" id="4_2ul3e"]
 [ext_resource type="Texture2D" uid="uid://dw5qaybqq8tqx" path="res://texture/moved_indicator.png" id="5_7oxhv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hy15m"]
@@ -97,28 +98,32 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -21.0
-offset_top = 5.0
-offset_right = -2.0
+offset_left = -23.0
+offset_top = 12.0
+offset_right = -4.0
 offset_bottom = 28.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/outline_size = 5
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_2ul3e")
 text = "99"
 
 [node name="TargetedIndicator" type="Sprite2D" parent="DragMotionTX/CursorTX"]
 unique_name_in_owner = true
 visible = false
-position = Vector2(0, 20)
+z_index = 1
+position = Vector2(0, -14)
 texture = ExtResource("3_s1ym6")
+flip_v = true
 script = ExtResource("3_japly")
 
 [node name="Label" type="Label" parent="DragMotionTX/CursorTX/TargetedIndicator"]
-offset_left = -23.0
-offset_top = -7.0
-offset_right = 24.0
-offset_bottom = 16.0
-theme_override_constants/outline_size = 5
+offset_left = -18.0
+offset_top = -17.0
+offset_right = 29.0
+offset_bottom = 6.0
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_2ul3e")
 text = "target"
 
 [node name="Camera2D" type="Camera2D" parent="."]

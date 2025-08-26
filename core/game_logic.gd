@@ -337,16 +337,21 @@ func _on_play_button_pressed() -> void:
 					var prev_hp:float = affected_unit.hp
 					
 					## apply damage
+					## boss effects check
 					match unit.id:
 						Constants.UnitID.boss1:
+							## flat 3 damage
 							affected_unit.hp = maxf(affected_unit.hp - 3.0, 0.0)
 						Constants.UnitID.boss2:
+							## damage based on distance
 							var d:float = (
 								absf(unit.logical_position.x - affected_unit.logical_position.x) + 
 								absf(unit.logical_position.y - affected_unit.logical_position.y)
 							)
 							affected_unit.hp = maxf(affected_unit.hp - d, 0.0)
 						Constants.UnitID.boss3:
+							affected_unit.hp = maxf(affected_unit.hp - affected_unit.play_order, 0.0)
+							#damage based on move order
 							pass
 						_:
 							affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)

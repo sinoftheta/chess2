@@ -70,7 +70,7 @@ func tooltip_opened() -> void:
 	%Type.text = Constants.UnitType.keys()[data.type]
 	%TypeDescription.text = Constants.type_descriptions[data.type]
 	%Stat.text = str(unit.stat)
-	%HP.text = str(unit.hp) + "/" + str(unit.max_hp)
+	%HP.text = str(unit.hp) + " / " + str(unit.max_hp)
 
 	
 func tooltip_closed() -> void:

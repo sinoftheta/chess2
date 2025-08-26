@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://d0frw4jf8nm5t"]
+
+[ext_resource type="FontFile" uid="uid://cn6yn605nbob3" path="res://fonts/tallboi.ttf" id="1_hqox8"]
+
+[resource]
+default_font = ExtResource("1_hqox8")
+Label/constants/outline_size = 4

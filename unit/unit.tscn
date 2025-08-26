@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bt6n8ds1s1nrm" path="res://projectile/projectile.tscn" id="3_hs7ws"]
 [ext_resource type="Script" uid="uid://bnjqwxxwvexo4" path="res://unit/targeted_indicator.gd" id="3_japly"]
 [ext_resource type="Texture2D" uid="uid://cnon8p3m7tbvk" path="res://texture/targeted_indicator.png" id="3_s1ym6"]
-[ext_resource type="FontFile" uid="uid://cn6yn605nbob3" path="res://fonts/tallboi.ttf" id="4_2ul3e"]
+[ext_resource type="Theme" uid="uid://d0frw4jf8nm5t" path="res://unit/value_theme.tres" id="4_2ul3e"]
 [ext_resource type="Texture2D" uid="uid://dw5qaybqq8tqx" path="res://texture/moved_indicator.png" id="5_7oxhv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hy15m"]
@@ -71,12 +71,11 @@ unique_name_in_owner = true
 visible = false
 z_index = 1
 offset_left = -24.0
-offset_top = -35.0
+offset_top = -30.0
 offset_right = 24.0
-offset_bottom = -11.0
+offset_bottom = -14.0
 pivot_offset = Vector2(20, 12)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 8
+theme = ExtResource("4_2ul3e")
 text = "ATK 1!"
 horizontal_alignment = 1
 
@@ -104,8 +103,7 @@ offset_right = -4.0
 offset_bottom = 28.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("4_2ul3e")
+theme = ExtResource("4_2ul3e")
 text = "99"
 
 [node name="TargetedIndicator" type="Sprite2D" parent="DragMotionTX/CursorTX"]
@@ -122,8 +120,7 @@ offset_left = -18.0
 offset_top = -17.0
 offset_right = 29.0
 offset_bottom = 6.0
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("4_2ul3e")
+theme = ExtResource("4_2ul3e")
 text = "target"
 
 [node name="Camera2D" type="Camera2D" parent="."]

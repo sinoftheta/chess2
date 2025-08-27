@@ -87,6 +87,7 @@ enum UnitID {
 	#adder5,
 	#adder6,
 	#adder7,
+	#adder8,
 	
 	attacker1,
 	attacker2,
@@ -225,6 +226,70 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		load("res://texture/units/mumpo.png"), ## texture
 		#null ## tooltip_texture
 	),
+	#UnitID.adder5: UnitData.new(
+		#"Flom",  ## title
+		#"", ## description
+		#UnitType.adder, ## type
+		#Util.string_to_aoe("
+		#0.0
+		#.x.
+		#.0."),## aoe
+		#false, ## is_aoe_absolute
+		#10, ## base_health
+		#1.0, ## base stat
+		#ShopRarity.common, ## shop_rarity
+		#3,  ## base_shop_price
+		#load("res://texture/units/flom.png"), ## texture
+		##null ## tooltip_texture
+	#),
+	#UnitID.adder6: UnitData.new(
+		#"Melty",  ## title
+		#"", ## description
+		#UnitType.adder, ## type
+		#Util.string_to_aoe("
+		#0..
+		#.x0
+		#0.."),## aoe
+		#false, ## is_aoe_absolute
+		#10, ## base_health
+		#1.0, ## base stat
+		#ShopRarity.common, ## shop_rarity
+		#3,  ## base_shop_price
+		#load("res://texture/units/melt_rat.png"), ## texture
+		##null ## tooltip_texture
+	#),
+	#UnitID.adder7: UnitData.new(
+		#"plum",  ## title
+		#"", ## description
+		#UnitType.adder, ## type
+		#Util.string_to_aoe("
+		#.0.
+		#.x.
+		#0.0"),## aoe
+		#false, ## is_aoe_absolute
+		#10, ## base_health
+		#1.0, ## base stat
+		#ShopRarity.common, ## shop_rarity
+		#3,  ## base_shop_price
+		#load("res://texture/units/plum.png"), ## texture
+		##null ## tooltip_texture
+	#),
+	#UnitID.adder8: UnitData.new(
+		#"raggy",  ## title
+		#"", ## description
+		#UnitType.adder, ## type
+		#Util.string_to_aoe("
+		#..0
+		#0x.
+		#..0"),## aoe
+		#false, ## is_aoe_absolute
+		#10, ## base_health
+		#1.0, ## base stat
+		#ShopRarity.common, ## shop_rarity
+		#3,  ## base_shop_price
+		#load("res://texture/units/raggy.png"), ## texture
+		##null ## tooltip_texture
+	#),
 	
 	
 	UnitID.attacker1: UnitData.new(

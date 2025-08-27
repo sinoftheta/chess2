@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://buxa8qxhpem66" path="res://debug_ui/debug_ui.gd" id="1_uym8b"]
 
 [node name="DebugUi" type="HBoxContainer"]
+visible = false
 script = ExtResource("1_uym8b")
 
 [node name="UnitID" type="OptionButton" parent="."]

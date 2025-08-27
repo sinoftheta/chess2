@@ -6,12 +6,12 @@ var bonus_rng :RandomNumberGenerator
 var combat_rng:RandomNumberGenerator
 #region Setup
 func _ready() -> void:
-	SignalBus.move_unit_to_cursor.connect(_on_move_unit_to_cursor)
-	SignalBus.start_game.connect(_on_start_game)
+	SignalBus.move_unit_to_cursor  .connect(_on_move_unit_to_cursor)
+	SignalBus.start_game           .connect(_on_start_game)
 	
-	SignalBus.play_button_pressed.connect(_on_play_button_pressed)
-	SignalBus.next_turn_pressed.connect(_on_next_turn_pressed)
-	SignalBus.continue_run_pressed.connect(_on_continue_run_pressed)
+	SignalBus.play_button_pressed  .connect(_on_play_button_pressed)
+	SignalBus.next_turn_pressed    .connect(_on_next_turn_pressed)
+	SignalBus.continue_run_pressed .connect(_on_continue_run_pressed)
 	SignalBus.reroll_button_pressed.connect(_on_reroll_button_pressed)
 	
 
@@ -26,7 +26,7 @@ func _on_start_game() -> void:
 	round = 1
 	turn = 1
 	money = 5
-	reroll_price = 5
+	reroll_price = 3
 	phase = Constants.GamePhase.shop
 	
 	## unit pools

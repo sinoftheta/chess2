@@ -17,6 +17,7 @@ var play_order:int:
 #endregion
 
 func _on_animation_state_updated(animating:bool) -> void:
+	# reset the stat
 	stat = init_stat
 #region Game logic
 var id:Constants.UnitID:

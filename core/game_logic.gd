@@ -2,6 +2,7 @@ extends Node
 
 var unit_tscn:PackedScene = preload("res://unit/unit.tscn")
 var shop_rng  :RandomNumberGenerator
+var boss_rng  :RandomNumberGenerator
 var bonus_rng :RandomNumberGenerator
 var combat_rng:RandomNumberGenerator
 #region Setup
@@ -21,6 +22,7 @@ func _on_start_game() -> void:
 	shop_rng   = RandomNumberGenerator.new()
 	combat_rng = RandomNumberGenerator.new()
 	bonus_rng  = RandomNumberGenerator.new()
+	boss_rng   = RandomNumberGenerator.new()
 	animating = false
 	shop_size = 3
 	round = 1
@@ -34,7 +36,6 @@ func _on_start_game() -> void:
 	uncommon_shop_pool = Constants.default_uncommon_shop_pool.duplicate()
 	rare_shop_pool = Constants.default_rare_shop_pool.duplicate()
 	available_boss_pool = Constants.default_boss_pool.duplicate()
-	defeated_boss_pool = []
 	available_bonus_pool = Constants.default_bonus_pool.duplicate()
 	unlocked_bonus_pool = []
 	
@@ -57,20 +58,21 @@ func _on_start_game() -> void:
 	")
 	start_unit.logical_position = start_unit_positions[shop_rng.randi_range(0, start_unit_positions.size() - 1)]
 	
-	var start_boss:Unit = unit_tscn.instantiate()
-	play_board.add_child(start_boss)
-	start_boss.id = Constants.UnitID.boss1
-	var start_boss_positions:Array[Vector2i] = Util.string_to_aoe("
-	x.....
-	......
-	..00..
-	..0...
-	......
-	......
-	")
-	start_boss.logical_position = start_boss_positions[shop_rng.randi_range(0, start_boss_positions.size() - 1)]
+	spawn_bosses()
+	#var start_boss:Unit = unit_tscn.instantiate()
+	#play_board.add_child(start_boss)
+	#start_boss.id = Constants.UnitID.boss1
+	#var start_boss_positions:Array[Vector2i] = Util.string_to_aoe("
+	#x.....
+	#......
+	#..00..
+	#..0...
+	#......
+	#......
+	#")
+	#start_boss.logical_position = start_boss_positions[shop_rng.randi_range(0, start_boss_positions.size() - 1)]
 	
-	update_unit_order_badges()
+	#update_unit_order_badges()
 	cycle_shop()
 	
 	SignalBus.game_started.emit()
@@ -159,11 +161,11 @@ var turn_dead_bosses:Array[int]
 #endregion
 
 #region Unit pools
+
 var common_shop_pool:Array[Constants.UnitID]
 var uncommon_shop_pool:Array[Constants.UnitID]
 var rare_shop_pool:Array[Constants.UnitID]
 var available_boss_pool:Array[Constants.UnitID]
-var defeated_boss_pool:Array[Constants.UnitID]
 var available_bonus_pool:Array[Constants.UnitID]
 var unlocked_bonus_pool:Array[Constants.UnitID]
 #endregion
@@ -339,21 +341,20 @@ func _on_play_button_pressed() -> void:
 					## apply damage
 					## boss effects check
 					match unit.id:
-						Constants.UnitID.boss1:
-							## flat 3 damage
-							affected_unit.hp = maxf(affected_unit.hp - 3.0, 0.0)
 						Constants.UnitID.boss2:
 							## damage based on distance
 							var d:float = (
 								absf(unit.logical_position.x - affected_unit.logical_position.x) + 
 								absf(unit.logical_position.y - affected_unit.logical_position.y)
 							)
-							affected_unit.hp = maxf(affected_unit.hp - d, 0.0)
+							affected_unit.hp = maxf(affected_unit.hp - d * unit.stat, 0.0)
 						Constants.UnitID.boss3:
-							affected_unit.hp = maxf(affected_unit.hp - affected_unit.play_order, 0.0)
 							#damage based on move order
-							pass
-						_:
+							affected_unit.hp = maxf(affected_unit.hp - affected_unit.play_order * unit.stat, 0.0)
+						Constants.UnitID.boss4:
+							# inverse move order
+							affected_unit.hp = maxf(affected_unit.hp - (play_board.get_child_count() - affected_unit.play_order) * unit.stat, 0.0)
+						Constants.UnitID.boss1, _:
 							affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
 					
 					## animate
@@ -366,8 +367,13 @@ func _on_play_button_pressed() -> void:
 						affected_unit.dead = true
 
 				Constants.UnitType.healer:
+					## healing increases max hp
 					var prev_hp:float = affected_unit.hp
-					affected_unit.hp = minf(affected_unit.hp + unit.stat, affected_unit.max_hp)
+					var prev_max_hp:float = affected_unit.max_hp
+					
+					affected_unit.hp = affected_unit.hp + unit.stat
+					if affected_unit.max_hp < affected_unit.hp:
+						affected_unit.max_hp = affected_unit.hp
 					
 					affected_unit.animate_healed(tween, animation_tick, unit.logical_position, prev_hp)
 				Constants.UnitType.adder:
@@ -415,7 +421,7 @@ func _on_play_button_pressed() -> void:
 			next_phase = Constants.GamePhase.run_lost
 		elif boss_remaining == 0:
 			spawn_bosses()
-			update_unit_order_badges()
+			#update_unit_order_badges()
 			
 			if round == max_rounds:
 				next_phase = Constants.GamePhase.run_won
@@ -479,18 +485,19 @@ func spawn_bosses() -> Array[Unit]:
 	var spawn_coord:Vector2i
 	var spawn_coord_chosen:bool = false
 	for coord:Vector2i in available_spawn_coords:
-		if combat_rng.randf_range(0,99) < 33:
+		if boss_rng.randf_range(0,99) < 33:
 			spawn_coord = coord
 			spawn_coord_chosen = true
 			break
 	
 	## statistically unlikely edge case lol
 	if not spawn_coord_chosen:
-		spawn_coord = available_spawn_coords[combat_rng.randf_range(0,available_spawn_coords.size() - 1)]
+		spawn_coord = available_spawn_coords[boss_rng.randf_range(0,available_spawn_coords.size() - 1)]
 	
 	var boss_unit:Unit = unit_tscn.instantiate()
 	play_board.add_child(boss_unit)
-	boss_unit.id = available_boss_pool[round % available_boss_pool.size()]
+	boss_unit.id = available_boss_pool[(round - 1) % available_boss_pool.size()]
+	boss_unit.init_stat = 4.0
 	boss_unit.logical_position = spawn_coord
 	update_unit_order_badges()
 	

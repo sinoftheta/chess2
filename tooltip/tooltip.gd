@@ -69,7 +69,7 @@ func tooltip_opened() -> void:
 	%Order.text = Util.int_ordinal_suffix(unit.play_order)
 	%Type.text = Constants.UnitType.keys()[data.type]
 	%TypeDescription.text = Constants.type_descriptions[data.type]
-	%Stat.text = str(unit.stat)
+	%Stat.text = str(unit.init_stat)
 	%HP.text = str(unit.hp) + " / " + str(unit.max_hp)
 
 	

@@ -1,0 +1,7 @@
+number of bosses, 1,   1,    1,  2,   2,    2
+boss hp,          10,  15,   20, 10,  15,   20, 
+boss stat,        1,   1.5,  2,  1,   1.5,  2
+boss id,          1,   random no two in a row ->  
+
+dungeon of balance is what I'm gonna balance the game around
+plentiful dungeon scales monsters

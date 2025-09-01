@@ -79,6 +79,7 @@ enum UnitID {
 	boss1,
 	boss2,
 	boss3,
+	boss4,
 	
 	adder1,
 	adder2,
@@ -119,12 +120,12 @@ enum UnitID {
 var unit_data:Dictionary[UnitID,UnitData] = {
 	UnitID.boss1: UnitData.new(
 		"Cat",  ## title
-		"Deals 3 damage to each target", ## description
+		"Deal own STAT as damage to targets HP", ## description
 		UnitType.boss, ## type
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
-		10, ## base_health
-		1.0, ## base stat
+		10,   ## base_health
+		3.0,  ## base stat
 		ShopRarity.unavailable, ## shop_rarity
 		1,  ## base_shop_price
 		load("res://texture/units/cat.png"), ## texture

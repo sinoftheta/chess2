@@ -32,12 +32,12 @@ func _on_start_game() -> void:
 	phase = Constants.GamePhase.shop
 	
 	## unit pools
-	common_shop_pool = Constants.default_common_shop_pool.duplicate()
-	uncommon_shop_pool = Constants.default_uncommon_shop_pool.duplicate()
-	rare_shop_pool = Constants.default_rare_shop_pool.duplicate()
-	available_boss_pool = Constants.default_boss_pool.duplicate()
+	common_shop_pool     = Constants.default_common_shop_pool.duplicate()
+	uncommon_shop_pool   = Constants.default_uncommon_shop_pool.duplicate()
+	rare_shop_pool       = Constants.default_rare_shop_pool.duplicate()
+	available_boss_pool  = Constants.default_boss_pool.duplicate()
 	available_bonus_pool = Constants.default_bonus_pool.duplicate()
-	unlocked_bonus_pool = []
+	unlocked_bonus_pool  = []
 	
 	## board setup
 	for board:Board in boards.values():
@@ -79,13 +79,13 @@ func _on_start_game() -> void:
 #endregion
 
 #region Boards
-var boards:Dictionary[Constants.BoardID, Board]
+var boards:Dictionary[Constants.BoardID,   Board]
 var play_board:Board: 
-	get(): return boards[Constants.BoardID.play]
+	get(): return boards[Constants.BoardID.play ]
 var shop_board:Board: 
-	get(): return boards[Constants.BoardID.shop]
+	get(): return boards[Constants.BoardID.shop ]
 var sell_board:Board: 
-	get(): return boards[Constants.BoardID.sell]
+	get(): return boards[Constants.BoardID.sell ]
 var bonus_board:Board: 
 	get(): return boards[Constants.BoardID.bonus]
 

@@ -79,7 +79,7 @@ enum UnitID {
 	boss1,
 	boss2,
 	boss3,
-	boss4,
+	#boss4,
 	
 	adder1,
 	adder2,

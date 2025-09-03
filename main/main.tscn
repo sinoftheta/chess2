@@ -34,6 +34,5 @@ metadata/_edit_lock_ = true
 metadata/_edit_lock_ = true
 
 [node name="DebugUi" parent="UILayer" instance=ExtResource("5_3wy1v")]
-visible = false
 offset_right = 32.0
 offset_bottom = 20.0

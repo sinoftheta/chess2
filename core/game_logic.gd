@@ -25,7 +25,7 @@ func _on_start_game() -> void:
 	boss_rng   = RandomNumberGenerator.new()
 	animating = false
 	shop_size = 3
-	round = 1
+	round = 0
 	turn = 1
 	money = 5
 	reroll_price = 3
@@ -291,7 +291,7 @@ func _on_play_button_pressed() -> void:
 		if Constants.unit_data[unit.id].type == Constants.UnitType.boss:
 			boss_units.push_back(unit)
 			boss_init_hp.push_back(unit.hp)
-	print("boss units: ", boss_units)
+	#print("boss units: ", boss_units)
 	
 	## evaluate each tile on the board
 	for eval_coord:Vector2i in Util.board_evaluation_order(6):
@@ -351,9 +351,9 @@ func _on_play_button_pressed() -> void:
 						Constants.UnitID.boss3:
 							#damage based on move order
 							affected_unit.hp = maxf(affected_unit.hp - affected_unit.play_order * unit.stat, 0.0)
-						Constants.UnitID.boss4:
+						#Constants.UnitID.boss4:
 							# inverse move order
-							affected_unit.hp = maxf(affected_unit.hp - (play_board.get_child_count() - affected_unit.play_order) * unit.stat, 0.0)
+							#affected_unit.hp = maxf(affected_unit.hp - (play_board.get_child_count() - affected_unit.play_order) * unit.stat, 0.0)
 						Constants.UnitID.boss1, _:
 							affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
 					
@@ -410,7 +410,6 @@ func _on_play_button_pressed() -> void:
 	
 	tween.tween_callback(func () -> void: 
 		animating = false
-		
 		## check for dead units and delete them
 		for unit:Unit in play_board.get_children():
 			if unit.dead:
@@ -420,12 +419,13 @@ func _on_play_button_pressed() -> void:
 		if allies_remaining == 0:
 			next_phase = Constants.GamePhase.run_lost
 		elif boss_remaining == 0:
-			spawn_bosses()
-			#update_unit_order_badges()
+			round += 1
 			
 			if round == max_rounds:
 				next_phase = Constants.GamePhase.run_won
-			round += 1
+			
+			spawn_bosses()
+				
 		turn += 1
 		
 		phase = next_phase
@@ -472,36 +472,50 @@ func clear_shop() -> void:
 		
 func spawn_bosses() -> Array[Unit]:
 	var spawned_bosses:Array[Unit] = []
-	print("spawning boss for round ", round)
-		
-	## determine where to spawn the dang guy
+	#print("spawning boss for round ", round)
+	
+	var num_bosses:int = round/3 + 1
+	var boss_stat:float = float(round % 3) * 0.5 + 1.0 #0,1,2 -> 1.0,1.5,2.0
+	var boss_hp:float = boss_stat * 10.0
+	
+	#print("num_bosses: ", num_bosses, ", stats: ", boss_stat, ", hp: ", boss_hp)
+	
+	## determine where we can spawn the dang guys
 	var available_spawn_coords:Array[Vector2i]
+	
 	## will spawn over dead units
 	for coord:Vector2i in Util.board_evaluation_order(6):
 		var unit:Unit = unit_at(coord, Constants.BoardID.play)
 		if unit and not unit.dead: continue
 		available_spawn_coords.push_back(coord)
 	
-	var spawn_coord:Vector2i
-	var spawn_coord_chosen:bool = false
-	for coord:Vector2i in available_spawn_coords:
-		if boss_rng.randf_range(0,99) < 33:
-			spawn_coord = coord
-			spawn_coord_chosen = true
-			break
+	## determine the spawn coordinates
+	var spawn_coords:Array[Vector2i] = []
+	var i:int = 0
 	
-	## statistically unlikely edge case lol
-	if not spawn_coord_chosen:
-		spawn_coord = available_spawn_coords[boss_rng.randf_range(0,available_spawn_coords.size() - 1)]
+	while spawn_coords.size() < num_bosses:
+		if boss_rng.randi_range(0,99) > 50:
+			spawn_coords.push_back(available_spawn_coords[i])
+			available_spawn_coords.remove_at(i)
+		i = (i + 1) % available_spawn_coords.size()
 	
-	var boss_unit:Unit = unit_tscn.instantiate()
-	play_board.add_child(boss_unit)
-	boss_unit.id = available_boss_pool[(round - 1) % available_boss_pool.size()]
-	boss_unit.init_stat = 4.0
-	boss_unit.logical_position = spawn_coord
+	for coord:Vector2i in spawn_coords:
+		var unit:Unit = unit_tscn.instantiate()
+		play_board.add_child(unit)
+		unit.id = boss_rng.randi_range(Constants.UnitID.boss1, Constants.UnitID.boss3)
+		if round == 0: unit.id = Constants.UnitID.boss1
+		match unit.id:
+			Constants.UnitID.boss1:
+				unit.init_stat = boss_stat + 2.0
+			_:
+				unit.init_stat = boss_stat
+		unit.max_hp = boss_hp
+		unit.logical_position = coord
+		spawned_bosses.push_back(unit)
+		
 	update_unit_order_badges()
 	
-	return [boss_unit]
+	return spawned_bosses
 
 ##TODO: this will be animated?
 func cycle_shop() -> void:

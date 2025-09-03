@@ -11,8 +11,7 @@ func _ready() -> void:
 	SignalBus.logical_mouse_location_updated.connect(_on_logical_mouse_position_updated)
 
 func _on_logical_mouse_position_updated(board:Constants.BoardID, coord:Vector2i, in_bounds:bool) -> void:
-	pass
-	#visible = not in_bounds
+	visible = not in_bounds
 
 
 func _on_unit_id_item_selected(index: int) -> void:

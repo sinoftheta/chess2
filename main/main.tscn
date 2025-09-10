@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bemqunpfd5kep"]
+[gd_scene load_steps=7 format=3 uid="uid://bemqunpfd5kep"]
 
 [ext_resource type="Script" uid="uid://bi4qkdu7t5ds0" path="res://main/main.gd" id="1_53q0u"]
 [ext_resource type="PackedScene" uid="uid://xrdgyjq45cts" path="res://world/world.tscn" id="2_c651c"]
+[ext_resource type="PackedScene" uid="uid://bx14pfkgng3rj" path="res://title/title.tscn" id="2_kfbq2"]
 [ext_resource type="PackedScene" uid="uid://d2nutkcy8wtoq" path="res://menus/options/options_menu.tscn" id="2_xwkvk"]
 [ext_resource type="PackedScene" uid="uid://cu56mp574gs5d" path="res://menus/main/main_menu.tscn" id="3_c651c"]
 [ext_resource type="PackedScene" uid="uid://cerisxl6w3d2x" path="res://debug_ui/debug_ui.tscn" id="5_3wy1v"]
@@ -12,14 +13,16 @@ script = ExtResource("1_53q0u")
 [node name="BGLayer" type="CanvasLayer" parent="."]
 layer = -1
 
-[node name="Background" type="ColorRect" parent="BGLayer"]
+[node name="ColorRect" type="ColorRect" parent="BGLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.0980392, 0.313726, 0.203922, 1)
-metadata/_edit_lock_ = true
+color = Color(0.0266683, 0.0820798, 0.214111, 1)
+
+[node name="Title" parent="." instance=ExtResource("2_kfbq2")]
+scale = Vector2(1.5, 1.5)
 
 [node name="Camera" type="Camera2D" parent="."]
 

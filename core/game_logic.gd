@@ -102,6 +102,7 @@ var coord_under_cursor:Vector2i:
 var prev_board_under_cursor:Constants.BoardID
 var prev_coord_under_cursor:Vector2i
 func _process(delta: float) -> void:
+	if !boards:return
 	if  prev_board_under_cursor != board_under_cursor or\
 		prev_coord_under_cursor != coord_under_cursor:
 			prev_board_under_cursor = board_under_cursor

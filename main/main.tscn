@@ -22,7 +22,7 @@ grow_vertical = 2
 color = Color(0.0266683, 0.0820798, 0.214111, 1)
 
 [node name="Title" parent="." instance=ExtResource("2_kfbq2")]
-scale = Vector2(1.5, 1.5)
+scale = Vector2(2, 2)
 
 [node name="Camera" type="Camera2D" parent="."]
 

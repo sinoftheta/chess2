@@ -19,7 +19,7 @@ func _process(delta:float) -> void:
 		if (%Mouth as AnimatedSprite2D).animation == "close":
 			(%Mouth as AnimatedSprite2D).play("open")
 			
-	if mouth_close_timer >= 45 and (%Mouth as AnimatedSprite2D).animation == "open":
+	if mouth_close_timer >= 5 and (%Mouth as AnimatedSprite2D).animation == "open":
 		(%Mouth as AnimatedSprite2D).play("close")
 		
 	

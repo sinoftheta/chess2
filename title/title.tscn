@@ -206,6 +206,7 @@ animations = [{
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_64gp6"]
 shader = ExtResource("5_0tjwc")
+shader_parameter/alpha = 1.0
 
 [node name="Title" type="Node2D"]
 material = SubResource("ShaderMaterial_8xu2e")
@@ -237,6 +238,7 @@ sprite_frames = SubResource("SpriteFrames_ibxtg")
 animation = &"close"
 
 [node name="Letters" type="Sprite2D" parent="."]
+unique_name_in_owner = true
 material = SubResource("ShaderMaterial_64gp6")
 texture = ExtResource("4_64gp6")
 

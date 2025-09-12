@@ -7,6 +7,9 @@ func _ready() -> void:
 	SignalBus.round_changed.connect(_on_round_changed)
 	SignalBus.reroll_price_changed.connect(_on_reroll_price_changed)
 
+
+
+
 func _on_money_changed(new:int,prev:int) -> void:
 	%MoneyValue.text = "$" + str(new)
 func _on_turn_changed(turn:int) -> void:
@@ -16,7 +19,7 @@ func _on_round_changed(round:int) -> void:
 func _on_reroll_price_changed(price:int) -> void:
 	%Reroll.text = "Reroll $" + str(price)
 
-func _on_menu_updated(menu:Constants.Menu) -> void:
+func _on_menu_updated(menu:Constants.Menu, prev:Constants.Menu) -> void:
 	visible = menu == Constants.Menu.gameplay
 
 

@@ -8,7 +8,7 @@ func _ready() -> void:
 		_:pass
 	%Fullscreen.set_pressed_no_signal(Options.fullscreen)
 	
-func _on_menu_updated(menu:Constants.Menu) -> void:
+func _on_menu_updated(menu:Constants.Menu, prev:Constants.Menu) -> void:
 	visible = menu == Constants.Menu.options
 
 

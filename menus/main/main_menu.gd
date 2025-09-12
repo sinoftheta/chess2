@@ -7,7 +7,7 @@ func _ready() -> void:
 		"Web":
 			%Quit.visible = false
 		_:pass
-func _on_menu_updated(menu:Constants.Menu) -> void:
+func _on_menu_updated(menu:Constants.Menu, prev:Constants.Menu) -> void:
 	visible = menu == Constants.Menu.main
 
 

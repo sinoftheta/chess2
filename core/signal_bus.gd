@@ -6,7 +6,9 @@ extends Node
 #region Game inputs
 signal start_game()# TODO: pass in game settings
 signal play_button_pressed()
-signal reroll_button_pressed()
+signal attacker_reroll_pressed()
+signal healer_reroll_pressed()
+signal adder_reroll_pressed()
 signal next_turn_pressed()
 signal continue_run_pressed()
 signal move_unit_to_cursor(unit:Unit)
@@ -51,7 +53,7 @@ signal animate_unit_aoe(unit:Unit)
 #endregion
 
 #region application
-signal menu_updated(menu:Constants.Menu)
+signal menu_updated(menu:Constants.Menu, prev:Constants.Menu)
 #endregion
 
 

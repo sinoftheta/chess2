@@ -13,7 +13,7 @@ func _ready() -> void:
 	SignalBus.play_button_pressed  .connect(_on_play_button_pressed)
 	SignalBus.next_turn_pressed    .connect(_on_next_turn_pressed)
 	SignalBus.continue_run_pressed .connect(_on_continue_run_pressed)
-	SignalBus.reroll_button_pressed.connect(_on_reroll_button_pressed)
+	#SignalBus.reroll_button_pressed.connect(_on_reroll_button_pressed)
 	
 
 func _on_start_game() -> void:

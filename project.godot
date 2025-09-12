@@ -23,6 +23,7 @@ MenuLogic="*res://core/menu_logic.gd"
 Options="*res://core/options.gd"
 SignalBus="*res://core/signal_bus.gd"
 GameLogic="*res://core/game_logic.gd"
+MouseLogic="*res://core/mouse_logic.gd"
 
 [display]
 

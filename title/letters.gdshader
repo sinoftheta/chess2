@@ -1,5 +1,5 @@
 shader_type canvas_item;
-
+uniform float alpha = 1.0;
 void fragment() {
 	float t = TIME * 0.4;
 	COLOR = texture(TEXTURE,UV + vec2(0.0,
@@ -8,4 +8,7 @@ void fragment() {
 		+ 0.003 * cos(9.0 * UV.y + 4.0 * t + 1.52)
 		+ 0.002 * sin(5.0 * UV.y + 5.0 * t + 1.53) 
 	));
+	if (COLOR.a > 0.0){
+		COLOR.a = alpha;
+	}
 }

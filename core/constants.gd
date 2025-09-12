@@ -13,6 +13,8 @@ const DOWN_RIGHT:Vector2i = DOWN + RIGHT
 const DOWN_LEFT:Vector2i  = DOWN + LEFT
 
 
+
+
 enum GamePhase {
 	shop,
 	#betting,
@@ -26,6 +28,10 @@ enum BoardID {
 	sell,
 	bonus,
 	none,
+	
+	attacker_shop,
+	adder_shop,
+	healer_shop
 }
 
 ## The UnitTypes are like the card evaluations in balatro, they are guarenteed to happen a finite amount of times
@@ -117,6 +123,7 @@ enum UnitID {
 	
 	#test_item
 }
+#var base_sprite_sheet:Texture2D = preload() 
 var unit_data:Dictionary[UnitID,UnitData] = {
 	UnitID.boss1: UnitData.new(
 		"Cat",  ## title
@@ -130,6 +137,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1,  ## base_shop_price
 		load("res://texture/units/cat.png"), ## texture
 		#null ## tooltip_texture
+		Vector2i.ZERO
 	),
 	UnitID.boss2: UnitData.new(
 		"Brute",  ## title
@@ -143,6 +151,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1,  ## base_shop_price
 		load("res://texture/units/brute.png"), ## texture
 		#null ## tooltip_texture
+		Vector2i.ZERO
 	),
 	UnitID.boss3: UnitData.new(
 		"Dram",  ## title
@@ -156,6 +165,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1,  ## base_shop_price
 		load("res://texture/units/dram.png"), ## texture
 		#null ## tooltip_texture
+		Vector2i.ZERO
 	),
 	
 	
@@ -178,6 +188,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		3,  ## base_shop_price
 		load("res://texture/units/plomp.png"), ## texture
 		#null ## tooltip_texture
+		Vector2i.ZERO
 	),
 	UnitID.adder2: UnitData.new(
 		"Wat",  ## title
@@ -194,6 +205,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		3,  ## base_shop_price
 		load("res://texture/units/wat.png"), ## texture
 		#null ## tooltip_texture
+		Vector2i.ZERO
 	),
 	UnitID.adder3: UnitData.new(
 		"Wot",  ## title
@@ -210,6 +222,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		3,  ## base_shop_price
 		load("res://texture/units/wot.png"), ## texture
 		#null ## tooltip_texture
+		Vector2i.ZERO
 	),
 	UnitID.adder4: UnitData.new(
 		"Mumpo",  ## title
@@ -226,6 +239,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		3,  ## base_shop_price
 		load("res://texture/units/mumpo.png"), ## texture
 		#null ## tooltip_texture
+		Vector2i.ZERO
 	),
 	#UnitID.adder5: UnitData.new(
 		#"Flom",  ## title
@@ -242,6 +256,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		#3,  ## base_shop_price
 		#load("res://texture/units/flom.png"), ## texture
 		##null ## tooltip_texture
+		
 	#),
 	#UnitID.adder6: UnitData.new(
 		#"Melty",  ## title
@@ -310,6 +325,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		3,  ## base_shop_price
 		load("res://texture/units/krata.png"), ## texture
 		#null ## tooltip_texture
+		Vector2i.ZERO
 	),
 	UnitID.attacker2: UnitData.new(
 		"Frum",  ## title
@@ -328,6 +344,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		3,  ## base_shop_price
 		load("res://texture/units/frum.png"), ## texture
 		#null ## tooltip_texture
+		Vector2i.ZERO
 	),
 	UnitID.attacker3: UnitData.new(
 		"Klat",  ## title
@@ -346,6 +363,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		3,  ## base_shop_price
 		load("res://texture/units/clat.png"), ## texture
 		#null ## tooltip_texture
+		Vector2i.ZERO
 	),
 	
 	
@@ -362,6 +380,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		5,  ## base_shop_price
 		load("res://texture/units/tomo.png"), ## texture
 		#null ## tooltip_texture
+		Vector2i.ZERO
 	),
 	UnitID.mult2: UnitData.new(
 		"Spine",  ## title
@@ -375,6 +394,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		5,  ## base_shop_price
 		load("res://texture/units/spine.png"), ## texture
 		#null ## tooltip_texture
+		Vector2i.ZERO
 	),
 	#UnitID.test_item: UnitData.new(
 		#"Stat Milk",
@@ -397,6 +417,24 @@ enum Menu {
 	main,
 	gameplay,
 	options
+}
+const menu_data:Dictionary[Menu, Dictionary] = {
+	Menu.none: {
+		"scale":Vector2.ONE * 2,
+		"position":Vector2.ZERO
+	},
+	Menu.main: {
+		"scale":Vector2.ONE * 2,
+		"position":Vector2.ZERO
+	},
+	Menu.gameplay: {
+		"scale":Vector2.ONE * 3,
+		"position":Vector2(20,-40)
+	},
+	Menu.options: {
+		"scale":Vector2.ONE * 5,
+		"position":Vector2.ZERO
+	}
 }
 
 

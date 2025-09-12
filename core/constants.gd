@@ -1,7 +1,6 @@
 extends Node
 const ANIMATION_TICK_TIME:float = 0.75
 
-const GRID_SIZE:float = 48
 const CENTER:Vector2i     = Vector2i.ZERO
 const UP:Vector2i         = Vector2i( 0,-1)
 const DOWN:Vector2i       = Vector2i( 0, 1)

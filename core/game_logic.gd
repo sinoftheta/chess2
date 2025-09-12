@@ -7,7 +7,6 @@ var bonus_rng :RandomNumberGenerator
 var combat_rng:RandomNumberGenerator
 #region Setup
 func _ready() -> void:
-	SignalBus.move_unit_to_cursor  .connect(_on_move_unit_to_cursor)
 	SignalBus.start_game           .connect(_on_start_game)
 	
 	SignalBus.play_button_pressed  .connect(_on_play_button_pressed)
@@ -91,27 +90,10 @@ var bonus_board:Board:
 
 func board_has_coord(board_id:Constants.BoardID, coord:Vector2i) -> bool:
 	return Rect2i(Vector2i.ZERO,boards[board_id].logical_size).has_point(coord)
-		
-var board_under_cursor:Constants.BoardID
-var coord_under_cursor:Vector2i:
-	get():
-		var cur_board:Board = boards[board_under_cursor]
-		var bp:Vector2 = cur_board.global_position - cur_board.get_global_mouse_position() # + cur_board.size * 0.5 if we wanna meke the boards expandable???
-		return Vector2i(floori(-bp.x / Constants.GRID_SIZE),floori(-bp.y / Constants.GRID_SIZE))
 
-var prev_board_under_cursor:Constants.BoardID
-var prev_coord_under_cursor:Vector2i
+
 func _process(delta: float) -> void:
 	if !boards:return
-	if  prev_board_under_cursor != board_under_cursor or\
-		prev_coord_under_cursor != coord_under_cursor:
-			prev_board_under_cursor = board_under_cursor
-			prev_coord_under_cursor = coord_under_cursor
-			SignalBus.logical_mouse_location_updated.emit(
-				board_under_cursor,
-				coord_under_cursor,
-				board_has_coord(prev_board_under_cursor,coord_under_cursor)
-			)
 	debug_spawn()
 	debug_delete()
 	
@@ -188,12 +170,11 @@ func update_unit_order_badges() -> void:
 	for unit:Unit in shop_board.get_children():
 		unit.play_order = 0
 
-func _on_move_unit_to_cursor(unit:Unit) -> void:
+func move_unit(unit:Unit, to_board_id:Constants.BoardID, to_coord:Vector2i) -> void:
 	
 	var from_board:Board             = unit.get_parent()
 	var from_coord:Vector2i          = unit.logical_position
-	var to_board:Board               = boards[board_under_cursor]
-	var to_coord:Vector2i            = coord_under_cursor
+	var to_board:Board               = boards[to_board_id]
 	var same_boards:bool             = to_board == from_board
 	
 	if animating: return
@@ -611,26 +592,26 @@ var debug_unit_id:Constants.UnitID
 func debug_spawn() -> void:
 	if not Input.is_action_just_pressed("debug_spawn_unit"):
 		return
-	if not board_has_coord(board_under_cursor,coord_under_cursor):
+	if not board_has_coord(MouseLogic.board_under_cursor,MouseLogic.coord_under_cursor):
 		return
-	if unit_at(coord_under_cursor, board_under_cursor):
+	if unit_at(MouseLogic.coord_under_cursor, MouseLogic.board_under_cursor):
 		return
 	var unit:Unit = unit_tscn.instantiate()
-	boards[board_under_cursor].add_child(unit)
+	boards[MouseLogic.board_under_cursor].add_child(unit)
 	unit.id = debug_unit_id
-	unit.logical_position = coord_under_cursor
+	unit.logical_position = MouseLogic.coord_under_cursor
 	update_unit_order_badges()
 
 func debug_delete() -> void:
 	if not Input.is_action_just_pressed("debug_delete_unit"):
 		return
-	if not board_has_coord(board_under_cursor,coord_under_cursor):
+	if not board_has_coord(MouseLogic.board_under_cursor,MouseLogic.coord_under_cursor):
 		return
-	if not unit_at(coord_under_cursor, board_under_cursor):
+	if not unit_at(MouseLogic.coord_under_cursor, MouseLogic.board_under_cursor):
 		return
 	
-	var unit:Unit = unit_at(coord_under_cursor, board_under_cursor)
-	boards[board_under_cursor].remove_child(unit)
+	var unit:Unit = unit_at(MouseLogic.coord_under_cursor, MouseLogic.board_under_cursor)
+	boards[MouseLogic.board_under_cursor].remove_child(unit)
 	unit.queue_free()
 	
 #endregion

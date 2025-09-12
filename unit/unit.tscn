@@ -51,10 +51,8 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_hy15m")
 flat = true
 
 [node name="DragMotionTX" type="Node2D" parent="."]
-unique_name_in_owner = true
 
 [node name="CursorTX" type="Node2D" parent="DragMotionTX"]
-unique_name_in_owner = true
 
 [node name="Sprite" type="Sprite2D" parent="DragMotionTX/CursorTX"]
 unique_name_in_owner = true

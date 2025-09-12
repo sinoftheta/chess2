@@ -85,15 +85,16 @@ func _process(delta: float) -> void:
 		global_position = lerp(global_position, get_global_mouse_position(), t)
 	else:
 		
-		var fp:Vector2 = (Vector2(logical_position) + Vector2(0.5,0.5)) * Constants.GRID_SIZE
-		var dp:float = delta * 400
+		var fp:Vector2 = Vector2(
+			(logical_position.x + 0.5) / (get_parent() as Board).logical_size.x *\
+			(get_parent() as Board).texture.get_size().x,
+			(logical_position.y + 0.5) / (get_parent() as Board).logical_size.y *\
+			(get_parent() as Board).texture.get_size().y
+		)
 		
-		position = lerp(position, fp, t)
+		var next_position:Vector2 = lerp(position, fp, t)
+		position += (position - next_position).limit_length(10)
 		
-		#if (fp - position).length_squared() < dp:
-			#position = fp
-		#else:
-			#position += (fp - position).normalized() * dp
 	
 
 #endregion

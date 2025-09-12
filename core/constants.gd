@@ -23,9 +23,7 @@ enum GamePhase {
 }
 enum BoardID {
 	play,
-	shop,
 	sell,
-	bonus,
 	none,
 	
 	attacker_shop,

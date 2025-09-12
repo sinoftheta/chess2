@@ -43,17 +43,17 @@ func tooltip_opened() -> void:
 			%OrderContentBack.visible = true
 			%OrderValueBack  .visible = true
 			%Order           .visible = true
-		Constants.BoardID.shop:
-			%BuySellTooltip.visible = true
-			%BuySellText.text = "BUY"
-			%BuySellValue.text = "$" + str(unit.buy_price)
-			
-			%OrderText       .visible = false
-			%OrderContentBack.visible = false
-			%OrderValueBack  .visible = false
-			%Order           .visible = false
-		Constants.BoardID.bonus:
-			%BuySellTooltip.visible = false
+		#Constants.BoardID.shop:
+			#%BuySellTooltip.visible = true
+			#%BuySellText.text = "BUY"
+			#%BuySellValue.text = "$" + str(unit.buy_price)
+			#
+			#%OrderText       .visible = false
+			#%OrderContentBack.visible = false
+			#%OrderValueBack  .visible = false
+			#%Order           .visible = false
+		#Constants.BoardID.bonus:
+			#%BuySellTooltip.visible = false
 		_:return
 	%StatsTooltip.visible   = true
 	%AbilityTooltip.visible = data.description.length() > 0

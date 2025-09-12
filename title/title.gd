@@ -64,9 +64,12 @@ func _process(delta:float) -> void:
 		(%Mouth as AnimatedSprite2D).play("close")
 		
 	
-var leletter_alpha:
+var letter_alpha:
 	set(value):
-		leletter_alpha = value
+		letter_alpha = value
+		print(value)
+		((%Letters as Node2D).material as ShaderMaterial).set_shader_parameter("alpha", value)
+		
 
 func _on_left_eye_animation_finished() -> void:
 	match (%LeftEye as AnimatedSprite2D).animation:

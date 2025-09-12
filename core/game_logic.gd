@@ -16,7 +16,9 @@ func _ready() -> void:
 	
 
 func _on_start_game() -> void:
-	
+	for id:Constants.BoardID in Constants.BoardID.values():
+		print(Constants.BoardID.keys()[id], ": ", id)
+	print(boards)
 	## game state
 	shop_rng   = RandomNumberGenerator.new()
 	combat_rng = RandomNumberGenerator.new()
@@ -81,12 +83,15 @@ func _on_start_game() -> void:
 var boards:Dictionary[Constants.BoardID,   Board]
 var play_board:Board: 
 	get(): return boards[Constants.BoardID.play ]
-var shop_board:Board: 
-	get(): return boards[Constants.BoardID.shop ]
+var healer_shop_board:Board: 
+	get(): return boards[Constants.BoardID.healer_shop]
+var attacker_shop_board:Board: 
+	get(): return boards[Constants.BoardID.attacker_shop]
+var adder_shop_board:Board: 
+	get(): return boards[Constants.BoardID.adder_shop]
+
 var sell_board:Board: 
 	get(): return boards[Constants.BoardID.sell ]
-var bonus_board:Board: 
-	get(): return boards[Constants.BoardID.bonus]
 
 func board_has_coord(board_id:Constants.BoardID, coord:Vector2i) -> bool:
 	return Rect2i(Vector2i.ZERO,boards[board_id].logical_size).has_point(coord)
@@ -167,7 +172,11 @@ func update_unit_order_badges() -> void:
 		i += 1
 		unit.play_order = i
 	
-	for unit:Unit in shop_board.get_children():
+	for unit:Unit in adder_shop_board.get_children():
+		unit.play_order = 0
+	for unit:Unit in attacker_shop_board.get_children():
+		unit.play_order = 0
+	for unit:Unit in healer_shop_board.get_children():
 		unit.play_order = 0
 
 func move_unit(unit:Unit, to_board_id:Constants.BoardID, to_coord:Vector2i) -> void:
@@ -187,19 +196,23 @@ func move_unit(unit:Unit, to_board_id:Constants.BoardID, to_coord:Vector2i) -> v
 	if Constants.unit_data[unit.id].type == Constants.UnitType.boss: 
 		SignalBus.message_under_cursor.emit("Bosses can't move")
 		return
-	if to_board == shop_board and from_board == play_board:
-		SignalBus.message_under_cursor.emit("Can't go back in shop")
-		return
+	#if to_board == shop_board and from_board == play_board:
+		#SignalBus.message_under_cursor.emit("Can't go back in shop")
+		#return
 	if unit_at_destination:
 		SignalBus.message_under_cursor.emit("Space occupied")
 		return
 	if not board_has_coord(to_board.id, to_coord): 
 		SignalBus.message_under_cursor.emit("Out of bounds")
 		return
-	if to_board == sell_board and from_board == shop_board:
-		SignalBus.message_under_cursor.emit("Thats not yours!")
-		return
-	if to_board == play_board and from_board == shop_board:
+	#if to_board == sell_board and from_board == shop_board:
+		#SignalBus.message_under_cursor.emit("Thats not yours!")
+		#return
+	if to_board == play_board and (
+		from_board == attacker_shop_board or\
+		from_board == healer_shop_board or\
+		from_board == adder_shop_board
+		):
 		if money < unit.buy_price:
 			SignalBus.message_under_cursor.emit("Not enough money")
 			return
@@ -448,8 +461,16 @@ func _on_continue_run_pressed() -> void:
 
 func clear_shop() -> void:
 	## remove prev units
-	for unit:Unit in shop_board.get_children():
-		shop_board.remove_child(unit)
+	for unit:Unit in adder_shop_board.get_children():
+		adder_shop_board.remove_child(unit)
+		unit.queue_free()
+		
+	for unit:Unit in attacker_shop_board.get_children():
+		attacker_shop_board.remove_child(unit)
+		unit.queue_free()
+		
+	for unit:Unit in healer_shop_board.get_children():
+		healer_shop_board.remove_child(unit)
 		unit.queue_free()
 		
 func spawn_bosses() -> Array[Unit]:
@@ -557,11 +578,11 @@ func cycle_shop() -> void:
 			#print("no units of that rarity")
 			#shop_contents.push_back(Constants.UnitID.test_attacker)
 	
-	for id:Constants.UnitID in shop_contents:
-		var unit:Unit = unit_tscn.instantiate()
-		shop_board.add_child(unit)
-		unit.id = id
-		unit.logical_position = shop_coords.pop_back()
+	#for id:Constants.UnitID in shop_contents:
+	#	var unit:Unit = unit_tscn.instantiate()
+	#	shop_board.add_child(unit)
+	#	unit.id = id
+	#	unit.logical_position = shop_coords.pop_back()
 	
 	update_unit_order_badges()
 func cycle_bonus() -> void:

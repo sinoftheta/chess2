@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bl7yw07rwfxj0"]
+[gd_scene load_steps=9 format=3 uid="uid://bl7yw07rwfxj0"]
 
 [ext_resource type="Script" uid="uid://begok5sfyachc" path="res://tooltip/tooltip.gd" id="1_15sfh"]
 [ext_resource type="Texture2D" uid="uid://c3knq4o8drcjy" path="res://texture/tooltip_panel_striped.png" id="2_tc3y5"]
@@ -7,6 +7,7 @@
 [ext_resource type="Theme" uid="uid://di2uhbqpxo505" path="res://tooltip/tooltip_static_text.tres" id="3_cl01w"]
 [ext_resource type="Theme" uid="uid://cenonl8rd5gsc" path="res://tooltip/tooltip_dynamic_text.tres" id="4_tc3y5"]
 [ext_resource type="Script" uid="uid://cnuopmaf3bv35" path="res://tooltip/aoe_preview.gd" id="7_ls6tg"]
+[ext_resource type="Texture2D" uid="uid://dfxphffj5b4hy" path="res://texture/units.png" id="8_8fmey"]
 
 [node name="Tooltip" type="Control"]
 layout_mode = 3
@@ -419,6 +420,7 @@ color = Color(0.819608, 0.447059, 0.729412, 0.498039)
 unique_name_in_owner = true
 modulate = Color(0, 0, 0, 1)
 position = Vector2(44, 44)
+texture = ExtResource("8_8fmey")
 
 [node name="BuySellTooltip" type="NinePatchRect" parent="VBoxContainer"]
 unique_name_in_owner = true

@@ -9,7 +9,8 @@ static func name_to_coord(_name:String) -> Vector2i:
 		int(_name.get_slice("_", 1)),
 	)
 
-static func board_evaluation_order(diameter:int) -> Array[Vector2i]: ## TODO: THIS SHOULD GO IN A/THE UTILITY SCRIPT
+static func board_evaluation_order() -> Array[Vector2i]: ## TODO: THIS SHOULD GO IN A/THE UTILITY SCRIPT
+	var diameter:int = 5
 	var ordering:Array[Vector2i] = []
 
 	var cur:Vector2i = Vector2i.ZERO

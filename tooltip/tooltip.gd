@@ -7,6 +7,8 @@ func _ready() -> void:
 	SignalBus.tooltip_try_open.connect(_on_tooltip_try_open)
 	SignalBus.tooltip_try_close.connect(_on_tooltip_try_close)
 	SignalBus.unit_moved.connect(_on_unit_moved)
+	(%UnitPreview as Sprite2D).hframes = (%UnitPreview as Sprite2D).texture.get_width()  / 48
+	(%UnitPreview as Sprite2D).vframes = (%UnitPreview as Sprite2D).texture.get_height() / 48
 	tooltip_closed()
 
 func _on_unit_moved(moved_unit:Unit, prev_coord:Vector2i, prev_board:Board) -> void:
@@ -62,7 +64,7 @@ func tooltip_opened() -> void:
 	
 	
 	%AbilityText.text = data.description
-	%UnitPreview.texture = data.texture
+	(%UnitPreview as Sprite2D).frame_coords = data.texture_coord
 	%Title.text = data.title
 	#%Rarity.visible = not is_boss
 	#%Rarity.text = Constants.ShopRarity.keys()[data.shop_rarity]

@@ -8,6 +8,7 @@ func _ready() -> void:
 
 var menu_tween:Tween
 func _on_menu_updated(cur:Constants.Menu, prev:Constants.Menu) -> void:
+	
 	if prev == Constants.Menu.none:
 		## we're doing the opening animation
 		pass
@@ -31,7 +32,7 @@ func _on_menu_updated(cur:Constants.Menu, prev:Constants.Menu) -> void:
 	
 	if menu_tween: menu_tween.kill()
 	menu_tween = create_tween()\
-	.set_parallel()\
+	.set_parallel(true)\
 	.set_ease(Tween.EASE_IN_OUT)\
 	.set_trans(Tween.TRANS_SINE)
 	
@@ -40,8 +41,11 @@ func _on_menu_updated(cur:Constants.Menu, prev:Constants.Menu) -> void:
 	menu_tween.tween_property(self,"letter_alpha", letter_alpha_, t)
 	menu_tween.tween_property(%Letters, "position",   letter_pos,   t)
 	
-	
-	
+var letter_alpha:float:
+	set(value):
+		letter_alpha = value
+		((%Letters as Node2D).material as ShaderMaterial).set_shader_parameter("alpha", value)
+
 func _process(delta:float) -> void:
 	
 	if randi() % 400 <= 2 and (%LeftEye as AnimatedSprite2D).animation == "default":
@@ -64,12 +68,7 @@ func _process(delta:float) -> void:
 		(%Mouth as AnimatedSprite2D).play("close")
 		
 	
-var letter_alpha:
-	set(value):
-		letter_alpha = value
-		print(value)
-		((%Letters as Node2D).material as ShaderMaterial).set_shader_parameter("alpha", value)
-		
+
 
 func _on_left_eye_animation_finished() -> void:
 	match (%LeftEye as AnimatedSprite2D).animation:

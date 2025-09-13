@@ -5,6 +5,9 @@ extends Node2D
 
 func _ready() -> void:
 	SignalBus.animating_state_updated.connect(_on_animation_state_updated)
+	(%Sprite as Sprite2D).hframes = (%Sprite as Sprite2D).texture.get_width()  / 48
+	(%Sprite as Sprite2D).vframes = (%Sprite as Sprite2D).texture.get_height() / 48
+
 #region target preview
 var target:bool:
 	set(value):
@@ -24,7 +27,7 @@ var id:Constants.UnitID:
 	set(value):
 		id = value
 		var data:UnitData = Constants.unit_data[value]
-		%Sprite.texture = data.texture
+		(%Sprite as Sprite2D).frame_coords = data.texture_coord
 		max_hp = data.base_health
 		hp = data.base_health
 		init_stat = data.base_stat
@@ -56,7 +59,13 @@ var sell_price:int:
 #endregion
 
 #region Cursor interactions
-var dragging:bool
+var dragging:bool:
+	set(value):
+		dragging = value
+		if value:
+			MouseLogic.dragged_unit = self
+		else:
+			MouseLogic.dragged_unit = null
 var hovered:bool
 func cursor_inside() -> bool:
 	return Rect2(%Interaction.global_position, %Interaction.size).has_point(get_global_mouse_position())
@@ -68,34 +77,31 @@ func _on_interaction_mouse_exited() -> void:
 		return
 	hovered = false
 	SignalBus.tooltip_try_close.emit(self)
+
 func _on_interaction_button_down() -> void:
 	hovered = true
 	dragging = true
 	#z_index = 2
+
 func _on_interaction_button_up() -> void:
 	dragging = false
 	#z_index = 0
 	SignalBus.move_unit_to_cursor.emit(self)
 	hovered = cursor_inside()
 
-#var prev_mouse_x:float
 func _process(delta: float) -> void:
 	var t:float = minf(delta * 13.0,1.0)
 	if dragging:
 		global_position = lerp(global_position, get_global_mouse_position(), t)
 	else:
-		
 		var fp:Vector2 = Vector2(
 			(logical_position.x + 0.5) / (get_parent() as Board).logical_size.x *\
 			(get_parent() as Board).texture.get_size().x,
 			(logical_position.y + 0.5) / (get_parent() as Board).logical_size.y *\
 			(get_parent() as Board).texture.get_size().y
 		)
-		
 		var next_position:Vector2 = lerp(position, fp, t)
-		position += (position - next_position).limit_length(10)
-		
-	
+		position += (next_position - position).limit_length(10)
 
 #endregion
 

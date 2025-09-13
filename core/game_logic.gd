@@ -18,7 +18,7 @@ func _ready() -> void:
 func _on_start_game() -> void:
 	for id:Constants.BoardID in Constants.BoardID.values():
 		print(Constants.BoardID.keys()[id], ": ", id)
-	print(boards)
+	#print(boards)
 	## game state
 	shop_rng   = RandomNumberGenerator.new()
 	combat_rng = RandomNumberGenerator.new()
@@ -50,14 +50,13 @@ func _on_start_game() -> void:
 	play_board.add_child(start_unit)
 	start_unit.id = shop_rng.randi_range(Constants.UnitID.attacker1, Constants.UnitID.attacker3)
 	var start_unit_positions:Array[Vector2i] = Util.string_to_aoe("
-	x.....
-	.0000.
-	.0..0.
-	.0..0.
-	.0000.
-	......
+	x....
+	.000.
+	.0.0.
+	.000.
+	.....
 	")
-	start_unit.logical_position = start_unit_positions[shop_rng.randi_range(0, start_unit_positions.size() - 1)]
+	start_unit.logical_position = start_unit_positions[boss_rng.randi_range(0, start_unit_positions.size() - 1)]
 	
 	spawn_bosses()
 	#var start_boss:Unit = unit_tscn.instantiate()
@@ -166,7 +165,7 @@ func unit_at(coord:Vector2i, board_id:Constants.BoardID) -> Unit:
 #region Game logic
 func update_unit_order_badges() -> void:
 	var i:int = 0
-	for eval_coord:Vector2i in Util.board_evaluation_order(6):
+	for eval_coord:Vector2i in Util.board_evaluation_order():
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
 		if not unit: continue
 		i += 1
@@ -289,7 +288,7 @@ func _on_play_button_pressed() -> void:
 	#print("boss units: ", boss_units)
 	
 	## evaluate each tile on the board
-	for eval_coord:Vector2i in Util.board_evaluation_order(6):
+	for eval_coord:Vector2i in Util.board_evaluation_order():
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
 		if not unit: continue
 		if unit.dead: continue
@@ -487,7 +486,7 @@ func spawn_bosses() -> Array[Unit]:
 	var available_spawn_coords:Array[Vector2i]
 	
 	## will spawn over dead units
-	for coord:Vector2i in Util.board_evaluation_order(6):
+	for coord:Vector2i in Util.board_evaluation_order():
 		var unit:Unit = unit_at(coord, Constants.BoardID.play)
 		if unit and not unit.dead: continue
 		available_spawn_coords.push_back(coord)
@@ -591,7 +590,7 @@ func cycle_bonus() -> void:
 
 #region Boss mechanics
 func evaluate_boss(boss:Unit) -> void:
-	for eval_coord:Vector2i in Util.board_evaluation_order(6):
+	for eval_coord:Vector2i in Util.board_evaluation_order():
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
 		if not unit: continue
 		if unit.hp == 0: continue

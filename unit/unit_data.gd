@@ -9,7 +9,6 @@ var base_health:float
 var base_stat:float
 var shop_rarity:Constants.ShopRarity
 var base_shop_price:int
-var texture:Texture2D
 var texture_coord:Vector2i
 #var tooltip_texture:Texture2D
 
@@ -23,7 +22,6 @@ func _init(
 	_base_stat:float,
 	_shop_rarity:Constants.ShopRarity,
 	_base_shop_price:int,
-	_texture:Texture2D,
 	_texture_coord:Vector2i
 	#_tooltip_texture:Texture2D,
 ) -> void:
@@ -36,6 +34,5 @@ func _init(
 	base_stat       = _base_stat
 	shop_rarity     = _shop_rarity
 	base_shop_price = _base_shop_price
-	texture         = _texture
 	texture_coord   = _texture_coord
 	#tooltip_texture = _tooltip_texture

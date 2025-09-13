@@ -132,7 +132,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		3.0,  ## base stat
 		ShopRarity.unavailable, ## shop_rarity
 		1,  ## base_shop_price
-		load("res://texture/units/cat.png"), ## texture
 		#null ## tooltip_texture
 		Vector2i.ZERO
 	),
@@ -146,7 +145,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1.0, ## base stat
 		ShopRarity.unavailable, ## shop_rarity
 		1,  ## base_shop_price
-		load("res://texture/units/brute.png"), ## texture
 		#null ## tooltip_texture
 		Vector2i.ZERO
 	),
@@ -160,7 +158,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1.0, ## base stat
 		ShopRarity.unavailable, ## shop_rarity
 		1,  ## base_shop_price
-		load("res://texture/units/dram.png"), ## texture
 		#null ## tooltip_texture
 		Vector2i.ZERO
 	),
@@ -183,7 +180,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
 		3,  ## base_shop_price
-		load("res://texture/units/plomp.png"), ## texture
 		#null ## tooltip_texture
 		Vector2i.ZERO
 	),
@@ -200,7 +196,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
 		3,  ## base_shop_price
-		load("res://texture/units/wat.png"), ## texture
 		#null ## tooltip_texture
 		Vector2i.ZERO
 	),
@@ -217,7 +212,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
 		3,  ## base_shop_price
-		load("res://texture/units/wot.png"), ## texture
 		#null ## tooltip_texture
 		Vector2i.ZERO
 	),
@@ -234,7 +228,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
 		3,  ## base_shop_price
-		load("res://texture/units/mumpo.png"), ## texture
 		#null ## tooltip_texture
 		Vector2i.ZERO
 	),
@@ -320,7 +313,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
 		3,  ## base_shop_price
-		load("res://texture/units/krata.png"), ## texture
 		#null ## tooltip_texture
 		Vector2i.ZERO
 	),
@@ -339,7 +331,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
 		3,  ## base_shop_price
-		load("res://texture/units/frum.png"), ## texture
 		#null ## tooltip_texture
 		Vector2i.ZERO
 	),
@@ -358,7 +349,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1.0, ## base stat
 		ShopRarity.common, ## shop_rarity
 		3,  ## base_shop_price
-		load("res://texture/units/clat.png"), ## texture
 		#null ## tooltip_texture
 		Vector2i.ZERO
 	),
@@ -375,7 +365,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1.5, ## base stat
 		ShopRarity.uncommon, ## shop_rarity
 		5,  ## base_shop_price
-		load("res://texture/units/tomo.png"), ## texture
 		#null ## tooltip_texture
 		Vector2i.ZERO
 	),
@@ -389,7 +378,6 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		1.5, ## base stat
 		ShopRarity.uncommon, ## shop_rarity
 		5,  ## base_shop_price
-		load("res://texture/units/spine.png"), ## texture
 		#null ## tooltip_texture
 		Vector2i.ZERO
 	),

@@ -26,7 +26,7 @@ func _draw() -> void:
 		/\
 		float(maxi(bounds.size.y + 1, bounds.size.x + 1))
 		
-		(%UnitPreview as Sprite2D).scale = Vector2.ONE * sidelength / Constants.GRID_SIZE
+		#(%UnitPreview as Sprite2D).scale = Vector2.ONE * sidelength / Constants.GRID_SIZE
 		
 		for coord:Vector2i in data.aoe:
 			draw_rect(

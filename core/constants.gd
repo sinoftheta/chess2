@@ -400,6 +400,8 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 enum Menu {
 	none,
 	main,
+	tutorial_1,
+	tutorial_2,
 	gameplay,
 	options
 }

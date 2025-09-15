@@ -12,8 +12,11 @@ func _on_menu_updated(menu:Constants.Menu, prev:Constants.Menu) -> void:
 
 
 func _on_play_pressed() -> void:
-	SignalBus.start_game.emit()
-	MenuLogic.push(Constants.Menu.gameplay)
+	if Options.play_tutorial:
+		MenuLogic.push(Constants.Menu.tutorial_1)
+	else:
+		SignalBus.start_game.emit()
+		MenuLogic.push(Constants.Menu.gameplay)
 
 func _on_options_pressed() -> void:
 	MenuLogic.push(Constants.Menu.options)

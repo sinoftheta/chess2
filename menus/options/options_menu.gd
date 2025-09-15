@@ -7,6 +7,7 @@ func _ready() -> void:
 			%Fullscreen.visible = false
 		_:pass
 	%Fullscreen.set_pressed_no_signal(Options.fullscreen)
+	%Tutorial.set_pressed_no_signal(Options.play_tutorial)
 	
 func _on_menu_updated(menu:Constants.Menu, prev:Constants.Menu) -> void:
 	visible = menu == Constants.Menu.options
@@ -19,3 +20,7 @@ func _on_back_pressed() -> void:
 
 func _on_fullscreen_toggled(toggled_on: bool) -> void:
 	Options.fullscreen = toggled_on
+
+
+func _on_tutorial_toggled(toggled_on: bool) -> void:
+	Options.play_tutorial = toggled_on

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvwwl3ix0ymyv"]
+
+[ext_resource type="Script" uid="uid://c65obmq35170h" path="res://animated_pipes/animated_pipes.gd" id="1_qw03d"]
+
+[node name="AnimatedPipes" type="Node2D"]
+script = ExtResource("1_qw03d")

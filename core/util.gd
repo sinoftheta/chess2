@@ -51,7 +51,6 @@ static func board_evaluation_order() -> Array[Vector2i]: ## TODO: THIS SHOULD GO
 				cur += Constants.UP
 			ordering.push_back(cur + o)
 	return ordering
-
 	
 static func int_ordinal_suffix(i:int) -> String:
 	var j:int = i % 10

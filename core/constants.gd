@@ -476,3 +476,37 @@ const AOE_BOSS_FULL_BOARD:Array[Vector2i] = [
 	Vector2i(0,4),Vector2i(1,4),Vector2i(2,4),Vector2i(3,4),Vector2i(4,4),Vector2i(5,4),
 	Vector2i(0,5),Vector2i(1,5),Vector2i(2,5),Vector2i(3,5),Vector2i(4,5),Vector2i(5,5),
 ]
+
+
+enum PipeSegmentType {
+	start_to_right,
+	#start_to_top,
+	#start_to_left,
+	#start_to_bottom,
+	
+	right_to_top,
+	right_to_left,
+	right_to_bottom,
+	#right_to_end,
+	
+	top_to_right,
+	top_to_left,
+	top_to_bottom,
+	#top_to_end,
+	
+	left_to_right,
+	left_to_top,
+	left_to_bottom,
+	#left_to_end,
+	
+	bottom_to_right,
+	bottom_to_top,
+	bottom_to_left,
+	#bottom_to_end,
+	
+	
+	
+	
+	
+	
+}

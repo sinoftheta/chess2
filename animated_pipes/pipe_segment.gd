@@ -103,8 +103,6 @@ extends Node2D
 		(%Outline as Sprite2D).rotation_degrees = r
 		
 		(%DebugLabel as Label).text = Constants.PipeSegmentType.keys()[value]
-		
-
 
 
 func _on_ready() -> void:

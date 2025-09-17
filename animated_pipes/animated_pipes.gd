@@ -3,6 +3,7 @@ extends Node2D
 
 
 func _ready() -> void:
+	GameLogic.pipe_segments = self
 	SignalBus.game_started.connect(_on_game_started)
 	
 const UP:Vector2i         = Vector2i( 0,-1)

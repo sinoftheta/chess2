@@ -1,6 +1,6 @@
 extends Node
 
-var unit_tscn:PackedScene = preload("res://unit/unit.tscn")
+var unit_tscn :PackedScene = preload("res://unit/unit.tscn")
 var shop_rng  :RandomNumberGenerator
 var boss_rng  :RandomNumberGenerator
 var bonus_rng :RandomNumberGenerator
@@ -8,7 +8,6 @@ var combat_rng:RandomNumberGenerator
 #region Setup
 func _ready() -> void:
 	SignalBus.start_game           .connect(_on_start_game)
-	
 	SignalBus.play_button_pressed  .connect(_on_play_button_pressed)
 	SignalBus.next_turn_pressed    .connect(_on_next_turn_pressed)
 	SignalBus.continue_run_pressed .connect(_on_continue_run_pressed)
@@ -16,10 +15,13 @@ func _ready() -> void:
 	
 
 func _on_start_game() -> void:
-	for id:Constants.BoardID in Constants.BoardID.values():
-		print(Constants.BoardID.keys()[id], ": ", id)
+	#for id:Constants.BoardID in Constants.BoardID.values():
+	#	print(Constants.BoardID.keys()[id], ": ", id)
 	#print(boards)
+	
+	
 	## game state
+	board_evaluation_order = Constants.BOARD_EVAL_5X5_SPIRAL
 	shop_rng   = RandomNumberGenerator.new()
 	combat_rng = RandomNumberGenerator.new()
 	bonus_rng  = RandomNumberGenerator.new()
@@ -79,6 +81,10 @@ func _on_start_game() -> void:
 #endregion
 
 #region Boards
+var pipe_segments:Node2D
+
+var board_evaluation_order:Array[Vector2i]
+
 var boards:Dictionary[Constants.BoardID,   Board]
 var play_board:Board: 
 	get(): return boards[Constants.BoardID.play ]
@@ -165,7 +171,7 @@ func unit_at(coord:Vector2i, board_id:Constants.BoardID) -> Unit:
 #region Game logic
 func update_unit_order_badges() -> void:
 	var i:int = 0
-	for eval_coord:Vector2i in Util.board_evaluation_order():
+	for eval_coord:Vector2i in board_evaluation_order:
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
 		if not unit: continue
 		i += 1
@@ -219,28 +225,28 @@ func move_unit(unit:Unit, to_board_id:Constants.BoardID, to_coord:Vector2i) -> v
 		
 
 			
-	if to_board == sell_board:
-		
-		## check if selling last remaining ally
-		var allies_remaining:int = 0
-		## update unit data
-		for unit_in_play:Unit in play_board.get_children():
-			
-			#print(Constants.UnitType.keys()[Constants.unit_data[unit_in_play.id].type])
-			
-			match Constants.unit_data[unit_in_play.id].type:
-				Constants.UnitType.boss:
-					pass
-				_: allies_remaining += 1
-		
-		#print(allies_remaining)
-		
-		if allies_remaining == 1:
-			SignalBus.message_under_cursor.emit("That's your last Fighter!")
-			return
-		
-		SignalBus.unit_sold.emit(unit.sell_price)
-		money += unit.sell_price
+	#if to_board == sell_board:
+		#
+		### check if selling last remaining ally
+		#var allies_remaining:int = 0
+		### update unit data
+		#for unit_in_play:Unit in play_board.get_children():
+			#
+			##print(Constants.UnitType.keys()[Constants.unit_data[unit_in_play.id].type])
+			#
+			#match Constants.unit_data[unit_in_play.id].type:
+				#Constants.UnitType.boss:
+					#pass
+				#_: allies_remaining += 1
+		#
+		##print(allies_remaining)
+		#
+		#if allies_remaining == 1:
+			#SignalBus.message_under_cursor.emit("That's your last Fighter!")
+			#return
+		#
+		#SignalBus.unit_sold.emit(unit.sell_price)
+		#money += unit.sell_price
 		
 	
 	var gp:Vector2 = unit.global_position
@@ -254,8 +260,8 @@ func move_unit(unit:Unit, to_board_id:Constants.BoardID, to_coord:Vector2i) -> v
 	
 	SignalBus.unit_moved.emit(unit, from_coord, from_board)
 	
-	if to_board == sell_board:
-		unit.queue_free()
+	#if to_board == sell_board:
+		#unit.queue_free()
 	
 	update_unit_order_badges()
 		
@@ -288,10 +294,13 @@ func _on_play_button_pressed() -> void:
 	#print("boss units: ", boss_units)
 	
 	## evaluate each tile on the board
-	for eval_coord:Vector2i in Util.board_evaluation_order():
+	for eval_coord:Vector2i in board_evaluation_order:
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
 		if not unit: continue
 		if unit.dead: continue
+		
+		## animate pipe segments
+		pipe_segments
 		
 		
 		var data:UnitData = Constants.unit_data[unit.id]
@@ -486,7 +495,7 @@ func spawn_bosses() -> Array[Unit]:
 	var available_spawn_coords:Array[Vector2i]
 	
 	## will spawn over dead units
-	for coord:Vector2i in Util.board_evaluation_order():
+	for coord:Vector2i in board_evaluation_order:
 		var unit:Unit = unit_at(coord, Constants.BoardID.play)
 		if unit and not unit.dead: continue
 		available_spawn_coords.push_back(coord)
@@ -590,7 +599,7 @@ func cycle_bonus() -> void:
 
 #region Boss mechanics
 func evaluate_boss(boss:Unit) -> void:
-	for eval_coord:Vector2i in Util.board_evaluation_order():
+	for eval_coord:Vector2i in board_evaluation_order:
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
 		if not unit: continue
 		if unit.hp == 0: continue

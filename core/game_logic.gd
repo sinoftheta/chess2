@@ -81,7 +81,7 @@ func _on_start_game() -> void:
 #endregion
 
 #region Boards
-var pipe_segments:Node2D
+var tile_manager:TileManager
 
 var board_evaluation_order:Array[Vector2i]
 
@@ -299,8 +299,8 @@ func _on_play_button_pressed() -> void:
 		if not unit: continue
 		if unit.dead: continue
 		
-		## animate pipe segments
-		pipe_segments
+		## animate tiles
+		tile_manager
 		
 		
 		var data:UnitData = Constants.unit_data[unit.id]

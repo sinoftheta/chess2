@@ -9,20 +9,24 @@
 script = ExtResource("1_uulph")
 type = 19
 
-[node name="Offset" type="Node2D" parent="."]
+[node name="SwayOffset" type="Node2D" parent="."]
+unique_name_in_owner = true
 
-[node name="Base" type="Sprite2D" parent="Offset"]
+[node name="AnimationOffset" type="Node2D" parent="SwayOffset"]
+unique_name_in_owner = true
+
+[node name="Base" type="Sprite2D" parent="SwayOffset/AnimationOffset"]
 position = Vector2(22, 32)
 texture = ExtResource("2_l53t7")
 
-[node name="Type" type="Sprite2D" parent="Offset"]
+[node name="Type" type="Sprite2D" parent="SwayOffset/AnimationOffset"]
 unique_name_in_owner = true
 modulate = Color(0.1476, 0.25256, 0.41, 0.231373)
 position = Vector2(22, 22)
 texture = ExtResource("3_ys7py")
 vframes = 4
 
-[node name="TypeAnimation" type="Sprite2D" parent="Offset"]
+[node name="TypeAnimation" type="Sprite2D" parent="SwayOffset/AnimationOffset"]
 unique_name_in_owner = true
 modulate = Color(0.608, 0.9329, 0.95, 1)
 position = Vector2(22, 22)
@@ -31,19 +35,22 @@ hframes = 4
 vframes = 4
 frame = 3
 
-[node name="DebugLabel" type="Label" parent="Offset"]
+[node name="DebugLabel" type="Label" parent="SwayOffset/AnimationOffset"]
 unique_name_in_owner = true
+visible = false
+modulate = Color(0.180392, 0, 0, 1)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 2.0
-offset_top = 11.0
-offset_right = 42.0
-offset_bottom = 34.0
+offset_left = -56.0
+offset_top = 9.0
+offset_right = 100.0
+offset_bottom = 32.0
 grow_horizontal = 2
 grow_vertical = 2
+text = "uhh"
 horizontal_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]

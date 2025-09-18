@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://xrdgyjq45cts"]
+[gd_scene load_steps=17 format=3 uid="uid://xrdgyjq45cts"]
 
 [ext_resource type="Script" uid="uid://ctoejpy8mm8pn" path="res://world/world.gd" id="1_4717r"]
 [ext_resource type="PackedScene" uid="uid://bulfda27piwfl" path="res://tile_preview/tile_preview.tscn" id="2_fn3g3"]
@@ -9,8 +9,9 @@
 [ext_resource type="Texture2D" uid="uid://cv5g4k27bvawu" path="res://texture/attacker_board.png" id="5_dqqhb"]
 [ext_resource type="PackedScene" uid="uid://ctucg0vqcgkw7" path="res://turn_end_ui/turn_end_ui.tscn" id="5_sc4t8"]
 [ext_resource type="PackedScene" uid="uid://bo7cpc44ywfib" path="res://run_end_ui/run_end_ui.tscn" id="6_ai45w"]
-[ext_resource type="Texture2D" uid="uid://b87exlf7cx3s5" path="res://texture/board.png" id="6_b2suy"]
 [ext_resource type="PackedScene" uid="uid://d0kairdgbeo8o" path="res://aoe_preview/aoe_preview.tscn" id="6_fn3g3"]
+[ext_resource type="Texture2D" uid="uid://350uo4j3dojd" path="res://texture/play_board.png" id="6_mad0u"]
+[ext_resource type="PackedScene" uid="uid://cv2kprv0cef4b" path="res://tiles/tile_manager.tscn" id="7_ocfjn"]
 [ext_resource type="PackedScene" uid="uid://k0l1vk00ly8h" path="res://failure_message/failure_message.tscn" id="9_4papg"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4717r"]
@@ -45,10 +46,14 @@ texture = ExtResource("5_dqqhb")
 id = 3
 logical_size = Vector2i(1, 3)
 
+[node name="TileManager" parent="." instance=ExtResource("7_ocfjn")]
+position = Vector2(-110, -110)
+
 [node name="PlayBoard" parent="." instance=ExtResource("3_mmdvd")]
 unique_name_in_owner = true
-position = Vector2(-147, -179)
-texture = ExtResource("6_b2suy")
+self_modulate = Color(1, 1, 1, 0)
+position = Vector2(-110, -110)
+texture = ExtResource("6_mad0u")
 logical_size = Vector2i(5, 5)
 
 [node name="Tooltip" parent="." instance=ExtResource("2_mmdvd")]

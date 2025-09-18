@@ -71,28 +71,31 @@ func cursor_inside() -> bool:
 	return Rect2(%Interaction.global_position, %Interaction.size).has_point(get_global_mouse_position())
 func _on_interaction_mouse_entered() -> void:
 	hovered = true
+	#z_index = 2
 	SignalBus.tooltip_try_open.emit(self)
 func _on_interaction_mouse_exited() -> void:
 	if dragging:
 		return
 	hovered = false
+	#z_index = 1
 	SignalBus.tooltip_try_close.emit(self)
 
 func _on_interaction_button_down() -> void:
 	hovered = true
 	dragging = true
-	#z_index = 2
+	#z_index = 3
 
 func _on_interaction_button_up() -> void:
 	dragging = false
-	#z_index = 0
+	#z_index = 1
 	SignalBus.move_unit_to_cursor.emit(self)
 	hovered = cursor_inside()
 
 func _process(delta: float) -> void:
 	var t:float = minf(delta * 13.0,1.0)
 	if dragging:
-		global_position = lerp(global_position, get_global_mouse_position(), t)
+		var next_position:Vector2 = lerp(global_position, get_global_mouse_position(), t)
+		global_position += (next_position - global_position).limit_length(10)
 	else:
 		var fp:Vector2 = Vector2(
 			(logical_position.x + 0.5) / (get_parent() as Board).logical_size.x *\

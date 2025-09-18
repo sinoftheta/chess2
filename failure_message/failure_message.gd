@@ -6,6 +6,7 @@ func _ready() -> void:
 	visible = false
 
 func _on_message_under_cursor(message:String) -> void:
+	print("huh")
 	visible = true
 	text = message
 	position = get_global_mouse_position() - size * 0.5

@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://btwtvotjmr37l"]
+
+[ext_resource type="Script" uid="uid://85p3f2jn6puj" path="res://tiles/tile.gd" id="1_uulph"]
+[ext_resource type="Texture2D" uid="uid://3ibvn85yqp2" path="res://texture/tile_base.png" id="2_l53t7"]
+[ext_resource type="Texture2D" uid="uid://cuplfpej647i0" path="res://texture/tile_type.png" id="3_ys7py"]
+[ext_resource type="Texture2D" uid="uid://bfoqkvx72sa25" path="res://texture/tile_type_animation.png" id="4_esgmk"]
+
+[node name="Tile" type="Node2D"]
+script = ExtResource("1_uulph")
+
+[node name="Offset" type="Node2D" parent="."]
+
+[node name="Base" type="Sprite2D" parent="Offset"]
+position = Vector2(22, 32)
+texture = ExtResource("2_l53t7")
+
+[node name="Type" type="Sprite2D" parent="Offset"]
+unique_name_in_owner = true
+modulate = Color(0.1476, 0.25256, 0.41, 0.231373)
+position = Vector2(22, 22)
+texture = ExtResource("3_ys7py")
+vframes = 4
+
+[node name="TypeAnimation" type="Sprite2D" parent="Offset"]
+unique_name_in_owner = true
+modulate = Color(0.608, 0.9329, 0.95, 1)
+position = Vector2(22, 22)
+texture = ExtResource("4_esgmk")
+hframes = 4
+vframes = 4
+frame = 3
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[connection signal="ready" from="." to="." method="_on_ready"]

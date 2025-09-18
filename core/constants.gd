@@ -512,9 +512,31 @@ enum PipeSegmentType {
 	bottom_to_left,
 	#bottom_to_end,
 	
+}
+enum TileType {
+	start_to_right,
+	start_to_top,
+	start_to_left,
+	start_to_bottom,
 	
+	right_to_top,
+	right_to_left,
+	right_to_bottom,
+	right_to_end,
 	
+	top_to_right,
+	top_to_left,
+	top_to_bottom,
+	top_to_end,
 	
+	left_to_right,
+	left_to_top,
+	left_to_bottom,
+	left_to_end,
 	
+	bottom_to_right,
+	bottom_to_top,
+	bottom_to_left,
+	bottom_to_end,
 	
 }

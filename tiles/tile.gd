@@ -9,14 +9,14 @@ extends Node2D
 		var r:float = 0
 		var flip_h:bool = false
 		var vframe:int = 0
-		
+		%DebugLabel.text = Constants.TileType.keys()[value]
 		match type:
 			Constants.TileType.start_to_right:
 				r = 0
 				flip_h = false
 				vframe = 1
 			Constants.TileType.start_to_top:
-				r = 90
+				r = -90
 				flip_h = false
 				vframe = 1
 			Constants.TileType.start_to_left:
@@ -24,41 +24,41 @@ extends Node2D
 				flip_h = false
 				vframe = 1
 			Constants.TileType.start_to_bottom:
-				r = -90
+				r = 90
 				flip_h = false
 				vframe = 1
 			
 			Constants.TileType.right_to_top:
 				r = 0
-				flip_h = false
+				flip_h = true
 				vframe = 0
 			Constants.TileType.right_to_left:
 				r = 180
 				flip_h = false
 				vframe = 2
 			Constants.TileType.right_to_bottom:
-				r = 0
+				r = 180
 				flip_h = false
 				vframe = 0
 			Constants.TileType.right_to_end:
-				r = 0
+				r = 180
 				flip_h = false
 				vframe = 3
 			
 			Constants.TileType.top_to_right:
-				r = 0
+				r = 90
 				flip_h = false
 				vframe = 0
 			Constants.TileType.top_to_left:
-				r = 0
-				flip_h = false
+				r = -90
+				flip_h = true
 				vframe = 0
 			Constants.TileType.top_to_bottom:
-				r = -90
+				r = 90
 				flip_h = false
 				vframe = 2
 			Constants.TileType.top_to_end:
-				r = 0
+				r = 90
 				flip_h = false
 				vframe = 3
 			
@@ -71,8 +71,8 @@ extends Node2D
 				flip_h = false
 				vframe = 0
 			Constants.TileType.left_to_bottom:
-				r = 0
-				flip_h = false
+				r = 180
+				flip_h = true
 				vframe = 0
 			Constants.TileType.left_to_end:
 				r = 0
@@ -80,19 +80,19 @@ extends Node2D
 				vframe = 3
 			
 			Constants.TileType.bottom_to_right:
-				r = 0
-				flip_h = false
+				r = 90
+				flip_h = true
 				vframe = 0
 			Constants.TileType.bottom_to_top:
-				r = 90
+				r = -90
 				flip_h = false
 				vframe = 2
 			Constants.TileType.bottom_to_left:
-				r = 0
+				r = -90
 				flip_h = false
 				vframe = 0
 			Constants.TileType.bottom_to_end:
-				r = 0
+				r = -90
 				flip_h = false
 				vframe = 3
 		

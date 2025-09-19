@@ -80,10 +80,13 @@ func _on_start_game() -> void:
 	SignalBus.game_started.emit()
 #endregion
 
+
 #region Boards
-var tile_manager:TileManager
 
 var board_evaluation_order:Array[Vector2i]
+
+
+
 
 var boards:Dictionary[Constants.BoardID,   Board]
 var play_board:Board: 
@@ -117,6 +120,19 @@ var animating:bool:
 		animating = value
 		if value != prev:
 			SignalBus.animating_state_updated.emit(value)
+
+var tile_managers:Dictionary[Constants.BoardID, TileManager]
+var play_tile_manager:TileManager:
+	get(): return tile_managers[Constants.BoardID.play]
+
+#var attacker_shop_tile_manager:TileManager:
+	#get(): return tile_managers[Constants.BoardID.attacker_shop]
+#
+#var adder_shop_tile_manager:TileManager:
+	#get(): return tile_managers[Constants.BoardID.attacker_shop]
+#var healer_shop_tile_manager:TileManager:
+	#get(): return tile_managers[Constants.BoardID.attacker_shop]
+
 #endregion
 
 #region Run State
@@ -300,7 +316,7 @@ func _on_play_button_pressed() -> void:
 		if unit.dead: continue
 		
 		## animate tiles
-		tile_manager
+		play_tile_manager
 		
 		
 		var data:UnitData = Constants.unit_data[unit.id]

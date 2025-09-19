@@ -1,14 +1,19 @@
 class_name TileManager
 extends Node2D
 
+@export var id:Constants.BoardID
+
 
 var tile_tscn:PackedScene = preload("res://tiles/tile.tscn")
 func _ready() -> void:
+	GameLogic.tile_managers[id] = self
 	SignalBus.game_started.connect(_on_game_started)
 
 func _on_game_started() -> void:
-	setup_board(GameLogic.play_board.logical_size)
-	set_order_chevrons(GameLogic.board_evaluation_order)
+	clear_board()
+	setup_board(GameLogic.boards[id].logical_size)
+	if id == Constants.BoardID.play:
+		set_order_chevrons(GameLogic.board_evaluation_order)
 	
 enum PathPart {
 	start,
@@ -87,6 +92,7 @@ func setup_board(logical_size:Vector2i) -> void:
 		for y:int in range(logical_size.y):
 			var tile:Tile = tile_tscn.instantiate()
 			tile.logical_position = Vector2i(x,y)
+			tile.board_id = id
 			add_child(tile) ## tiles with a high y val are added to the tree last... this is what we want
 	
 	

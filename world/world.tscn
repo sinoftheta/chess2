@@ -26,32 +26,27 @@ bg_color = Color(0.349496, 0.695422, 0.26875, 1)
 script = ExtResource("1_4717r")
 
 [node name="HealerShopBoard" parent="." instance=ExtResource("3_mmdvd")]
-unique_name_in_owner = true
 position = Vector2(223, -83)
 texture = ExtResource("3_mad0u")
 id = 5
 logical_size = Vector2i(1, 3)
 
 [node name="AdderShopBoard" parent="." instance=ExtResource("3_mmdvd")]
-unique_name_in_owner = true
 position = Vector2(272, -83)
 texture = ExtResource("4_ocfjn")
 id = 4
 logical_size = Vector2i(1, 3)
 
 [node name="AttackShopBoard" parent="." instance=ExtResource("3_mmdvd")]
-unique_name_in_owner = true
 position = Vector2(174, -83)
 texture = ExtResource("5_dqqhb")
 id = 3
 logical_size = Vector2i(1, 3)
 
-[node name="TileManager" parent="." instance=ExtResource("7_ocfjn")]
+[node name="PlayTileManager" parent="." instance=ExtResource("7_ocfjn")]
 position = Vector2(-110, -110)
 
 [node name="PlayBoard" parent="." instance=ExtResource("3_mmdvd")]
-unique_name_in_owner = true
-visible = false
 self_modulate = Color(1, 1, 1, 0)
 position = Vector2(-110, -110)
 texture = ExtResource("6_mad0u")

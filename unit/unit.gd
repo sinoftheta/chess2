@@ -7,6 +7,7 @@ func _ready() -> void:
 	SignalBus.animating_state_updated.connect(_on_animation_state_updated)
 	(%Sprite as Sprite2D).hframes = (%Sprite as Sprite2D).texture.get_width()  / 48
 	(%Sprite as Sprite2D).vframes = (%Sprite as Sprite2D).texture.get_height() / 48
+	
 
 #region target preview
 var target:bool:
@@ -59,13 +60,25 @@ var sell_price:int:
 #endregion
 
 #region Cursor interactions
-var dragging:bool:
+enum DragState {
+	idle,
+	returning,
+	held
+}
+var drag_state:DragState:
 	set(value):
-		dragging = value
-		if value:
-			MouseLogic.dragged_unit = self
-		else:
-			MouseLogic.dragged_unit = null
+		drag_state = value
+		
+		match value:
+			DragState.held:
+				MouseLogic.dragged_unit = self
+				z_index = 2
+			DragState.returning:
+				MouseLogic.dragged_unit = null
+				z_index = 1
+			DragState.idle:
+				z_index = 0
+		(%Shadow as Sprite2D).visible = value == DragState.idle
 var hovered:bool
 func cursor_inside() -> bool:
 	return Rect2(%Interaction.global_position, %Interaction.size).has_point(get_global_mouse_position())
@@ -74,7 +87,7 @@ func _on_interaction_mouse_entered() -> void:
 	#z_index = 2
 	SignalBus.tooltip_try_open.emit(self)
 func _on_interaction_mouse_exited() -> void:
-	if dragging:
+	if drag_state == DragState.held:
 		return
 	hovered = false
 	#z_index = 1
@@ -82,29 +95,41 @@ func _on_interaction_mouse_exited() -> void:
 
 func _on_interaction_button_down() -> void:
 	hovered = true
-	dragging = true
+	drag_state = DragState.held
 	#z_index = 3
 
 func _on_interaction_button_up() -> void:
-	dragging = false
+	drag_state = DragState.returning
 	#z_index = 1
 	SignalBus.move_unit_to_cursor.emit(self)
 	hovered = cursor_inside()
 
 func _process(delta: float) -> void:
 	var t:float = minf(delta * 13.0,1.0)
-	if dragging:
-		var next_position:Vector2 = lerp(global_position, get_global_mouse_position(), t)
-		global_position += (next_position - global_position).limit_length(10)
-	else:
-		var fp:Vector2 = Vector2(
-			(logical_position.x + 0.5) / (get_parent() as Board).logical_size.x *\
-			(get_parent() as Board).texture.get_size().x,
-			(logical_position.y + 0.5) / (get_parent() as Board).logical_size.y *\
-			(get_parent() as Board).texture.get_size().y
-		)
-		var next_position:Vector2 = lerp(position, fp, t)
-		position += (next_position - position).limit_length(10)
+	match drag_state:
+		
+		DragState.returning:
+			var fp:Vector2 =\
+			(GameLogic.tile_managers[(get_parent() as Board).id]\
+			.get_node_or_null(Util.coord_to_name(logical_position)) as Tile)\
+			.visual_position
+			
+			var next_position:Vector2 = lerp(global_position, fp, t)
+			var dp:Vector2 = (next_position - global_position).limit_length(10)
+			global_position += dp
+			if dp.length_squared() < 3.16227766017: ## sqrt 10
+				drag_state = DragState.idle
+		
+		DragState.held:
+			var next_position:Vector2 = lerp(global_position, get_global_mouse_position(), t)
+			global_position += (next_position - global_position).limit_length(10)
+		
+		DragState.idle:
+			global_position =\
+			(GameLogic.tile_managers[(get_parent() as Board).id]\
+			.get_node_or_null(Util.coord_to_name(logical_position)) as Tile)\
+			.visual_position
+
 
 #endregion
 
@@ -233,7 +258,7 @@ func animate_dead(tween:Tween, animation_tick:int) -> void:
 		%Interaction.visible = false
 		%OrderValue.visible = false
 		hovered = false
-		dragging = false
+		drag_state = DragState.idle
 		SignalBus.tooltip_try_close.emit(self)
 		%DeadParticles.emitting = true
 	).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
@@ -285,10 +310,10 @@ func projectile_animation(tween:Tween, animation_tick:int, source_coord:Vector2i
 	
 	tween.tween_property(
 		%Projectile, "position", 
-		(get_parent() as Board).position + (Vector2(logical_position) + Vector2(0.5,0.5)) * Constants.GRID_SIZE,
+		(get_parent() as Board).position + (Vector2(logical_position) + Vector2(0.5,0.5)), #* Constants.GRID_SIZE,
 			Constants.ANIMATION_TICK_TIME)\
 	.from(
-		(get_parent() as Board).position + (Vector2(source_coord    ) + Vector2(0.5,0.5)) * Constants.GRID_SIZE
+		(get_parent() as Board).position + (Vector2(source_coord    ) + Vector2(0.5,0.5)), #* Constants.GRID_SIZE
 	)\
 	.set_delay((animation_tick - 1) * Constants.ANIMATION_TICK_TIME)\
 	.set_ease(Tween.EASE_IN)\

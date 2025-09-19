@@ -71,7 +71,7 @@ func show_aoe(unit:Unit, board_id:Constants.BoardID, coord:Vector2i, highlight_t
 		if i < aoe.size():
 			if Rect2i(Vector2i.ZERO, board_node.logical_size).has_point(aoe[i] + offset):
 				tile.visible = true
-				tile.position = Vector2(aoe[i] + offset) * Constants.GRID_SIZE
+				#tile.position = Vector2(aoe[i] + offset) * Constants.GRID_SIZE
 				
 				var targeted_unit:Unit = GameLogic.unit_at(aoe[i] + offset, Constants.BoardID.play)
 				if targeted_unit:

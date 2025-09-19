@@ -4,34 +4,46 @@ extends Node2D
 
 var mouse_bounce_amplitude:float = 0
 var mouse_bounce_ts:int
+var sway_amplitude:float = 2
+var final_sway_amplitude:float = 2
 
 func _ready() -> void:
 	SignalBus.logical_mouse_location_updated.connect(_on_logical_mouse_location_updated)
+	SignalBus.play_button_pressed  .connect(_on_play_button_pressed)
+	SignalBus.next_turn_pressed    .connect(_on_next_turn_pressed)
+	
+func _on_play_button_pressed() -> void:
+	final_sway_amplitude = 0
+func _on_next_turn_pressed() -> void:
+	final_sway_amplitude = 2
 	
 func _on_logical_mouse_location_updated(board:Constants.BoardID, coord:Vector2i, in_bounds:bool) -> void:
 	if coord != logical_position: return
 	if not in_bounds: return
-	## TODO: check for board
+	if board != board_id: return
 	
-	mouse_bounce_amplitude = 4
+	mouse_bounce_amplitude = 4 if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) else 2
 	mouse_bounce_ts = Engine.get_frames_drawn()
 
 func _process(delta: float) -> void:
 	(%SwayOffset as Node2D).position = Vector2(
 		sin(Engine.get_frames_drawn() * 0.04 + logical_position.x * 0.5 + logical_position.y * 0.5),
 		cos(Engine.get_frames_drawn() * 0.08 + logical_position.y * 0.5 + logical_position.x * 0.5),
-	) * 2
+	) * sway_amplitude
 	
 	(%MouseBounce as Node2D).position.y = cos(
 		(Engine.get_frames_drawn() - mouse_bounce_ts) * 0.8
 	) * mouse_bounce_amplitude
 	
 	mouse_bounce_amplitude *= 0.92
+	sway_amplitude = lerpf(sway_amplitude, final_sway_amplitude, minf(delta * 8, 1.0))
 	
 	
-
+## this should return the final visual position of the center of the tile
 var visual_position:Vector2:
-	get(): return (%AnimationOffset as Node2D).global_position
+	get(): return (%AnimationOffset as Node2D).global_position + Vector2.ONE * 22 + Vector2(0,-8)
+
+var board_id:Constants.BoardID
 var logical_position:Vector2i:
 	set(value):
 		logical_position = value

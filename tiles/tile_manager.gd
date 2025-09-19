@@ -85,6 +85,7 @@ func set_order_chevrons(board_evaluation_order:Array[Vector2i]) -> void:
 		var tile:Tile = get_node_or_null(Util.coord_to_name(coord))
 		if not tile: assert(false)
 		tile.type = tile_type
+		tile.order = i
 			
 	
 func setup_board(logical_size:Vector2i) -> void:

@@ -310,13 +310,22 @@ func _on_play_button_pressed() -> void:
 	#print("boss units: ", boss_units)
 	
 	## evaluate each tile on the board
-	for eval_coord:Vector2i in board_evaluation_order:
+	
+	for i:int in board_evaluation_order.size():
+		var eval_coord:Vector2i = board_evaluation_order[i]
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
 		if not unit: continue
 		if unit.dead: continue
 		
 		## animate tiles
-		play_tile_manager
+		for tile:Tile in play_tile_manager.get_children():
+			tween.tween_property(
+				tile, "chevron_animation", 
+				(i + 0.5) / board_evaluation_order.size(), 
+				 Constants.ANIMATION_TICK_TIME
+			).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+		animation_tick += 1
+			
 		
 		
 		var data:UnitData = Constants.unit_data[unit.id]
@@ -413,6 +422,15 @@ func _on_play_button_pressed() -> void:
 	for i:int in range(boss_units.size()):
 		turn_boss_damage[turn_boss_damage.size() - 1] += boss_init_hp[i] - boss_units[i].hp
 	
+	
+	
+	## reset chevron animation
+	for tile:Tile in play_tile_manager.get_children():
+		tween.tween_property(
+			tile, "chevron_animation", 0, 
+			 Constants.ANIMATION_TICK_TIME
+		).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	animation_tick += 1
 	
 	var boss_remaining  :int = 0
 	var allies_remaining:int = 0

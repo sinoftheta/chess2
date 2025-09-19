@@ -58,13 +58,6 @@ offset_top = -179.0
 offset_right = -314.0
 offset_bottom = -179.0
 
-[node name="OrderLabel1" type="Label" parent="."]
-offset_left = 51.0
-offset_top = -137.0
-offset_right = 94.0
-offset_bottom = -114.0
-text = "order"
-
 [node name="TilePreview" parent="." instance=ExtResource("2_fn3g3")]
 visible = false
 

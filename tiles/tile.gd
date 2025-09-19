@@ -43,12 +43,31 @@ func _process(delta: float) -> void:
 var visual_position:Vector2:
 	get(): return (%AnimationOffset as Node2D).global_position + Vector2.ONE * 22 + Vector2(0,-8)
 
+var order:int
+
 var board_id:Constants.BoardID
 var logical_position:Vector2i:
 	set(value):
 		logical_position = value
 		position = Vector2(logical_position) * 44
 		name = Util.coord_to_name(logical_position)
+
+@export_range(0.0,1.0,0.01) var chevron_animation:float:
+	set(value):
+		chevron_animation = value
+		
+		(%TypeAnimation as Sprite2D).frame_coords.x = clampi(roundi(
+			(%TypeAnimation as Sprite2D).hframes * 
+			clampf(
+				inverse_lerp(
+					float(order), 
+					float(order + 1), 
+					chevron_animation * get_parent().get_child_count()
+				), 
+				0.0, 
+				1.0
+			)
+		),0,(%TypeAnimation as Sprite2D).hframes - 1)
 
 @export var type:Constants.TileType:
 	set(value):
@@ -154,3 +173,4 @@ var logical_position:Vector2i:
 
 func _on_ready() -> void:
 	type = type
+	chevron_animation = 0

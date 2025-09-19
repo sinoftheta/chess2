@@ -1,0 +1,1 @@
+Bellua is a turn-based, grid-based, auto-battler roguelike with simple rules that lead to brain twisting puzzles and chaotic mechanics! Carefully arrange your monsters to create devastating combos and massive bonuses in order to survive and take down the Boss! Can you make it out of the dungeon?

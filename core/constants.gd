@@ -314,7 +314,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		ShopRarity.common, ## shop_rarity
 		3,  ## base_shop_price
 		#null ## tooltip_texture
-		Vector2i.ZERO
+		Vector2i(1,0)
 	),
 	UnitID.attacker2: UnitData.new(
 		"Frum",  ## title
@@ -332,7 +332,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		ShopRarity.common, ## shop_rarity
 		3,  ## base_shop_price
 		#null ## tooltip_texture
-		Vector2i.ZERO
+		Vector2i(1,1)
 	),
 	UnitID.attacker3: UnitData.new(
 		"Klat",  ## title
@@ -350,7 +350,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		ShopRarity.common, ## shop_rarity
 		3,  ## base_shop_price
 		#null ## tooltip_texture
-		Vector2i.ZERO
+		Vector2i(1,2)
 	),
 	
 	

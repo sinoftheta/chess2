@@ -1,7 +1,6 @@
-[gd_scene load_steps=17 format=3 uid="uid://xrdgyjq45cts"]
+[gd_scene load_steps=16 format=3 uid="uid://xrdgyjq45cts"]
 
 [ext_resource type="Script" uid="uid://ctoejpy8mm8pn" path="res://world/world.gd" id="1_4717r"]
-[ext_resource type="PackedScene" uid="uid://bulfda27piwfl" path="res://tile_preview/tile_preview.tscn" id="2_fn3g3"]
 [ext_resource type="PackedScene" uid="uid://bl7yw07rwfxj0" path="res://tooltip/tooltip.tscn" id="2_mmdvd"]
 [ext_resource type="Texture2D" uid="uid://dhjhx4nq351dd" path="res://texture/healer_board.png" id="3_mad0u"]
 [ext_resource type="PackedScene" uid="uid://yrsr5vndikk" path="res://board/board.tscn" id="3_mmdvd"]
@@ -9,8 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://cv5g4k27bvawu" path="res://texture/attacker_board.png" id="5_dqqhb"]
 [ext_resource type="PackedScene" uid="uid://ctucg0vqcgkw7" path="res://turn_end_ui/turn_end_ui.tscn" id="5_sc4t8"]
 [ext_resource type="PackedScene" uid="uid://bo7cpc44ywfib" path="res://run_end_ui/run_end_ui.tscn" id="6_ai45w"]
-[ext_resource type="PackedScene" uid="uid://d0kairdgbeo8o" path="res://aoe_preview/aoe_preview.tscn" id="6_fn3g3"]
 [ext_resource type="Texture2D" uid="uid://350uo4j3dojd" path="res://texture/play_board.png" id="6_mad0u"]
+[ext_resource type="Script" uid="uid://d1crt85jlpphd" path="res://world/aoe_manager.gd" id="6_ocfjn"]
 [ext_resource type="PackedScene" uid="uid://cv2kprv0cef4b" path="res://tiles/tile_manager.tscn" id="7_ocfjn"]
 [ext_resource type="PackedScene" uid="uid://k0l1vk00ly8h" path="res://failure_message/failure_message.tscn" id="9_4papg"]
 
@@ -43,7 +42,11 @@ texture = ExtResource("5_dqqhb")
 id = 3
 logical_size = Vector2i(1, 3)
 
+[node name="AoeManager" type="Node" parent="."]
+script = ExtResource("6_ocfjn")
+
 [node name="PlayTileManager" parent="." instance=ExtResource("7_ocfjn")]
+unique_name_in_owner = true
 position = Vector2(-110, -110)
 
 [node name="PlayBoard" parent="." instance=ExtResource("3_mmdvd")]
@@ -57,9 +60,6 @@ offset_left = -314.0
 offset_top = -179.0
 offset_right = -314.0
 offset_bottom = -179.0
-
-[node name="TilePreview" parent="." instance=ExtResource("2_fn3g3")]
-visible = false
 
 [node name="TurnText" type="Label" parent="."]
 offset_left = 43.0
@@ -143,8 +143,6 @@ position = Vector2(56, 16)
 [node name="SellBoard" parent="." instance=ExtResource("3_mmdvd")]
 id = 2
 logical_size = Vector2i(2, 2)
-
-[node name="AoePreview" parent="." instance=ExtResource("6_fn3g3")]
 
 [node name="MovementFailureMessage" parent="." instance=ExtResource("9_4papg")]
 

@@ -85,13 +85,13 @@ func cursor_inside() -> bool:
 func _on_interaction_mouse_entered() -> void:
 	hovered = true
 	#z_index = 2
-	SignalBus.tooltip_try_open.emit(self)
+	#SignalBus.tooltip_try_open.emit(self)
 func _on_interaction_mouse_exited() -> void:
 	if drag_state == DragState.held:
 		return
 	hovered = false
 	#z_index = 1
-	SignalBus.tooltip_try_close.emit(self)
+	#SignalBus.tooltip_try_close.emit(self)
 
 func _on_interaction_button_down() -> void:
 	hovered = true
@@ -131,13 +131,6 @@ func _process(delta: float) -> void:
 			.visual_position
 
 
-#endregion
-
-#region tooltip
-func tooltip_focus_gained() -> void:
-	pass
-func tooltip_focus_lost() -> void:
-	pass
 #endregion
 
 #region Animations

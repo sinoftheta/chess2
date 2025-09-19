@@ -36,9 +36,11 @@ signal cant_afford_reroll()
 #endregion
 
 #region tooltip
-signal tooltip_try_open(unit:Unit)
-signal tooltip_try_close(unit:Unit)
-signal tooltip_closed()
+signal tooltip_open(unit:Unit)
+signal tooltip_close()
+
+signal show_aoe_preview(unit:Unit, at_coords:Vector2i)
+signal hide_aoe_preview()
 
 signal logical_mouse_location_updated(board:Constants.BoardID, coord:Vector2i, in_bounds:bool)
 #endregion

@@ -7,6 +7,19 @@ var mouse_bounce_ts:int
 var sway_amplitude:float = 2
 var final_sway_amplitude:float = 2
 
+var hover_targert:bool:
+	set(value):
+		(%HoverTarget as Sprite2D).visible = value
+
+var aoe_highlight_color:Color:
+	set(value):
+		(%AoeHighlight as Sprite2D).modulate = value
+		
+var aoe_highlight:bool:
+	set(value):
+		(%AoeHighlight as Sprite2D).visible = value
+	get(): return (%AoeHighlight as Sprite2D).visible 
+
 func _ready() -> void:
 	SignalBus.logical_mouse_location_updated.connect(_on_logical_mouse_location_updated)
 	SignalBus.play_button_pressed  .connect(_on_play_button_pressed)
@@ -26,6 +39,13 @@ func _on_logical_mouse_location_updated(board:Constants.BoardID, coord:Vector2i,
 	mouse_bounce_ts = Engine.get_frames_drawn()
 
 func _process(delta: float) -> void:
+	
+	(%AoeHighlight as Sprite2D).modulate.a = 0.8 + 0.2 * sin(
+		sin(Engine.get_frames_drawn() * 0.08 + logical_position.x * 0.5 + logical_position.y * 0.5)
+	)
+	
+	(%HoverTarget as Sprite2D).scale = Vector2.ONE * (1.0 + 0.2 * sin(Engine.get_frames_drawn() * 0.08))
+	
 	(%SwayOffset as Node2D).position = Vector2(
 		sin(Engine.get_frames_drawn() * 0.04 + logical_position.x * 0.5 + logical_position.y * 0.5),
 		cos(Engine.get_frames_drawn() * 0.08 + logical_position.y * 0.5 + logical_position.x * 0.5),

@@ -4,8 +4,8 @@ extends Control
 var unit:Unit
 
 func _ready() -> void:
-	SignalBus.tooltip_try_open.connect(_on_tooltip_try_open)
-	SignalBus.tooltip_try_close.connect(_on_tooltip_try_close)
+	SignalBus.tooltip_open.connect(_on_tooltip_open)
+	SignalBus.tooltip_close.connect(_on_tooltip_close)
 	SignalBus.unit_moved.connect(_on_unit_moved)
 	(%UnitPreview as Sprite2D).hframes = (%UnitPreview as Sprite2D).texture.get_width()  / 48
 	(%UnitPreview as Sprite2D).vframes = (%UnitPreview as Sprite2D).texture.get_height() / 48
@@ -15,21 +15,15 @@ func _on_unit_moved(moved_unit:Unit, prev_coord:Vector2i, prev_board:Board) -> v
 	if moved_unit == unit:
 		#print("ayo update the thing")
 		pass
-func _on_tooltip_try_open(opened_unit:Unit) -> void:
-	if unit:
-		unit.tooltip_focus_lost()
+func _on_tooltip_open(opened_unit:Unit) -> void:
+	#if unit:
+		#unit.tooltip_focus_lost()
 	unit = opened_unit
-	unit.tooltip_focus_gained()
+	#unit.tooltip_focus_gained()
 	tooltip_opened()
 	
 	
-func _on_tooltip_try_close(closed_unit:Unit) -> void:
-	closed_unit.tooltip_focus_lost()
-	if unit != closed_unit: return
-	if unit:
-		unit.tooltip_focus_lost()
-	unit = null
-	SignalBus.tooltip_closed.emit()
+func _on_tooltip_close() -> void:
 	tooltip_closed()
 
 func tooltip_opened() -> void:

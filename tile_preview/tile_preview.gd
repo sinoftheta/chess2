@@ -6,4 +6,4 @@ func _ready() -> void:
 
 func _on_logical_mouse_position_updated(board:Constants.BoardID, coord:Vector2i, in_bounds:bool) -> void:
 	visible = in_bounds
-	position = GameLogic.boards[board].position + Vector2(coord) * Constants.GRID_SIZE
+	#position = GameLogic.boards[board].position + Vector2(coord) * Constants.GRID_SIZE

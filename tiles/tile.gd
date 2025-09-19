@@ -2,11 +2,36 @@ class_name Tile
 extends Node2D
 
 
+var mouse_bounce_amplitude:float = 0
+var mouse_bounce_ts:int
+
+func _ready() -> void:
+	SignalBus.logical_mouse_location_updated.connect(_on_logical_mouse_location_updated)
+	
+func _on_logical_mouse_location_updated(board:Constants.BoardID, coord:Vector2i, in_bounds:bool) -> void:
+	if coord != logical_position: return
+	if not in_bounds: return
+	## TODO: check for board
+	
+	mouse_bounce_amplitude = 4
+	mouse_bounce_ts = Engine.get_frames_drawn()
+
 func _process(delta: float) -> void:
 	(%SwayOffset as Node2D).position = Vector2(
-		sin(Engine.get_frames_drawn() * 0.04 + logical_position.x * 0.5),
-		cos(Engine.get_frames_drawn() * 0.08 + logical_position.y * 0.5),
+		sin(Engine.get_frames_drawn() * 0.04 + logical_position.x * 0.5 + logical_position.y * 0.5),
+		cos(Engine.get_frames_drawn() * 0.08 + logical_position.y * 0.5 + logical_position.x * 0.5),
 	) * 2
+	
+	(%MouseBounce as Node2D).position.y = cos(
+		(Engine.get_frames_drawn() - mouse_bounce_ts) * 0.8
+	) * mouse_bounce_amplitude
+	
+	mouse_bounce_amplitude *= 0.92
+	
+	
+
+var visual_position:Vector2:
+	get(): return (%AnimationOffset as Node2D).global_position
 var logical_position:Vector2i:
 	set(value):
 		logical_position = value

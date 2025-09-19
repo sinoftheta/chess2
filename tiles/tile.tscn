@@ -12,21 +12,24 @@ type = 19
 [node name="SwayOffset" type="Node2D" parent="."]
 unique_name_in_owner = true
 
-[node name="AnimationOffset" type="Node2D" parent="SwayOffset"]
+[node name="MouseBounce" type="Node2D" parent="SwayOffset"]
 unique_name_in_owner = true
 
-[node name="Base" type="Sprite2D" parent="SwayOffset/AnimationOffset"]
+[node name="AnimationOffset" type="Node2D" parent="SwayOffset/MouseBounce"]
+unique_name_in_owner = true
+
+[node name="Base" type="Sprite2D" parent="SwayOffset/MouseBounce/AnimationOffset"]
 position = Vector2(22, 32)
 texture = ExtResource("2_l53t7")
 
-[node name="Type" type="Sprite2D" parent="SwayOffset/AnimationOffset"]
+[node name="Type" type="Sprite2D" parent="SwayOffset/MouseBounce/AnimationOffset"]
 unique_name_in_owner = true
 modulate = Color(0.1476, 0.25256, 0.41, 0.231373)
 position = Vector2(22, 22)
 texture = ExtResource("3_ys7py")
 vframes = 4
 
-[node name="TypeAnimation" type="Sprite2D" parent="SwayOffset/AnimationOffset"]
+[node name="TypeAnimation" type="Sprite2D" parent="SwayOffset/MouseBounce/AnimationOffset"]
 unique_name_in_owner = true
 modulate = Color(0.608, 0.9329, 0.95, 1)
 position = Vector2(22, 22)
@@ -35,7 +38,7 @@ hframes = 4
 vframes = 4
 frame = 3
 
-[node name="DebugLabel" type="Label" parent="SwayOffset/AnimationOffset"]
+[node name="DebugLabel" type="Label" parent="SwayOffset/MouseBounce/AnimationOffset"]
 unique_name_in_owner = true
 visible = false
 modulate = Color(0.180392, 0, 0, 1)

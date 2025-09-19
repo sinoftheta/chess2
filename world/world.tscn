@@ -51,6 +51,7 @@ position = Vector2(-110, -110)
 
 [node name="PlayBoard" parent="." instance=ExtResource("3_mmdvd")]
 unique_name_in_owner = true
+visible = false
 self_modulate = Color(1, 1, 1, 0)
 position = Vector2(-110, -110)
 texture = ExtResource("6_mad0u")
@@ -70,6 +71,7 @@ offset_bottom = -114.0
 text = "order"
 
 [node name="TilePreview" parent="." instance=ExtResource("2_fn3g3")]
+visible = false
 
 [node name="TurnText" type="Label" parent="."]
 offset_left = 43.0

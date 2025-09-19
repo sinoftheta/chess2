@@ -33,7 +33,16 @@ func _process(delta: float) -> void:
 	if not cursor_over_board:
 		board_id_under_cursor = Constants.BoardID.none
 		coord_under_cursor = Vector2.ZERO
-	
+		
+	if (prev_board_under_cursor != board_id_under_cursor or
+		prev_coord_under_cursor != coord_under_cursor):
+			SignalBus.logical_mouse_location_updated.emit(
+				board_id_under_cursor,
+				coord_under_cursor,
+				cursor_over_board
+			)
+			prev_board_under_cursor = board_id_under_cursor
+			prev_coord_under_cursor = coord_under_cursor
 	#print(coord_under_cursor, " on ", Constants.BoardID.keys()[board_id_under_cursor])
 
 func _on_move_unit_to_cursor(unit:Unit) -> void:

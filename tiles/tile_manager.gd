@@ -87,7 +87,7 @@ func setup_board(logical_size:Vector2i) -> void:
 		for y:int in range(logical_size.y):
 			var tile:Tile = tile_tscn.instantiate()
 			tile.logical_position = Vector2i(x,y)
-			add_child(tile)
+			add_child(tile) ## tiles with a high y val are added to the tree last... this is what we want
 	
 	
 func clear_board() -> void:

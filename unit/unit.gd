@@ -13,11 +13,18 @@ func _ready() -> void:
 var target:bool:
 	set(value):
 		%TargetedIndicator.visible = value
+var upgrade:bool:
+	set(value):
+		upgrade = value
 var play_order:int:
 	set(value):
 		play_order = value
 		%OrderValue.visible = value > 0
 		%OrderValue.text = str(value)
+var animated_hp:int:
+	set(value):
+		animated_hp = value
+		%HealthValue.text = str(int(value))
 #endregion
 
 func _on_animation_state_updated(animating:bool) -> void:
@@ -29,8 +36,8 @@ var id:Constants.UnitID:
 		id = value
 		var data:UnitData = Constants.unit_data[value]
 		(%Sprite as Sprite2D).frame_coords = data.texture_coord
-		max_hp = data.base_health
 		hp = data.base_health
+		animated_hp = hp
 		init_stat = data.base_stat
 		stat = data.base_stat
 var logical_position:Vector2i:
@@ -48,7 +55,6 @@ var turns_in_play:int = 0
 var init_stat:float = 1.0
 var stat:float = 1.0
 var hp:float = 10.0
-var max_hp:float = 10.0
 var dead:bool = false
 
 var buy_price:int:
@@ -185,9 +191,10 @@ func animate_attacked(tween:Tween, animation_tick:int, source_coord:Vector2i, pr
 	tween.tween_callback(func() -> void:%HPBar.visible = true)\
 	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 	
-	tween.tween_property(%HPBar, "size:x", hp_bar_length(hp), Constants.ANIMATION_TICK_TIME * 0.25)\
-	.from(hp_bar_length(prev_hp))\
+	tween.tween_property(self, "animated_hp", hp, Constants.ANIMATION_TICK_TIME * 0.25)\
+	.from(prev_hp)\
 	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	
 	
 	tween.tween_callback(func() -> void:%HPBar.visible = false)\
 	.set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
@@ -236,9 +243,9 @@ func animate_healed(tween:Tween, animation_tick:int, source_coord:Vector2i, prev
 	tween.tween_callback(func() -> void:%HPBar.visible = true)\
 	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 	
-	tween.tween_property(%HPBar, "size:x", hp_bar_length(hp), Constants.ANIMATION_TICK_TIME * 0.25)\
-	.from(hp_bar_length(prev_hp))\
-	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	#tween.tween_property(%HPBar, "size:x", hp_bar_length(hp), Constants.ANIMATION_TICK_TIME * 0.25)\
+	#.from(hp_bar_length(prev_hp))\
+	#.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 	
 	tween.tween_callback(func() -> void:%HPBar.visible = false)\
 	.set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
@@ -288,8 +295,6 @@ func message_animation(tween:Tween, animation_tick:int, message:String) -> void:
 		%Message.visible = false
 	).set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
 	
-func hp_bar_length(given_hp:float) -> float:
-	return given_hp/max_hp * 50.0
 	
 func projectile_animation(tween:Tween, animation_tick:int, source_coord:Vector2i, type:Constants.UnitType) -> void:
 

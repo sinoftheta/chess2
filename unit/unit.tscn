@@ -1,13 +1,14 @@
-[gd_scene load_steps=13 format=3 uid="uid://je4xne0s26pp"]
+[gd_scene load_steps=14 format=3 uid="uid://je4xne0s26pp"]
 
 [ext_resource type="Script" uid="uid://1goxqi70cjt0" path="res://unit/unit.gd" id="1_hy15m"]
 [ext_resource type="Texture2D" uid="uid://dfxphffj5b4hy" path="res://texture/units.png" id="2_2ul3e"]
 [ext_resource type="Texture2D" uid="uid://d11ch0w3tp21s" path="res://texture/shadow.png" id="2_a3q01"]
 [ext_resource type="PackedScene" uid="uid://bt6n8ds1s1nrm" path="res://projectile/projectile.tscn" id="3_hs7ws"]
-[ext_resource type="Script" uid="uid://bnjqwxxwvexo4" path="res://unit/targeted_indicator.gd" id="3_japly"]
+[ext_resource type="Script" uid="uid://bnjqwxxwvexo4" path="res://unit/indicator.gd" id="3_japly"]
 [ext_resource type="Texture2D" uid="uid://cnon8p3m7tbvk" path="res://texture/targeted_indicator.png" id="3_s1ym6"]
 [ext_resource type="Theme" uid="uid://d0frw4jf8nm5t" path="res://unit/value_theme.tres" id="4_2ul3e"]
 [ext_resource type="Texture2D" uid="uid://dw5qaybqq8tqx" path="res://texture/moved_indicator.png" id="5_7oxhv"]
+[ext_resource type="Texture2D" uid="uid://q8yqjoluf6wg" path="res://texture/heart.png" id="8_4xbu7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hy15m"]
 
@@ -64,6 +65,8 @@ texture = ExtResource("2_a3q01")
 [node name="Sprite" type="Sprite2D" parent="DragMotionTX/CursorTX"]
 unique_name_in_owner = true
 texture = ExtResource("2_2ul3e")
+hframes = 5
+vframes = 22
 
 [node name="MovedInidicator" type="Sprite2D" parent="DragMotionTX/CursorTX"]
 unique_name_in_owner = true
@@ -97,6 +100,7 @@ color = Color(1, 0.176471, 0, 1)
 
 [node name="OrderValue" type="Label" parent="DragMotionTX/CursorTX"]
 unique_name_in_owner = true
+z_index = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -110,6 +114,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("4_2ul3e")
 text = "99"
+horizontal_alignment = 1
 
 [node name="TargetedIndicator" type="Sprite2D" parent="DragMotionTX/CursorTX"]
 unique_name_in_owner = true
@@ -127,6 +132,30 @@ offset_right = 29.0
 offset_bottom = 6.0
 theme = ExtResource("4_2ul3e")
 text = "target"
+
+[node name="HealthSprite" type="Sprite2D" parent="DragMotionTX/CursorTX"]
+unique_name_in_owner = true
+z_index = 1
+position = Vector2(7, 7)
+texture = ExtResource("8_4xbu7")
+centered = false
+
+[node name="HealthValue" type="Label" parent="DragMotionTX/CursorTX/HealthSprite"]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -6.5
+offset_top = -4.5
+offset_right = 7.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("4_2ul3e")
+text = "25"
+horizontal_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
 

@@ -12,12 +12,59 @@ const DOWN_RIGHT:Vector2i = DOWN + RIGHT
 const DOWN_LEFT:Vector2i  = DOWN + LEFT
 
 
+## each boss is put into a "level_pool" based on the difficulty I associate with its effect
 
+const boss_levels_per_round:Array[Array] = [
+	[1], ## pipsqueak m'gee
+	[1,1],
+	[2],
+	[2,1],
+	[2,1,1],
+	[2,2],
+	[3],
+	[3,1],
+	[3,1,1],
+	[3,2],
+	[3,2,1],
+	[3,2,1,1],
+	[3,2,2],
+	[3,3],
+	[4], ## bellua them-fucking-self
+	## beyond this is endless mode
+	## I will continue the pattern of the number of bosses increasing, 
+	## but the level pools won't increase and will eventually just all be 4
+	
+	## HOWEVER the stat and HP will increase
+	[4,1],
+	[4,1,1],
+	[4,2],
+	[4,2,1],
+	[4,2,1,1],
+	[4,2,2],
+	[4,3],
+	[4,3,1],
+	[4,3,1,1],
+	[4,3,2],
+	[4,3,2,1],
+	[4,3,2,1,1],
+	[4,3,2,2],
+	[4,3,3],
+	[4,4],
+	
+	## the pattern breaks here
+	[4,4,1],
+	[4,4,1,1],
+	[4,4,2],
+	## and ect... I guess it goes until 25 bosses are on screen lol
+	
+]
 
 enum GamePhase {
 	shop,
 	#betting,
 	end_of_turn,
+	apply_upgrade,
+	#force_unit_culling,
 	run_won,
 	run_lost
 }
@@ -47,7 +94,11 @@ enum ShopRarity {
 	uncommon,
 	rare,
 }
-var default_boss_pool:Array[UnitID]
+var level_1_boss_pool:Array[UnitID]
+var level_2_boss_pool:Array[UnitID]
+var level_3_boss_pool:Array[UnitID]
+var level_4_boss_pool:Array[UnitID]
+
 var default_bonus_pool:Array[UnitID]
 var default_common_shop_pool:Array[UnitID]
 var default_uncommon_shop_pool:Array[UnitID]
@@ -57,7 +108,11 @@ func _ready() -> void:
 		var data:UnitData = unit_data[id]
 		match data.type:
 			UnitType.boss:
-				default_boss_pool.push_back(id)
+				match data.boss_level_pool:
+					1:level_1_boss_pool.push_back(id)
+					2:level_2_boss_pool.push_back(id)
+					3:level_3_boss_pool.push_back(id)
+					4:level_4_boss_pool.push_back(id)
 			UnitType.bonus:
 				default_bonus_pool.push_back(id)
 			_:match data.shop_rarity:
@@ -126,19 +181,22 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		"Cat",  ## title
 		"Deal own STAT as damage to targets HP", ## description
 		UnitType.boss, ## type
+		1, ## boss level pool, must be 0 if unit is not a boss
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
+		## I will probably have to change base stat and health to be round dependant
 		10,   ## base_health
 		3.0,  ## base stat
 		ShopRarity.unavailable, ## shop_rarity
 		1,  ## base_shop_price
 		#null ## tooltip_texture
-		Vector2i.ZERO
+		Vector2i(0,1)
 	),
 	UnitID.boss2: UnitData.new(
 		"Brute",  ## title
 		"Deals damage equal to the target's distance from Brute", ## description
 		UnitType.boss, ## type
+		1, ## boss level pool, must be 0 if unit is not a boss
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
 		10, ## base_health
@@ -152,6 +210,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		"Dram",  ## title
 		"Deals damage equal to the target's move order", ## description
 		UnitType.boss, ## type
+		1, ## boss level pool, must be 0 if unit is not a boss
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
 		10, ## base_health
@@ -171,6 +230,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		"Plomp",  ## title
 		"", ## description
 		UnitType.adder, ## type
+		0, ## boss level pool, must be 0 if unit is not a boss
 		Util.string_to_aoe("
 		0..
 		.x0
@@ -187,6 +247,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		"Wat",  ## title
 		"", ## description
 		UnitType.adder, ## type
+		0, ## boss level pool, must be 0 if unit is not a boss
 		Util.string_to_aoe("
 		..0
 		0x.
@@ -203,6 +264,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		"Wot",  ## title
 		"", ## description
 		UnitType.adder, ## type
+		0, ## boss level pool, must be 0 if unit is not a boss
 		Util.string_to_aoe("
 		.0.
 		0x.
@@ -219,6 +281,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		"Mumpo",  ## title
 		"", ## description
 		UnitType.adder, ## type
+		0, ## boss level pool, must be 0 if unit is not a boss
 		Util.string_to_aoe("
 		.0.
 		.x0
@@ -302,6 +365,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		"Krata",  ## title
 		"", ## description
 		UnitType.attacker, ## type
+		0, ## boss level pool, must be 0 if unit is not a boss
 		Util.string_to_aoe("
 		..0..
 		..0..
@@ -320,6 +384,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		"Frum",  ## title
 		"", ## description
 		UnitType.attacker, ## type
+		0, ## boss level pool, must be 0 if unit is not a boss
 		Util.string_to_aoe("
 		0...0
 		.0.0.
@@ -338,6 +403,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		"Klat",  ## title
 		"", ## description
 		UnitType.attacker, ## type
+		0, ## boss level pool, must be 0 if unit is not a boss
 		Util.string_to_aoe("
 		.0.0.
 		0...0
@@ -359,6 +425,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		"Tomo",  ## title
 		"", ## description
 		UnitType.multiplier, ## type
+		0, ## boss level pool, must be 0 if unit is not a boss
 		[Vector2i(1,1),Vector2i(-1,-1)],## aoe
 		false, ## is_aoe_absolute
 		10, ## base_health
@@ -372,6 +439,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		"Spine",  ## title
 		"", ## description
 		UnitType.multiplier, ## type
+		0, ## boss level pool, must be 0 if unit is not a boss
 		[Vector2i(1,-1),Vector2i(-1,1)],## aoe
 		false, ## is_aoe_absolute
 		10, ## base_health

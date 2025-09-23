@@ -29,7 +29,7 @@ func _on_start_game() -> void:
 	animating = false
 	shop_size = 3
 	round = 0
-	turn = 1
+	turn = 0
 	money = 5
 	reroll_price = 3
 	phase = Constants.GamePhase.shop
@@ -174,7 +174,6 @@ var turn_dead_bosses:Array[int]
 var common_shop_pool:Array[Constants.UnitID]
 var uncommon_shop_pool:Array[Constants.UnitID]
 var rare_shop_pool:Array[Constants.UnitID]
-var available_boss_pool:Array[Constants.UnitID]
 var available_bonus_pool:Array[Constants.UnitID]
 var unlocked_bonus_pool:Array[Constants.UnitID]
 #endregion
@@ -517,11 +516,11 @@ func clear_shop() -> void:
 		
 func spawn_bosses() -> Array[Unit]:
 	var spawned_bosses:Array[Unit] = []
-	#print("spawning boss for round ", round)
+	print("spawning boss for round ", round)
 	
-	var num_bosses:int = round/3 + 1
-	var boss_stat:float = float(round % 3) * 0.5 + 1.0 #0,1,2 -> 1.0,1.5,2.0
-	var boss_hp:float = boss_stat * 10.0
+	var boss_stat:int = floori(log(round + 2)/log(2))
+	var boss_hp:int = boss_stat * 10
+	print("boss base stat: ", boss_stat, ", hp: ", boss_hp)
 	
 	#print("num_bosses: ", num_bosses, ", stats: ", boss_stat, ", hp: ", boss_hp)
 	
@@ -538,7 +537,7 @@ func spawn_bosses() -> Array[Unit]:
 	var spawn_coords:Array[Vector2i] = []
 	var i:int = 0
 	
-	while spawn_coords.size() < num_bosses:
+	while spawn_coords.size() < Constants.boss_levels_per_round[round].size():
 		if boss_rng.randi_range(0,99) > 50:
 			spawn_coords.push_back(available_spawn_coords[i])
 			available_spawn_coords.remove_at(i)
@@ -554,7 +553,8 @@ func spawn_bosses() -> Array[Unit]:
 				unit.init_stat = boss_stat + 2.0
 			_:
 				unit.init_stat = boss_stat
-		unit.max_hp = boss_hp
+		unit.hp = boss_hp
+		unit.animated_hp = boss_hp
 		unit.logical_position = coord
 		spawned_bosses.push_back(unit)
 		

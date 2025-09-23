@@ -3,6 +3,7 @@ class_name UnitData
 var title:String
 var description:String
 var type:Constants.UnitType
+var boss_level_pool:int
 var aoe:Array[Vector2i]
 var aoe_is_absolute:bool
 var base_health:float
@@ -16,6 +17,7 @@ func _init(
 	_title:String,
 	_description:String,
 	_type:Constants.UnitType,
+	_boss_level_pool:int,
 	_aoe:Array[Vector2i],
 	_aoe_is_absolute:bool,
 	_base_health:int,
@@ -28,6 +30,10 @@ func _init(
 	title           = _title
 	description     = _description
 	type            = _type
+	if type == Constants.UnitType.boss:
+		assert(_boss_level_pool == 0)
+	assert( 0 <= _boss_level_pool and _boss_level_pool <= 4)
+	boss_level_pool = _boss_level_pool
 	aoe             = _aoe
 	aoe_is_absolute = _aoe_is_absolute
 	base_health     = _base_health

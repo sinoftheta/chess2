@@ -3,6 +3,7 @@ extends Sprite2D
 var init_position:Vector2
 func _ready() -> void:
 	init_position = position
+	set_process(visible)
 
 func _process(delta: float) -> void:
 	position = init_position + Vector2(

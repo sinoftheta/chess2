@@ -31,7 +31,7 @@ func _init(
 	description     = _description
 	type            = _type
 	if type == Constants.UnitType.boss:
-		assert(_boss_level_pool == 0)
+		assert(_boss_level_pool != 0)
 	assert( 0 <= _boss_level_pool and _boss_level_pool <= 4)
 	boss_level_pool = _boss_level_pool
 	aoe             = _aoe

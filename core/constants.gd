@@ -94,11 +94,7 @@ enum ShopRarity {
 	uncommon,
 	rare,
 }
-var level_1_boss_pool:Array[UnitID]
-var level_2_boss_pool:Array[UnitID]
-var level_3_boss_pool:Array[UnitID]
-var level_4_boss_pool:Array[UnitID]
-
+var boss_level_pools:Dictionary[int, Array]
 var default_bonus_pool:Array[UnitID]
 var default_common_shop_pool:Array[UnitID]
 var default_uncommon_shop_pool:Array[UnitID]
@@ -108,11 +104,10 @@ func _ready() -> void:
 		var data:UnitData = unit_data[id]
 		match data.type:
 			UnitType.boss:
-				match data.boss_level_pool:
-					1:level_1_boss_pool.push_back(id)
-					2:level_2_boss_pool.push_back(id)
-					3:level_3_boss_pool.push_back(id)
-					4:level_4_boss_pool.push_back(id)
+				if not boss_level_pools.has(data.boss_level_pool):
+					boss_level_pools[data.boss_level_pool] = [id]
+				else:
+					boss_level_pools[data.boss_level_pool].push_back(id)
 			UnitType.bonus:
 				default_bonus_pool.push_back(id)
 			_:match data.shop_rarity:
@@ -129,7 +124,7 @@ const type_descriptions:Dictionary[UnitType,String] = {
 	UnitType.healer:     "Heal targets HP by own STAT",
 	UnitType.multiplier: "Multiply targets Stat by own STAT",
 	UnitType.adder:      "Adds own STAT to targets STAT",
-	UnitType.boss:       "Defeat this BOSS to advance!",
+	UnitType.boss:       "Defeat this ENIMY to advance!",
 	UnitType.item:       "Drag onto a target to use"
 }
 enum UnitID {

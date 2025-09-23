@@ -38,9 +38,7 @@ func _on_start_game() -> void:
 	common_shop_pool     = Constants.default_common_shop_pool.duplicate()
 	uncommon_shop_pool   = Constants.default_uncommon_shop_pool.duplicate()
 	rare_shop_pool       = Constants.default_rare_shop_pool.duplicate()
-	available_boss_pool  = Constants.default_boss_pool.duplicate()
 	available_bonus_pool = Constants.default_bonus_pool.duplicate()
-	unlocked_bonus_pool  = []
 	
 	## board setup
 	for board:Board in boards.values():
@@ -184,11 +182,20 @@ func unit_at(coord:Vector2i, board_id:Constants.BoardID) -> Unit:
 #endregion
 
 #region Game logic
-func update_unit_order_badges() -> void:
+func update_unit_order_badges(updated_unit:Unit = null, updated_coords:Vector2i = Vector2i(-1,-1)) -> void:
 	var i:int = 0
 	for eval_coord:Vector2i in board_evaluation_order:
+		
+		
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
+		#if eval_coord == updated_coords: ## NOT IMPORTANT RIGHT NOW
+			#pass
+		#else:
+			#
+			#if unit == updated_unit: continue
+		
 		if not unit: continue
+			
 		i += 1
 		unit.play_order = i
 	
@@ -543,20 +550,30 @@ func spawn_bosses() -> Array[Unit]:
 			available_spawn_coords.remove_at(i)
 		i = (i + 1) % available_spawn_coords.size()
 	
-	for coord:Vector2i in spawn_coords:
+	i = 0
+	while i < spawn_coords.size():
+		var coord:Vector2i = spawn_coords[i]
+		var boss_level:int = Constants.boss_levels_per_round[round][i]
+		var boss_id:Constants.UnitID = Constants.boss_level_pools[boss_level][
+			boss_rng.randi_range(
+				0,
+				Constants.boss_level_pools[boss_level].size() - 1
+			)
+		]
+		
 		var unit:Unit = unit_tscn.instantiate()
 		play_board.add_child(unit)
-		unit.id = boss_rng.randi_range(Constants.UnitID.boss1, Constants.UnitID.boss3)
+		
+		unit.id = boss_id
 		if round == 0: unit.id = Constants.UnitID.boss1
-		match unit.id:
-			Constants.UnitID.boss1:
-				unit.init_stat = boss_stat + 2.0
-			_:
-				unit.init_stat = boss_stat
+		unit.init_stat = boss_stat
+		
 		unit.hp = boss_hp
 		unit.animated_hp = boss_hp
 		unit.logical_position = coord
+		
 		spawned_bosses.push_back(unit)
+		i += 1
 		
 	update_unit_order_badges()
 	

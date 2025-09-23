@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://je4xne0s26pp"]
+[gd_scene load_steps=15 format=3 uid="uid://je4xne0s26pp"]
 
 [ext_resource type="Script" uid="uid://1goxqi70cjt0" path="res://unit/unit.gd" id="1_hy15m"]
 [ext_resource type="Texture2D" uid="uid://dfxphffj5b4hy" path="res://texture/units.png" id="2_2ul3e"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://bnjqwxxwvexo4" path="res://unit/indicator.gd" id="3_japly"]
 [ext_resource type="Texture2D" uid="uid://cnon8p3m7tbvk" path="res://texture/targeted_indicator.png" id="3_s1ym6"]
 [ext_resource type="Theme" uid="uid://d0frw4jf8nm5t" path="res://unit/value_theme.tres" id="4_2ul3e"]
+[ext_resource type="Texture2D" uid="uid://dv431048bg6w" path="res://texture/units_blink.png" id="4_a2j7n"]
 [ext_resource type="Texture2D" uid="uid://dw5qaybqq8tqx" path="res://texture/moved_indicator.png" id="5_7oxhv"]
 [ext_resource type="Texture2D" uid="uid://q8yqjoluf6wg" path="res://texture/heart.png" id="8_4xbu7"]
 
@@ -65,6 +66,12 @@ texture = ExtResource("2_a3q01")
 [node name="Sprite" type="Sprite2D" parent="DragMotionTX/CursorTX"]
 unique_name_in_owner = true
 texture = ExtResource("2_2ul3e")
+hframes = 5
+vframes = 22
+
+[node name="Blink" type="Sprite2D" parent="DragMotionTX/CursorTX"]
+unique_name_in_owner = true
+texture = ExtResource("4_a2j7n")
 hframes = 5
 vframes = 22
 

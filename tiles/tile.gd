@@ -25,6 +25,9 @@ func _ready() -> void:
 	SignalBus.play_button_pressed  .connect(_on_play_button_pressed)
 	SignalBus.next_turn_pressed    .connect(_on_next_turn_pressed)
 	
+	(%UpperDetail as Sprite2D).frame = randi_range(0, (%UpperDetail as Sprite2D).hframes - 1)
+	(%LowerDetail as Sprite2D).frame = randi_range(0, (%LowerDetail as Sprite2D).hframes - 1)
+	
 func _on_play_button_pressed() -> void:
 	final_sway_amplitude = 0
 func _on_next_turn_pressed() -> void:

@@ -8,6 +8,9 @@ func _ready() -> void:
 	(%Sprite as Sprite2D).hframes = (%Sprite as Sprite2D).texture.get_width()  / 48
 	(%Sprite as Sprite2D).vframes = (%Sprite as Sprite2D).texture.get_height() / 48
 	
+	(%Blink as Sprite2D).hframes = (%Sprite as Sprite2D).hframes
+	(%Blink as Sprite2D).vframes = (%Sprite as Sprite2D).vframes
+	
 
 #region target preview
 var target:bool:
@@ -36,6 +39,7 @@ var id:Constants.UnitID:
 		id = value
 		var data:UnitData = Constants.unit_data[value]
 		(%Sprite as Sprite2D).frame_coords = data.texture_coord
+		(%Blink as Sprite2D).frame_coords = data.texture_coord
 		hp = data.base_health
 		animated_hp = hp
 		init_stat = data.base_stat
@@ -135,6 +139,11 @@ func _process(delta: float) -> void:
 			(GameLogic.tile_managers[(get_parent() as Board).id]\
 			.get_node_or_null(Util.coord_to_name(logical_position)) as Tile)\
 			.visual_position
+	
+	## ~speed
+	if Engine.get_frames_drawn() % 5 == 0:
+		## ~frequency
+		(%Blink as Sprite2D).visible = (randi() % 100) < 5
 
 
 #endregion
@@ -259,7 +268,7 @@ func animate_dead(tween:Tween, animation_tick:int) -> void:
 		%OrderValue.visible = false
 		hovered = false
 		drag_state = DragState.idle
-		SignalBus.tooltip_try_close.emit(self)
+		#SignalBus.tooltip_try_close.emit(self)
 		%DeadParticles.emitting = true
 	).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 

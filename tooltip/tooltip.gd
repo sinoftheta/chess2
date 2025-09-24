@@ -27,6 +27,9 @@ func _on_tooltip_close() -> void:
 	tooltip_closed()
 
 func tooltip_opened() -> void:
+	
+	## TODO: show boss level ?
+	
 	var data:UnitData = Constants.unit_data[unit.id]
 	var is_boss:bool = data.type == Constants.UnitType.boss
 	match (unit.get_parent() as Board).id:

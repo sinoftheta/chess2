@@ -129,9 +129,14 @@ const type_descriptions:Dictionary[UnitType,String] = {
 }
 enum UnitID {
 	
-	boss1,
-	boss2,
-	boss3,
+	catface,
+	dumpling,
+	leggy,
+	brute,
+	longhorn,
+	totem,
+	batface,
+	squid,
 	#boss4,
 	
 	adder1,
@@ -172,8 +177,8 @@ enum UnitID {
 }
 #var base_sprite_sheet:Texture2D = preload() 
 var unit_data:Dictionary[UnitID,UnitData] = {
-	UnitID.boss1: UnitData.new(
-		"Cat",  ## title
+	UnitID.catface: UnitData.new(
+		"Catface",  ## title
 		"Deal own STAT as damage to targets HP", ## description
 		UnitType.boss, ## type
 		1, ## boss level pool, must be 0 if unit is not a boss
@@ -187,8 +192,8 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		#null ## tooltip_texture
 		Vector2i(0,1)
 	),
-	UnitID.boss2: UnitData.new(
-		"Brute",  ## title
+	UnitID.dumpling: UnitData.new(
+		"Dumpling",  ## title
 		"Deals damage equal to the target's distance from Brute", ## description
 		UnitType.boss, ## type
 		1, ## boss level pool, must be 0 if unit is not a boss
@@ -199,13 +204,13 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		ShopRarity.unavailable, ## shop_rarity
 		1,  ## base_shop_price
 		#null ## tooltip_texture
-		Vector2i.ZERO
+		Vector2i(0,2)
 	),
-	UnitID.boss3: UnitData.new(
-		"Dram",  ## title
+	UnitID.leggy: UnitData.new(
+		"Leggy",  ## title
 		"Deals damage equal to the target's move order", ## description
 		UnitType.boss, ## type
-		1, ## boss level pool, must be 0 if unit is not a boss
+		2, ## boss level pool, must be 0 if unit is not a boss
 		AOE_BOSS_FULL_BOARD,## aoe
 		true, ## is_aoe_absolute
 		10, ## base_health
@@ -213,7 +218,77 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 		ShopRarity.unavailable, ## shop_rarity
 		1,  ## base_shop_price
 		#null ## tooltip_texture
-		Vector2i.ZERO
+		Vector2i(0,3)
+	),
+	UnitID.brute: UnitData.new(
+		"Brute",  ## title
+		"placeholder", ## description
+		UnitType.boss, ## type
+		2, ## boss level pool, must be 0 if unit is not a boss
+		AOE_BOSS_FULL_BOARD,## aoe
+		true, ## is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.unavailable, ## shop_rarity
+		1,  ## base_shop_price
+		#null ## tooltip_texture
+		Vector2i(0,4)
+	),
+	UnitID.longhorn: UnitData.new(
+		"Lornhorn",  ## title
+		"placeholder", ## description
+		UnitType.boss, ## type
+		3, ## boss level pool, must be 0 if unit is not a boss
+		AOE_BOSS_FULL_BOARD,## aoe
+		true, ## is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.unavailable, ## shop_rarity
+		1,  ## base_shop_price
+		#null ## tooltip_texture
+		Vector2i(0,5)
+	),
+	UnitID.totem: UnitData.new(
+		"Totem",  ## title
+		"placeholder", ## description
+		UnitType.boss, ## type
+		3, ## boss level pool, must be 0 if unit is not a boss
+		AOE_BOSS_FULL_BOARD,## aoe
+		true, ## is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.unavailable, ## shop_rarity
+		1,  ## base_shop_price
+		#null ## tooltip_texture
+		Vector2i(0,6)
+	),
+	UnitID.batface: UnitData.new(
+		"Batface",  ## title
+		"placeholder", ## description
+		UnitType.boss, ## type
+		4, ## boss level pool, must be 0 if unit is not a boss
+		AOE_BOSS_FULL_BOARD,## aoe
+		true, ## is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.unavailable, ## shop_rarity
+		1,  ## base_shop_price
+		#null ## tooltip_texture
+		Vector2i(0,7)
+	),
+	UnitID.squid: UnitData.new(
+		"Squid",  ## title
+		"placeholder", ## description
+		UnitType.boss, ## type
+		4, ## boss level pool, must be 0 if unit is not a boss
+		AOE_BOSS_FULL_BOARD,## aoe
+		true, ## is_aoe_absolute
+		10, ## base_health
+		1.0, ## base stat
+		ShopRarity.unavailable, ## shop_rarity
+		1,  ## base_shop_price
+		#null ## tooltip_texture
+		Vector2i(0,8)
 	),
 	
 	

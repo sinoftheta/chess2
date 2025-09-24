@@ -140,10 +140,12 @@ func _process(delta: float) -> void:
 			.get_node_or_null(Util.coord_to_name(logical_position)) as Tile)\
 			.visual_position
 	
+	## Blinking is a bit more complicated than this cus the sprite visibility also changes sometimes
+	## DEAL WITH IT LATER. MAKE THE GAMEEEEEE :LFG: :LFG:
 	## ~speed
-	if Engine.get_frames_drawn() % 5 == 0:
+	#if Engine.get_frames_drawn() % 5 == 0:
 		## ~frequency
-		(%Blink as Sprite2D).visible = (randi() % 100) < 5
+	#	(%Blink as Sprite2D).visible = (randi() % 100) < 5
 
 
 #endregion

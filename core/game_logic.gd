@@ -136,7 +136,7 @@ var play_tile_manager:TileManager:
 #region Run State
 
 
-var max_rounds:int = 3
+var max_rounds:int = 14
 var shop_size:int = 2
 var round:int:
 	set(value):
@@ -374,22 +374,24 @@ func _on_play_button_pressed() -> void:
 					
 					## apply damage
 					## boss effects check
-					match unit.id:
-						Constants.UnitID.boss2:
-							## damage based on distance
-							var d:float = (
-								absf(unit.logical_position.x - affected_unit.logical_position.x) + 
-								absf(unit.logical_position.y - affected_unit.logical_position.y)
-							)
-							affected_unit.hp = maxf(affected_unit.hp - d * unit.stat, 0.0)
-						Constants.UnitID.boss3:
-							#damage based on move order
-							affected_unit.hp = maxf(affected_unit.hp - affected_unit.play_order * unit.stat, 0.0)
-						#Constants.UnitID.boss4:
-							# inverse move order
-							#affected_unit.hp = maxf(affected_unit.hp - (play_board.get_child_count() - affected_unit.play_order) * unit.stat, 0.0)
-						Constants.UnitID.boss1, _:
-							affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
+					#match unit.id:
+						#Constants.UnitID.boss2:
+							### damage based on distance
+							#var d:float = (
+								#absf(unit.logical_position.x - affected_unit.logical_position.x) + 
+								#absf(unit.logical_position.y - affected_unit.logical_position.y)
+							#)
+							#affected_unit.hp = maxf(affected_unit.hp - d * unit.stat, 0.0)
+						#Constants.UnitID.boss3:
+							##damage based on move order
+							#affected_unit.hp = maxf(affected_unit.hp - affected_unit.play_order * unit.stat, 0.0)
+						##Constants.UnitID.boss4:
+							## inverse move order
+							##affected_unit.hp = maxf(affected_unit.hp - (play_board.get_child_count() - affected_unit.play_order) * unit.stat, 0.0)
+						#Constants.UnitID.boss1, _:
+							#affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
+					#
+					affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
 					
 					## animate
 					affected_unit.animate_attacked(tween, animation_tick, unit.logical_position, prev_hp)
@@ -565,7 +567,6 @@ func spawn_bosses() -> Array[Unit]:
 		play_board.add_child(unit)
 		
 		unit.id = boss_id
-		if round == 0: unit.id = Constants.UnitID.boss1
 		unit.init_stat = boss_stat
 		
 		unit.hp = boss_hp

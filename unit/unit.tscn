@@ -71,6 +71,7 @@ vframes = 22
 
 [node name="Blink" type="Sprite2D" parent="DragMotionTX/CursorTX"]
 unique_name_in_owner = true
+visible = false
 texture = ExtResource("4_a2j7n")
 hframes = 5
 vframes = 22

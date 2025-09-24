@@ -131,9 +131,11 @@ func _process(delta: float) -> void:
 				drag_state = DragState.idle
 		
 		DragState.held:
-			var next_position:Vector2 = lerp(global_position, get_global_mouse_position(), t)
-			global_position += (next_position - global_position).limit_length(10)
-		
+			#var next_position:Vector2 = lerp(global_position, get_global_mouse_position(), t)
+			#global_position += (next_position - global_position).limit_length(10)
+			
+			## feels better
+			global_position = lerp(global_position, get_global_mouse_position(), t)
 		DragState.idle:
 			global_position =\
 			(GameLogic.tile_managers[(get_parent() as Board).id]\

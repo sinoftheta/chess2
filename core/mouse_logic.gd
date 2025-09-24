@@ -19,29 +19,17 @@ func _ready() -> void:
 	SignalBus.logical_mouse_location_updated.connect(_on_logical_mouse_location_updated)
 
 ## hide and show the tooltip + aoe preview
-## todo: also need to recalc the unit move orders? :/
 func _on_logical_mouse_location_updated(board:Constants.BoardID, coord:Vector2i, in_bounds:bool) -> void:
 	var hovered_unit:Unit = GameLogic.unit_at(coord, board)
 	
-	## drag preview:
-	#if dragged_unit:
-		#var hovered_tile:Tile = GameLogic.play_tile_manager.get_node_or_null(
-			#Util.coord_to_name(at_coords)
-		#)
-		#if hovered_tile:
-			#hovered_tile.hover_targert = true
+	##TODO
+	## Dynamic Unit Move Order Update Logic
 	
-	## AoE Preview
-	if dragged_unit:
-		SignalBus.show_aoe_preview.emit(dragged_unit, coord)
+	## TODO
+	## "Drop to purchase!", "Drop to sell!" messages. Maybe thats excessive? idk, thats pretty far off polish
+	## detect to and from boards
 	
-	elif hovered_unit and board == Constants.BoardID.play:
-		SignalBus.show_aoe_preview.emit(hovered_unit, coord)
-	
-	else:
-		SignalBus.hide_aoe_preview.emit()
-	
-	## tooltip
+	## Tooltip Visibility Logic
 	if dragged_unit:
 		## tooltip should already be open
 		pass
@@ -50,7 +38,18 @@ func _on_logical_mouse_location_updated(board:Constants.BoardID, coord:Vector2i,
 	else:
 		SignalBus.tooltip_close.emit()
 		
+	## AoE Preview Visibility Logic
+	if not dragged_unit and not hovered_unit:
+		SignalBus.hide_aoe_preview.emit()
+	
+	elif board != Constants.BoardID.play or not in_bounds:
+		SignalBus.hide_aoe_preview.emit()
 		
+	elif dragged_unit:
+		SignalBus.show_aoe_preview.emit(dragged_unit, coord)
+	
+	elif hovered_unit:
+		SignalBus.show_aoe_preview.emit(hovered_unit, coord)
 
 func _process(delta: float) -> void:
 	var cursor_over_board:bool = false
@@ -84,8 +83,8 @@ func _process(delta: float) -> void:
 			)
 			prev_board_under_cursor = board_id_under_cursor
 			prev_coord_under_cursor = coord_under_cursor
-	#print(coord_under_cursor, " on ", Constants.BoardID.keys()[board_id_under_cursor])
 
+## this really could just go in GameLogic, idk
 func _on_move_unit_to_cursor(unit:Unit) -> void:
 	if board_id_under_cursor == Constants.BoardID.none: return
 	if not GameLogic.board_has_coord(board_id_under_cursor, coord_under_cursor):return

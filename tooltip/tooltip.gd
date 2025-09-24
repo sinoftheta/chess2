@@ -53,7 +53,9 @@ func tooltip_opened() -> void:
 			#%Order           .visible = false
 		#Constants.BoardID.bonus:
 			#%BuySellTooltip.visible = false
-		_:return
+		_:
+			print("TOOLTIP NOT IMPLEMENTED FOR UNITS ON THE ", Constants.BoardID.keys()[(unit.get_parent() as Board).id], " BOARD")
+			return
 	%StatsTooltip.visible   = true
 	%AbilityTooltip.visible = data.description.length() > 0
 	%AoePreview.queue_redraw()

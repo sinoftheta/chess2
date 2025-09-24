@@ -92,8 +92,9 @@ func setup_board(logical_size:Vector2i) -> void:
 	for x:int in range(logical_size.x):
 		for y:int in range(logical_size.y):
 			var tile:Tile = tile_tscn.instantiate()
-			tile.logical_position = Vector2i(x,y)
+			## they gotta be assigned in this order cus the position depends on the id :/
 			tile.board_id = id
+			tile.logical_position = Vector2i(x,y)
 			add_child(tile) ## tiles with a high y val are added to the tree last... this is what we want
 	
 	

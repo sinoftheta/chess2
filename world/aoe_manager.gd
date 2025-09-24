@@ -15,9 +15,6 @@ func _ready() -> void:
 func _on_show_aoe_preview(unit:Unit, at_coords:Vector2i) -> void:
 	_on_hide_aoe_preview()
 	
-	
-	print("_on_show_aoe_preview")
-	
 	var data:UnitData = Constants.unit_data[unit.id]
 	var aoe:Array[Vector2i] = data.aoe
 	var offset:Vector2i
@@ -33,7 +30,7 @@ func _on_show_aoe_preview(unit:Unit, at_coords:Vector2i) -> void:
 		)
 		if not tile: continue
 		
-		## TODO: change tile highlight color here based on the units type
+		## TODO: OMG please don't have these be hardcoded lmao
 		tile.aoe_highlight = true
 		match data.type:
 			Constants.UnitType.attacker:

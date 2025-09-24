@@ -1,11 +1,10 @@
-[gd_scene load_steps=16 format=3 uid="uid://xrdgyjq45cts"]
+[gd_scene load_steps=15 format=3 uid="uid://xrdgyjq45cts"]
 
 [ext_resource type="Script" uid="uid://ctoejpy8mm8pn" path="res://world/world.gd" id="1_4717r"]
 [ext_resource type="PackedScene" uid="uid://bl7yw07rwfxj0" path="res://tooltip/tooltip.tscn" id="2_mmdvd"]
-[ext_resource type="Texture2D" uid="uid://dhjhx4nq351dd" path="res://texture/healer_board.png" id="3_mad0u"]
 [ext_resource type="PackedScene" uid="uid://yrsr5vndikk" path="res://board/board.tscn" id="3_mmdvd"]
-[ext_resource type="Texture2D" uid="uid://dvaf78jl20ta8" path="res://texture/adder_board.png" id="4_ocfjn"]
-[ext_resource type="Texture2D" uid="uid://cv5g4k27bvawu" path="res://texture/attacker_board.png" id="5_dqqhb"]
+[ext_resource type="Texture2D" uid="uid://cbhrmv71tevnu" path="res://texture/shop_board.png" id="4_ov2xu"]
+[ext_resource type="Texture2D" uid="uid://bmwoluy54863i" path="res://texture/sell_board.png" id="5_mad0u"]
 [ext_resource type="PackedScene" uid="uid://ctucg0vqcgkw7" path="res://turn_end_ui/turn_end_ui.tscn" id="5_sc4t8"]
 [ext_resource type="PackedScene" uid="uid://bo7cpc44ywfib" path="res://run_end_ui/run_end_ui.tscn" id="6_ai45w"]
 [ext_resource type="Texture2D" uid="uid://350uo4j3dojd" path="res://texture/play_board.png" id="6_mad0u"]
@@ -24,26 +23,30 @@ bg_color = Color(0.349496, 0.695422, 0.26875, 1)
 [node name="World" type="Node2D"]
 script = ExtResource("1_4717r")
 
-[node name="HealerShopBoard" parent="." instance=ExtResource("3_mmdvd")]
-position = Vector2(223, -83)
-texture = ExtResource("3_mad0u")
-id = 5
-logical_size = Vector2i(1, 3)
-
-[node name="AdderShopBoard" parent="." instance=ExtResource("3_mmdvd")]
-position = Vector2(272, -83)
-texture = ExtResource("4_ocfjn")
-id = 4
-logical_size = Vector2i(1, 3)
-
-[node name="AttackShopBoard" parent="." instance=ExtResource("3_mmdvd")]
-position = Vector2(174, -83)
-texture = ExtResource("5_dqqhb")
-id = 3
-logical_size = Vector2i(1, 3)
-
 [node name="AoeManager" type="Node" parent="."]
 script = ExtResource("6_ocfjn")
+
+[node name="ShopTileManager" parent="." instance=ExtResource("7_ocfjn")]
+position = Vector2(127, -102)
+id = 3
+
+[node name="ShopBoard" parent="." instance=ExtResource("3_mmdvd")]
+self_modulate = Color(1, 1, 1, 0)
+position = Vector2(127, -102)
+texture = ExtResource("4_ov2xu")
+id = 3
+logical_size = Vector2i(3, 3)
+
+[node name="SellTileManager" parent="." instance=ExtResource("7_ocfjn")]
+position = Vector2(177, 56)
+id = 1
+
+[node name="SellBoard" parent="." instance=ExtResource("3_mmdvd")]
+self_modulate = Color(1, 1, 1, 0)
+position = Vector2(177, 56)
+texture = ExtResource("5_mad0u")
+id = 1
+logical_size = Vector2i(1, 1)
 
 [node name="PlayTileManager" parent="." instance=ExtResource("7_ocfjn")]
 unique_name_in_owner = true
@@ -110,26 +113,26 @@ text = "Send It"
 
 [node name="Reroll" type="Button" parent="."]
 unique_name_in_owner = true
-offset_left = 119.0
+offset_left = -2.0
 offset_top = 147.0
-offset_right = 213.0
+offset_right = 92.0
 offset_bottom = 178.0
 theme_override_styles/focus = SubResource("StyleBoxEmpty_4717r")
 theme_override_styles/normal = SubResource("StyleBoxFlat_h5o24")
 text = "Reroll $000"
 
 [node name="ShopLabel" type="Label" parent="."]
-offset_left = 160.0
-offset_top = -57.0
-offset_right = 200.0
-offset_bottom = -34.0
+offset_left = 196.0
+offset_top = -128.0
+offset_right = 236.0
+offset_bottom = -105.0
 text = "Shop"
 
 [node name="SellLabel" type="Label" parent="."]
-offset_left = 160.0
-offset_top = 103.0
-offset_right = 200.0
-offset_bottom = 126.0
+offset_left = 142.0
+offset_top = 83.0
+offset_right = 182.0
+offset_bottom = 106.0
 text = "Sell"
 
 [node name="TurnEndUI" parent="." instance=ExtResource("5_sc4t8")]
@@ -139,10 +142,6 @@ position = Vector2(56, 16)
 [node name="RunEndUI" parent="." instance=ExtResource("6_ai45w")]
 visible = false
 position = Vector2(56, 16)
-
-[node name="SellBoard" parent="." instance=ExtResource("3_mmdvd")]
-id = 2
-logical_size = Vector2i(2, 2)
 
 [node name="MovementFailureMessage" parent="." instance=ExtResource("9_4papg")]
 

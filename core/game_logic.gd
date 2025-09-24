@@ -11,7 +11,7 @@ func _ready() -> void:
 	SignalBus.play_button_pressed  .connect(_on_play_button_pressed)
 	SignalBus.next_turn_pressed    .connect(_on_next_turn_pressed)
 	SignalBus.continue_run_pressed .connect(_on_continue_run_pressed)
-	#SignalBus.reroll_button_pressed.connect(_on_reroll_button_pressed)
+	SignalBus.reroll_button_pressed.connect(_on_reroll_button_pressed)
 	
 
 func _on_start_game() -> void:
@@ -89,12 +89,8 @@ var board_evaluation_order:Array[Vector2i]
 var boards:Dictionary[Constants.BoardID,   Board]
 var play_board:Board: 
 	get(): return boards[Constants.BoardID.play ]
-var healer_shop_board:Board: 
-	get(): return boards[Constants.BoardID.healer_shop]
-var attacker_shop_board:Board: 
-	get(): return boards[Constants.BoardID.attacker_shop]
-var adder_shop_board:Board: 
-	get(): return boards[Constants.BoardID.adder_shop]
+var shop_board:Board: 
+	get(): return boards[Constants.BoardID.shop]
 
 var sell_board:Board: 
 	get(): return boards[Constants.BoardID.sell ]
@@ -178,6 +174,7 @@ var unlocked_bonus_pool:Array[Constants.UnitID]
 
 #region helpers
 func unit_at(coord:Vector2i, board_id:Constants.BoardID) -> Unit:
+	if board_id == Constants.BoardID.none: return null
 	return boards[board_id].get_node_or_null(Util.coord_to_name(coord))
 #endregion
 
@@ -199,11 +196,7 @@ func update_unit_order_badges(updated_unit:Unit = null, updated_coords:Vector2i 
 		i += 1
 		unit.play_order = i
 	
-	for unit:Unit in adder_shop_board.get_children():
-		unit.play_order = 0
-	for unit:Unit in attacker_shop_board.get_children():
-		unit.play_order = 0
-	for unit:Unit in healer_shop_board.get_children():
+	for unit:Unit in shop_board.get_children():
 		unit.play_order = 0
 
 func move_unit(unit:Unit, to_board_id:Constants.BoardID, to_coord:Vector2i) -> void:
@@ -235,11 +228,7 @@ func move_unit(unit:Unit, to_board_id:Constants.BoardID, to_coord:Vector2i) -> v
 	#if to_board == sell_board and from_board == shop_board:
 		#SignalBus.message_under_cursor.emit("Thats not yours!")
 		#return
-	if to_board == play_board and (
-		from_board == attacker_shop_board or\
-		from_board == healer_shop_board or\
-		from_board == adder_shop_board
-		):
+	if to_board == play_board and from_board == shop_board:
 		if money < unit.buy_price:
 			SignalBus.message_under_cursor.emit("Not enough money")
 			return
@@ -511,25 +500,18 @@ func _on_continue_run_pressed() -> void:
 
 func clear_shop() -> void:
 	## remove prev units
-	for unit:Unit in adder_shop_board.get_children():
-		adder_shop_board.remove_child(unit)
-		unit.queue_free()
-		
-	for unit:Unit in attacker_shop_board.get_children():
-		attacker_shop_board.remove_child(unit)
-		unit.queue_free()
-		
-	for unit:Unit in healer_shop_board.get_children():
-		healer_shop_board.remove_child(unit)
+	for unit:Unit in shop_board.get_children():
+		shop_board.remove_child(unit)
 		unit.queue_free()
 		
 func spawn_bosses() -> Array[Unit]:
+	## seems to be working
 	var spawned_bosses:Array[Unit] = []
-	print("spawning boss for round ", round)
+	#print("spawning boss for round ", round)
 	
 	var boss_stat:int = floori(log(round + 2)/log(2))
 	var boss_hp:int = boss_stat * 10
-	print("boss base stat: ", boss_stat, ", hp: ", boss_hp)
+	#print("boss base stat: ", boss_stat, ", hp: ", boss_hp)
 	
 	#print("num_bosses: ", num_bosses, ", stats: ", boss_stat, ", hp: ", boss_hp)
 	
@@ -638,11 +620,11 @@ func cycle_shop() -> void:
 			#print("no units of that rarity")
 			#shop_contents.push_back(Constants.UnitID.test_attacker)
 	
-	#for id:Constants.UnitID in shop_contents:
-	#	var unit:Unit = unit_tscn.instantiate()
-	#	shop_board.add_child(unit)
-	#	unit.id = id
-	#	unit.logical_position = shop_coords.pop_back()
+	for id:Constants.UnitID in shop_contents:
+		var unit:Unit = unit_tscn.instantiate()
+		shop_board.add_child(unit)
+		unit.id = id
+		unit.logical_position = shop_coords.pop_back()
 	
 	update_unit_order_badges()
 func cycle_bonus() -> void:

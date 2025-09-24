@@ -73,9 +73,7 @@ enum BoardID {
 	sell,
 	none,
 	
-	attacker_shop,
-	adder_shop,
-	healer_shop
+	shop
 }
 
 ## The UnitTypes are like the card evaluations in balatro, they are guarenteed to happen a finite amount of times

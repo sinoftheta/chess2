@@ -11,6 +11,7 @@ func _on_debug_update_cursor(coord:Vector2i, board_id:Constants.BoardID) -> void
 
 func _draw() -> void:
 	if Debug.cursor_board_id == Constants.BoardID.none: return
+	if not Options.debug: return
 	
 	var tile:Tile = \
 	(GameLogic.tile_managers[Debug.cursor_board_id] as TileManager)\

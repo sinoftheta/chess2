@@ -6,8 +6,9 @@ func _ready() -> void:
 		"Web":
 			%Fullscreen.visible = false
 		_:pass
-	%Fullscreen.set_pressed_no_signal(Options.fullscreen)
-	%Tutorial.set_pressed_no_signal(Options.play_tutorial)
+	(%Fullscreen as CheckBox).set_pressed_no_signal(Options.fullscreen)
+	(%Tutorial as CheckBox).set_pressed_no_signal(Options.play_tutorial)
+	(%Debug as CheckBox).set_pressed_no_signal(Options.debug)
 	
 func _on_menu_updated(menu:Constants.Menu, prev:Constants.Menu) -> void:
 	visible = menu == Constants.Menu.options
@@ -24,3 +25,7 @@ func _on_fullscreen_toggled(toggled_on: bool) -> void:
 
 func _on_tutorial_toggled(toggled_on: bool) -> void:
 	Options.play_tutorial = toggled_on
+
+
+func _on_debug_toggled(toggled_on: bool) -> void:
+	Options.debug = toggled_on

@@ -8,7 +8,7 @@ func _ready() -> void:
 	SignalBus.logical_mouse_location_updated.connect(_on_logical_mouse_position_updated)
 
 func _on_logical_mouse_position_updated(board:Constants.BoardID, coord:Vector2i, in_bounds:bool) -> void:
-	visible = not in_bounds and MenuLogic.current() == Constants.Menu.gameplay
+	visible = not in_bounds and MenuLogic.current() == Constants.Menu.gameplay and Options.debug
 
 func _on_unit_id_item_selected(index: int) -> void:
 	## for when the day comes that I move all this shite logic

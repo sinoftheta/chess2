@@ -3,6 +3,8 @@ extends Node
 var show_move_order_badge:bool
 var show_hp_badge:bool
 
+var debug:bool = true
+
 var fullscreen:bool:
 	set(val):
 		if val:

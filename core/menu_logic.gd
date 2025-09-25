@@ -2,7 +2,8 @@
 extends Node
 
 var stack:Array[Constants.Menu] = [Constants.Menu.none]
-var dragged_unit:Unit
+func current() -> Constants.Menu:
+	return stack.back()
 func pop() -> void:
 	if stack.back() == Constants.Menu.none:
 		return

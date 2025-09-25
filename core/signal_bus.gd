@@ -60,3 +60,7 @@ signal menu_updated(menu:Constants.Menu, prev:Constants.Menu)
 
 #region game events
 #endregion
+
+#region debug
+signal debug_update_cursor(coord:Vector2i, board_id:Constants.BoardID)
+#endregion

@@ -98,11 +98,6 @@ var sell_board:Board:
 func board_has_coord(board_id:Constants.BoardID, coord:Vector2i) -> bool:
 	return Rect2i(Vector2i.ZERO,boards[board_id].logical_size).has_point(coord)
 
-
-func _process(delta: float) -> void:
-	if !boards:return
-	debug_spawn()
-	debug_delete()
 	
 #endregion
 
@@ -648,33 +643,4 @@ func evaluate_ability(id:Constants.UnitID) -> Dictionary:
 	## check if any units have the id
 	## if yes, execute the ability & return any data needed
 	return {}
-#endregion
-
-#region debug
-var debug_unit_id:Constants.UnitID
-func debug_spawn() -> void:
-	if not Input.is_action_just_pressed("debug_spawn_unit"):
-		return
-	if not board_has_coord(MouseLogic.board_under_cursor,MouseLogic.coord_under_cursor):
-		return
-	if unit_at(MouseLogic.coord_under_cursor, MouseLogic.board_under_cursor):
-		return
-	var unit:Unit = unit_tscn.instantiate()
-	boards[MouseLogic.board_under_cursor].add_child(unit)
-	unit.id = debug_unit_id
-	unit.logical_position = MouseLogic.coord_under_cursor
-	update_unit_order_badges()
-
-func debug_delete() -> void:
-	if not Input.is_action_just_pressed("debug_delete_unit"):
-		return
-	if not board_has_coord(MouseLogic.board_under_cursor,MouseLogic.coord_under_cursor):
-		return
-	if not unit_at(MouseLogic.coord_under_cursor, MouseLogic.board_under_cursor):
-		return
-	
-	var unit:Unit = unit_at(MouseLogic.coord_under_cursor, MouseLogic.board_under_cursor)
-	boards[MouseLogic.board_under_cursor].remove_child(unit)
-	unit.queue_free()
-	
 #endregion

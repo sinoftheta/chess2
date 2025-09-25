@@ -1,6 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://xrdgyjq45cts"]
+[gd_scene load_steps=16 format=3 uid="uid://xrdgyjq45cts"]
 
 [ext_resource type="Script" uid="uid://ctoejpy8mm8pn" path="res://world/world.gd" id="1_4717r"]
+[ext_resource type="PackedScene" uid="uid://b4180vhm2e2lb" path="res://debug/debug_cursor.tscn" id="2_mad0u"]
 [ext_resource type="PackedScene" uid="uid://bl7yw07rwfxj0" path="res://tooltip/tooltip.tscn" id="2_mmdvd"]
 [ext_resource type="PackedScene" uid="uid://yrsr5vndikk" path="res://board/board.tscn" id="3_mmdvd"]
 [ext_resource type="Texture2D" uid="uid://cbhrmv71tevnu" path="res://texture/shop_board.png" id="4_ov2xu"]
@@ -57,6 +58,8 @@ self_modulate = Color(1, 1, 1, 0)
 position = Vector2(-110, -110)
 texture = ExtResource("6_mad0u")
 logical_size = Vector2i(5, 5)
+
+[node name="DebugCursor" parent="." instance=ExtResource("2_mad0u")]
 
 [node name="Tooltip" parent="." instance=ExtResource("2_mmdvd")]
 offset_left = -314.0

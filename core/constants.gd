@@ -551,12 +551,12 @@ const menu_data:Dictionary[Menu, Dictionary] = {
 		"position":Vector2.ZERO
 	},
 	Menu.gameplay: {
-		"scale":Vector2.ONE * 3,
-		"position":Vector2(20,-40)
+		"scale":Vector2.ONE * 5.5,
+		"position":Vector2(-400,350)
 	},
 	Menu.options: {
-		"scale":Vector2.ONE * 5,
-		"position":Vector2.ZERO
+		"scale":Vector2.ONE * 4.5,
+		"position":Vector2(0,-350)
 	}
 }
 

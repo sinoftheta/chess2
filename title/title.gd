@@ -13,7 +13,7 @@ func _on_menu_updated(cur:Constants.Menu, prev:Constants.Menu) -> void:
 		## we're doing the opening animation
 		pass
 	
-	var t:float = 0.25
+	var t:float = 0.5
 	var letter_pos:Vector2
 	var letter_alpha_:float = 1.0
 	match cur:
@@ -36,14 +36,15 @@ func _on_menu_updated(cur:Constants.Menu, prev:Constants.Menu) -> void:
 	.set_ease(Tween.EASE_IN_OUT)\
 	.set_trans(Tween.TRANS_SINE)
 	
-	#menu_tween.tween_property(self, "position", Constants.menu_data[cur].position, t)
-	#menu_tween.tween_property(self, "scale", Constants.menu_data[cur].scale, t)
+	menu_tween.tween_property(self, "position", Constants.menu_data[cur].position, t)
+	menu_tween.tween_property(self, "scale", Constants.menu_data[cur].scale, t)
 	menu_tween.tween_property(self,"letter_alpha", letter_alpha_, t)
 	menu_tween.tween_property(%Letters, "position",   letter_pos,   t)
 	
 var letter_alpha:float:
 	set(value):
 		letter_alpha = value
+		(%Face as Node2D).modulate.a = value
 		((%Letters as Node2D).material as ShaderMaterial).set_shader_parameter("alpha", value)
 
 func _process(delta:float) -> void:

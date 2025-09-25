@@ -33,3 +33,7 @@ func _on_reroll_pressed() -> void:
 		#Rect2(Vector2(100,100), Vector2.ONE * 100),
 		#Color.RED
 	#)
+
+
+func _on_title_pressed() -> void:
+	MenuLogic.pop()

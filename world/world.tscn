@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://xrdgyjq45cts"]
+[gd_scene load_steps=20 format=3 uid="uid://xrdgyjq45cts"]
 
 [ext_resource type="Script" uid="uid://ctoejpy8mm8pn" path="res://world/world.gd" id="1_4717r"]
 [ext_resource type="PackedScene" uid="uid://b4180vhm2e2lb" path="res://debug/debug_cursor.tscn" id="2_mad0u"]
@@ -11,7 +11,14 @@
 [ext_resource type="Texture2D" uid="uid://350uo4j3dojd" path="res://texture/play_board.png" id="6_mad0u"]
 [ext_resource type="Script" uid="uid://d1crt85jlpphd" path="res://world/aoe_manager.gd" id="6_ocfjn"]
 [ext_resource type="PackedScene" uid="uid://cv2kprv0cef4b" path="res://tiles/tile_manager.tscn" id="7_ocfjn"]
+[ext_resource type="Shader" uid="uid://bnlhup0sdbds5" path="res://world/aoe_shop_hologram.gdshader" id="8_dqqhb"]
+[ext_resource type="Texture2D" uid="uid://dfxphffj5b4hy" path="res://texture/units.png" id="8_ocfjn"]
 [ext_resource type="PackedScene" uid="uid://k0l1vk00ly8h" path="res://failure_message/failure_message.tscn" id="9_4papg"]
+[ext_resource type="Script" uid="uid://do5shx5qhviju" path="res://world/aoe_shop_hologram.gd" id="10_b2suy"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b2suy"]
+shader = ExtResource("8_dqqhb")
+shader_parameter/time_scale = 0.34
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4717r"]
 
@@ -39,6 +46,7 @@ id = 3
 logical_size = Vector2i(3, 3)
 
 [node name="SellTileManager" parent="." instance=ExtResource("7_ocfjn")]
+visible = false
 position = Vector2(177, 56)
 id = 1
 
@@ -58,6 +66,13 @@ self_modulate = Color(1, 1, 1, 0)
 position = Vector2(-110, -110)
 texture = ExtResource("6_mad0u")
 logical_size = Vector2i(5, 5)
+
+[node name="AoEShopHologram" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+z_index = 2
+material = SubResource("ShaderMaterial_b2suy")
+texture = ExtResource("8_ocfjn")
+script = ExtResource("10_b2suy")
 
 [node name="DebugCursor" parent="." instance=ExtResource("2_mad0u")]
 

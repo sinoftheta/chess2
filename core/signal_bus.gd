@@ -38,7 +38,7 @@ signal cant_afford_reroll()
 signal tooltip_open(unit:Unit)
 signal tooltip_close()
 
-signal show_aoe_preview(unit:Unit, at_coords:Vector2i)
+signal show_aoe_preview(unit:Unit, at_coords:Vector2i, shop_preview:bool)
 signal hide_aoe_preview()
 
 signal logical_mouse_location_updated(board:Constants.BoardID, coord:Vector2i, in_bounds:bool)

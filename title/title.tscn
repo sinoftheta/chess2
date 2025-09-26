@@ -207,6 +207,7 @@ animations = [{
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_64gp6"]
 shader = ExtResource("5_0tjwc")
 shader_parameter/alpha = 1.0
+shader_parameter/time_scale = 0.4
 
 [node name="Title" type="Node2D"]
 material = SubResource("ShaderMaterial_8xu2e")

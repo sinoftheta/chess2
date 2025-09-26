@@ -38,19 +38,38 @@ func _on_logical_mouse_location_updated(board:Constants.BoardID, coord:Vector2i,
 	else:
 		SignalBus.tooltip_close.emit()
 		
-	## AoE Preview Visibility Logic
-	if not dragged_unit and not hovered_unit:
-		SignalBus.hide_aoe_preview.emit()
+	## signal show_aoe_preview(unit:Unit, at_coords:Vector2i, shop_preview:bool)
 	
-	elif board != Constants.BoardID.play or not in_bounds:
-		SignalBus.hide_aoe_preview.emit()
-		
-	elif dragged_unit:
-		SignalBus.show_aoe_preview.emit(dragged_unit, coord)
+	
+	## AoE Preview Visibility Logic
+	if dragged_unit:
+		## if we're draggin a unit from the shop
+		## then we always show the shop preview unless its over the play board
+		## in which case, we show the regular board preview
+		if (dragged_unit.get_parent() as Board).id == Constants.BoardID.shop:
+			
+			if board == Constants.BoardID.play:
+				SignalBus.show_aoe_preview.emit(dragged_unit, coord, false)
+			else:
+				SignalBus.show_aoe_preview.emit(dragged_unit, coord, true)
+			
+		else:
+		## if draggin a unit but its not from the shop,
+		## then we only show the regular preview when its over the play board
+		## otherwise we hide it
+			if board == Constants.BoardID.play:
+				SignalBus.show_aoe_preview.emit(dragged_unit, coord, false)
+			else:
+				SignalBus.hide_aoe_preview.emit()
 	
 	elif hovered_unit:
-		SignalBus.show_aoe_preview.emit(hovered_unit, coord)
-
+		if board == Constants.BoardID.shop:
+			SignalBus.show_aoe_preview.emit(hovered_unit, coord, true)
+		else:
+			SignalBus.show_aoe_preview.emit(hovered_unit, coord, false)
+	else:
+		SignalBus.hide_aoe_preview.emit()
+	
 func _process(delta: float) -> void:
 	var cursor_over_board:bool = false
 	for board:Board in GameLogic.boards.values():

@@ -8,8 +8,6 @@ func _ready() -> void:
 	SignalBus.reroll_price_changed.connect(_on_reroll_price_changed)
 
 
-
-
 func _on_money_changed(new:int,prev:int) -> void:
 	%MoneyValue.text = "$" + str(new)
 func _on_turn_changed(turn:int) -> void:

@@ -13,6 +13,9 @@ func _ready() -> void:
 	
 
 #region target preview
+var target_color:Color:
+	set(value):
+		%TargetedIndicator.self_modulate = value
 var target:bool:
 	set(value):
 		%TargetedIndicator.visible = value

@@ -1,7 +1,8 @@
 shader_type canvas_item;
 uniform float alpha:hint_range(0.0, 1.0, 0.1) = 1.0;
+uniform float time_scale = 0.4;
 void fragment() {
-	float t = TIME * 0.4;
+	float t = TIME * time_scale;
 	COLOR = texture(TEXTURE,UV + vec2(0.0,
 		  0.005 * sin(20.0 * UV.y + 2.0 * t - 0.11)
 		+ 0.004 * cos(15.0 * UV.y + 3.0 * t + 0.05)

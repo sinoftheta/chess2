@@ -702,3 +702,28 @@ func game_event_unit_died(dead_unit:Unit) -> void:
 					
 
 #endregion
+
+
+## the ONLY way you can heal has to be from healers
+## nothing that triggers from playing a round can heal ("no mid round healing")
+## gotta avoid infinite loops with healing that triggers damage that triggers healing and so on
+
+## spiteful: when this unit takes damage, deal half that damage to a random monster (enimy or ally) on the board
+
+
+## terminology: 
+## every unit is a Monster
+## your Monsters are called Allied Monsters or Allies
+## the bosses are Enimy Monsters aka Enimies
+## Monsters can be KO'd
+## when a Monster's HP reaches 0, it is KO'd (absent any Effect that may change this)
+## Monsters can also be KO'd by some Effects
+## Monsters have a Type and sometimes an Effect
+## each Effect is associated with a unique Monster
+## Monsters have HP
+## Monsters have a Base Stat (the starting value of their Live Stat each Turn)
+## Monsters have a Live Stat (Live Stat updates during the Turn and is used in board evaluation)
+## Monsters have an AoE
+## The Player can Clear Rounds
+## The Player Wins by Clearing Round 14
+## The Player can KO all Enimy Monsters to Advance to the next Round

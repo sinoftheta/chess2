@@ -103,3 +103,29 @@ func clear_board() -> void:
 		var tile:Tile = get_child(0)
 		remove_child(tile)
 		tile.queue_free()
+		
+		
+#region Animations
+func animate_chevrons_forward(tween:Tween, animation_tick:int, ammount:float) -> void:
+	for tile:Tile in get_children():
+		tween.tween_property(
+			tile, "chevron_animation", 
+			ammount, 
+			Constants.ANIMATION_TICK_TIME
+		).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+
+func animate_chevrons_reset(tween:Tween, animation_tick:int) -> void:
+	for tile:Tile in get_children():
+		## fade the chevrons out
+		tween.tween_property(
+			tile, "chevron_opacity", 
+			0.0, 
+			Constants.ANIMATION_TICK_TIME * 0.25
+		).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+		
+		## then reset both chevron animation properties at the same time
+		tween.tween_callback(func () -> void:
+			tile.chevron_animation = 0
+			tile.chevron_opacity = 1.0
+		).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME + 1)
+#endregion

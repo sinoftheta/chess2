@@ -177,7 +177,7 @@ enum UnitID {
 var unit_data:Dictionary[UnitID,UnitData] = {
 	UnitID.catface: UnitData.new(
 		"Catface",  ## title
-		"Deal own STAT as damage to targets HP", ## description
+		"Deals 2 damage to each target", ## description
 		UnitType.boss, ## type
 		1, ## boss level pool, must be 0 if unit is not a boss
 		AOE_BOSS_FULL_BOARD,## aoe
@@ -192,7 +192,8 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	),
 	UnitID.dumpling: UnitData.new(
 		"Dumpling",  ## title
-		"Deals damage equal to the target's distance from Brute", ## description
+		"Deals damage equal to the target's move order"
+		, ## description
 		UnitType.boss, ## type
 		1, ## boss level pool, must be 0 if unit is not a boss
 		AOE_BOSS_FULL_BOARD,## aoe
@@ -206,7 +207,8 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	),
 	UnitID.leggy: UnitData.new(
 		"Leggy",  ## title
-		"Deals damage equal to the target's move order", ## description
+		"Deals its own STAT as damage to each target"
+		, ## description
 		UnitType.boss, ## type
 		2, ## boss level pool, must be 0 if unit is not a boss
 		AOE_BOSS_FULL_BOARD,## aoe
@@ -220,7 +222,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	),
 	UnitID.brute: UnitData.new(
 		"Brute",  ## title
-		"placeholder", ## description
+		"Deals damage equal to each target's distance from Brute", ## description
 		UnitType.boss, ## type
 		2, ## boss level pool, must be 0 if unit is not a boss
 		AOE_BOSS_FULL_BOARD,## aoe
@@ -234,7 +236,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	),
 	UnitID.longhorn: UnitData.new(
 		"Lornhorn",  ## title
-		"placeholder", ## description
+		"Deals damage equal to the target's move order multiplied by Longhorn's STAT", ## description
 		UnitType.boss, ## type
 		3, ## boss level pool, must be 0 if unit is not a boss
 		AOE_BOSS_FULL_BOARD,## aoe
@@ -431,7 +433,7 @@ var unit_data:Dictionary[UnitID,UnitData] = {
 	
 	UnitID.attacker1: UnitData.new(
 		"Krata",  ## title
-		"", ## description
+		"Deals one damage to a random enemy whenever an allied monster dies", ## description
 		UnitType.attacker, ## type
 		0, ## boss level pool, must be 0 if unit is not a boss
 		Util.string_to_aoe("

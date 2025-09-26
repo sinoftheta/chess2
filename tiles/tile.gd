@@ -20,7 +20,7 @@ var aoe_highlight:bool:
 		(%AoeHighlight as Sprite2D).visible = value
 	get(): return (%AoeHighlight as Sprite2D).visible 
 	
-	
+
 var size:Vector2
 
 	
@@ -54,6 +54,10 @@ var logical_position:Vector2i:
 		)
 		name = Util.coord_to_name(logical_position)
 
+@export_range(0.0,1.0,0.01) var chevron_opacity:float:
+	set(value):
+		(%TypeAnimation as Sprite2D).modulate.a = value
+	get(): return (%TypeAnimation as Sprite2D).modulate.a
 @export_range(0.0,1.0,0.01) var chevron_animation:float:
 	set(value):
 		chevron_animation = value

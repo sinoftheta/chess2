@@ -153,7 +153,7 @@ var phase:Constants.GamePhase:
 		SignalBus.phase_changed.emit(value)
 #endregion
 #region turn statistics
-var turn_boss_damage:Array[float] = []
+#var turn_boss_damage:Array[int] = []
 var turn_dead_allies:Array[int]
 var turn_dead_bosses:Array[int]
 #endregion
@@ -171,6 +171,9 @@ var unlocked_bonus_pool:Array[Constants.UnitID]
 func unit_at(coord:Vector2i, board_id:Constants.BoardID) -> Unit:
 	if board_id == Constants.BoardID.none: return null
 	return boards[board_id].get_node_or_null(Util.coord_to_name(coord))
+
+func is_unit_alive(unit:Unit) -> bool:
+	return not unit.dead
 #endregion
 
 #region Game logic
@@ -189,10 +192,10 @@ func update_unit_order_badges(updated_unit:Unit = null, updated_coords:Vector2i 
 		if not unit: continue
 			
 		i += 1
-		unit.play_order = i
+		unit.animated_play_order = i
 	
 	for unit:Unit in shop_board.get_children():
-		unit.play_order = 0
+		unit.animated_play_order = 0
 
 func move_unit(unit:Unit, to_board_id:Constants.BoardID, to_coord:Vector2i) -> void:
 	
@@ -208,8 +211,7 @@ func move_unit(unit:Unit, to_board_id:Constants.BoardID, to_coord:Vector2i) -> v
 	if unit_at_destination == unit:
 		## unit has not moved
 		return
-	if Constants.unit_data[unit.id].type == Constants.UnitType.boss: 
-		SignalBus.message_under_cursor.emit("Bosses can't move")
+	if Constants.unit_data[unit.id].type == Constants.UnitType.boss:
 		return
 	#if to_board == shop_board and from_board == play_board:
 		#SignalBus.message_under_cursor.emit("Can't go back in shop")
@@ -274,7 +276,8 @@ func move_unit(unit:Unit, to_board_id:Constants.BoardID, to_coord:Vector2i) -> v
 	#update_moves_made()
 
 var animation_tick :int = 0
-var units_evaluated:int = 0
+var unit_evaluation_order:Array[Unit]
+var boss_units:Array[Unit]
 func _on_play_button_pressed() -> void:
 	if animating:return
 	if phase != Constants.GamePhase.shop: return
@@ -286,110 +289,90 @@ func _on_play_button_pressed() -> void:
 	clear_shop()
 
 	animation_tick = 0
-	units_evaluated = 0
 	
 	var next_phase:Constants.GamePhase = Constants.GamePhase.end_of_turn
 	
 	## keep track of boss units
-	var boss_units:Array[Unit] = []
-	var boss_init_hp:Array[float] = []
+	boss_units.clear()
+	var boss_init_hp:Array[int] = []
 	for unit:Unit in play_board.get_children():
 		if Constants.unit_data[unit.id].type == Constants.UnitType.boss:
 			boss_units.push_back(unit)
 			boss_init_hp.push_back(unit.hp)
 	#print("boss units: ", boss_units)
 	
+	## lock in the unit_evaluation_order for this turn
 	## evaluate each tile on the board
-	
+	var unit_tile_evaluation_index:Array[int] = []
+	unit_evaluation_order.clear()
 	for i:int in board_evaluation_order.size():
 		var eval_coord:Vector2i = board_evaluation_order[i]
 		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
 		if not unit: continue
+		
+		unit_evaluation_order.push_back(unit)
+		unit.play_order = unit_evaluation_order.size()
+		unit_tile_evaluation_index.push_back(i)
+	
+	game_event_pre_board_evaluation()
+	
+	## evaluate each unit on the board in order
+	for i:int in unit_evaluation_order.size():
+		var unit:Unit = unit_evaluation_order[i]
 		if unit.dead: continue
+		var unit_data:UnitData = Constants.unit_data[unit.id]
 		
-		## animate tiles
-		for tile:Tile in play_tile_manager.get_children():
-			tween.tween_property(
-				tile, "chevron_animation", 
-				(i + 0.5) / board_evaluation_order.size(), 
-				 Constants.ANIMATION_TICK_TIME
-			).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+		## animate board chevrons up to this unit 
+		play_tile_manager.animate_chevrons_forward(
+			tween, animation_tick,
+			(unit_tile_evaluation_index[i] + 0.5) / board_evaluation_order.size()
+		)
 		animation_tick += 1
+		
+		## evaluate each target_unit in the units AoE
+		var valid_targets:Array[Unit] = []
+		for aoe_coord:Vector2i in unit_data.aoe:
+			var targeted_coord:Vector2i = aoe_coord
+			if not unit_data.aoe_is_absolute:
+				targeted_coord += unit.logical_position
 			
-		
-		
-		var data:UnitData = Constants.unit_data[unit.id]
-		
-		assert(unit.logical_position == eval_coord)
-		
-		unit.animate_type_effect(tween, animation_tick, units_evaluated)
-		
-		## evaluate each coord in the units AoE
-		
-		## first, we check if any units are in the AoE
-		## we do this so we can increase the animation tick for them
-		var aoe_contains_target:bool = false
-		for aoe_coord:Vector2i in data.aoe:
-			var affected_coord:Vector2i = aoe_coord
-			if not data.aoe_is_absolute:
-				affected_coord += unit.logical_position
+			var targeted_unit:Unit = unit_at(targeted_coord, Constants.BoardID.play)
 			
-			var affected_unit:Unit = unit_at(affected_coord, Constants.BoardID.play)
-			if affected_unit: 
-				aoe_contains_target = true
-				break
+			## TODO: game_effect_unit_targeted() -> bool: (returns if its a valid target I guess) could be cool
+			## unit abilities should be able to influence target determination
+			
+			if not targeted_unit: continue
+			if targeted_unit == unit: continue
+			if targeted_unit.dead: continue
+			valid_targets.push_back(targeted_unit)
+		
+		if valid_targets.size() > 0:
+			unit.animate_type_activation(tween, animation_tick)
+		else:
+			unit.animate_type_activation(tween, animation_tick) ## temp
+			#unit.animate_type_miss(tween,animation_tick)
+			pass
+		animation_tick  += 1 ## in either case (miss or hit) we increase the animation tick
+		
 
-		if aoe_contains_target: animation_tick += 1
+		for affected_unit:Unit in valid_targets:
+			var affected_coord:Vector2i = affected_unit.logical_position
+			if affected_unit.dead: continue
 		
-		var unit_died:bool = false
-		for aoe_coord:Vector2i in data.aoe:
-			var affected_coord:Vector2i = aoe_coord
-			if not data.aoe_is_absolute:
-				affected_coord += unit.logical_position
-			
-			var affected_unit:Unit = unit_at(affected_coord, Constants.BoardID.play)
-			if not affected_unit:     continue
-			if affected_unit.dead:    continue
-			if unit == affected_unit: continue
-			
-			match data.type:
-				Constants.UnitType.attacker,Constants.UnitType.boss:
-					var prev_hp:float = affected_unit.hp
+			match unit_data.type:
+				Constants.UnitType.attacker:
+					var prev_hp:int = affected_unit.hp
 					
-					## apply damage
-					## boss effects check
-					#match unit.id:
-						#Constants.UnitID.boss2:
-							### damage based on distance
-							#var d:float = (
-								#absf(unit.logical_position.x - affected_unit.logical_position.x) + 
-								#absf(unit.logical_position.y - affected_unit.logical_position.y)
-							#)
-							#affected_unit.hp = maxf(affected_unit.hp - d * unit.stat, 0.0)
-						#Constants.UnitID.boss3:
-							##damage based on move order
-							#affected_unit.hp = maxf(affected_unit.hp - affected_unit.play_order * unit.stat, 0.0)
-						##Constants.UnitID.boss4:
-							## inverse move order
-							##affected_unit.hp = maxf(affected_unit.hp - (play_board.get_child_count() - affected_unit.play_order) * unit.stat, 0.0)
-						#Constants.UnitID.boss1, _:
-							#affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
-					#
-					affected_unit.hp = maxf(affected_unit.hp - unit.stat, 0.0)
+					## apply the damage
+					affected_unit.hp = maxi(affected_unit.hp - unit.stat, 0.0)
 					
 					## animate
 					affected_unit.animate_attacked(tween, animation_tick, unit.logical_position, prev_hp)
-					
-					## check for death
-					if affected_unit.hp == 0:
-						unit_died = true
-						affected_unit.animate_dead(tween, animation_tick)
-						affected_unit.dead = true
 
 				Constants.UnitType.healer:
 					## healing increases max hp
-					var prev_hp:float = affected_unit.hp
-					var prev_max_hp:float = affected_unit.max_hp
+					var prev_hp:int = affected_unit.hp
+					var prev_max_hp:int = affected_unit.max_hp
 					
 					affected_unit.hp = affected_unit.hp + unit.stat
 					if affected_unit.max_hp < affected_unit.hp:
@@ -397,31 +380,44 @@ func _on_play_button_pressed() -> void:
 					
 					affected_unit.animate_healed(tween, animation_tick, unit.logical_position, prev_hp)
 				Constants.UnitType.adder:
-					var prev_stat:float = affected_unit.stat
+					var prev_stat:int = affected_unit.stat
 					affected_unit.stat += unit.stat
 					affected_unit.animate_added(tween, animation_tick, unit.logical_position, unit.stat)
 				Constants.UnitType.multiplier:
-					var prev_stat:float = affected_unit.stat
+					var prev_stat:int = affected_unit.stat
 					affected_unit.stat *= unit.stat
 					affected_unit.animate_multiplied(tween, animation_tick, unit.logical_position, unit.stat)
-					
-		if unit_died: animation_tick  += 1
-		animation_tick  += 1
-		units_evaluated += 1
+				Constants.UnitType.boss:
+					apply_boss_effect(unit, affected_unit)
+		
+		## check if any of the targets died
+		## dead units all share the same animation tick
+		var dead_units:Array[Unit] = []
+		for affected_unit:Unit in valid_targets:
+			if affected_unit.dead: continue
+			if affected_unit.hp == 0 and game_event_unit_pre_death(affected_unit):
+				affected_unit.dead = true
+				dead_units.push_back(affected_unit)
+
+		for dead_unit:Unit in dead_units:
+			dead_unit.animate_dead(tween, animation_tick)
+		if dead_units.size() > 0: animation_tick  += 1
+		
+		for dead_unit:Unit in dead_units:
+			game_event_unit_died(dead_unit)
+		
 	
 	## count total boss damage dealt
-	turn_boss_damage.push_back(0.0)
-	for i:int in range(boss_units.size()):
-		turn_boss_damage[turn_boss_damage.size() - 1] += boss_init_hp[i] - boss_units[i].hp
+	#turn_boss_damage.push_back(0.0)
+	#for i:int in range(boss_units.size()):
+		#turn_boss_damage[turn_boss_damage.size() - 1] += boss_init_hp[i] - boss_units[i].hp
 	
-	
+	## animate board chevrons to the end
+	play_tile_manager.animate_chevrons_forward(tween, animation_tick, 1.0)
+	animation_tick += 2
 	
 	## reset chevron animation
-	for tile:Tile in play_tile_manager.get_children():
-		tween.tween_property(
-			tile, "chevron_animation", 0, 
-			 Constants.ANIMATION_TICK_TIME
-		).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
+	play_tile_manager.animate_chevrons_reset(tween, animation_tick)
 	animation_tick += 1
 	
 	var boss_remaining  :int = 0
@@ -473,6 +469,8 @@ func _on_reroll_button_pressed() -> void:
 	money -= reroll_price
 	reroll_price = reroll_price + 1
 	
+	game_event_rerolling_shop()
+	
 	clear_shop()
 	cycle_shop()
 	
@@ -485,7 +483,7 @@ func _on_next_turn_pressed() -> void:
 	if phase != Constants.GamePhase.end_of_turn: return
 	phase = Constants.GamePhase.shop
 	
-	money += int(turn_boss_damage[turn_boss_damage.size() - 1])
+	#money += int(turn_boss_damage[turn_boss_damage.size() - 1])
 	cycle_shop()
 
 func _on_continue_run_pressed() -> void:
@@ -627,20 +625,80 @@ func cycle_bonus() -> void:
 #endregion
 
 #region Boss mechanics
-func evaluate_boss(boss:Unit) -> void:
-	for eval_coord:Vector2i in board_evaluation_order:
-		var unit:Unit = unit_at(eval_coord, Constants.BoardID.play)
-		if not unit: continue
-		if unit.hp == 0: continue
-		
-		var data:UnitData = Constants.unit_data[unit.id]
-		if data.type == Constants.UnitType.boss: continue
-		match unit.id:
-			_:pass
+func apply_boss_effect(boss_unit:Unit, affected_unit:Unit) -> void:
+	## bosses do not effect other bosses
+	#game_event_pre_boss_effect_application()
+	# maybe some ability could make bosses hurt each other but do double damage to your units
+	if affected_unit.data.type == Constants.UnitType.boss: return
+	
+	var prev_hp:int = affected_unit.hp
+	
+	match boss_unit.id:
+		Constants.UnitID.catface:
+			## deals 2 damage to each of your mons
+			affected_unit.hp = maxi(0, affected_unit.hp - 2)
+		Constants.UnitID.dumpling:
+			## deals each mon
+			print("affected units play order: ", affected_unit.play_order)
+			affected_unit.hp = maxi(0, affected_unit.hp - affected_unit.play_order)
+	
+	affected_unit.animate_attacked(
+		tween, animation_tick, 
+		boss_unit.logical_position, prev_hp
+	)
 #endregion
-#region Ability Mechanics
-func evaluate_ability(id:Constants.UnitID) -> Dictionary:
-	## check if any units have the id
-	## if yes, execute the ability & return any data needed
-	return {}
+
+#region game event responses
+func game_event_rerolling_shop() -> void:
+	for unit:Unit in unit_evaluation_order:
+		##TODO: there should be no dead units at this point
+		## checking for .dead should be redundant
+		if unit.dead :continue 
+		match unit.id:
+			pass
+func game_event_pre_board_evaluation() -> void:
+	for unit:Unit in unit_evaluation_order:
+		if unit.dead :continue ## there should be no dead units at this point
+		match unit.id:
+			pass
+
+func game_event_unit_pre_death(affected_unit:Unit) -> bool:
+	var prevent_unit_death:bool = false
+	for unit:Unit in unit_evaluation_order:
+		if unit == affected_unit:continue
+		if unit.dead :continue
+		match unit.id:
+			pass
+	return not prevent_unit_death
+
+func game_event_unit_died(dead_unit:Unit) -> void:
+	for unit:Unit in unit_evaluation_order:
+		if unit.dead: continue
+		
+		match unit.id:
+			Constants.UnitID.attacker1:
+				## "Deals one damage to a random enemy whenever an allied monster dies"
+				if dead_unit.data.type == Constants.UnitType.boss: continue
+				var alive_boss_units:Array[Unit] = boss_units.filter(is_unit_alive)
+				if alive_boss_units.size() == 0: continue
+				print("applying UnitID.attacker1 effect damage to a boss")
+				#
+				### select the unit
+				#var boss_unit:Unit = alive_boss_units[
+					#combat_rng.randi_range(0, alive_boss_units.size())
+				#]
+				#
+				### gonna have to make damage application & death checking into functions
+				#boss_unit
+				#var prev_hp:int = boss_unit.hp
+				#
+				### apply the damage
+				#boss_unit.hp = maxi(boss_unit.hp - 1, 0)
+				#
+				### animate
+				#boss_unit.animate_attacked(tween, animation_tick, unit.logical_position, prev_hp)
+				
+				
+					
+
 #endregion

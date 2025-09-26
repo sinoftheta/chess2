@@ -19,11 +19,13 @@ var target:bool:
 var upgrade:bool:
 	set(value):
 		upgrade = value
-var play_order:int:
+
+var animated_play_order:int:
 	set(value):
-		play_order = value
+		animated_play_order = value
 		%OrderValue.visible = value > 0
 		%OrderValue.text = str(value)
+
 var animated_hp:int:
 	set(value):
 		animated_hp = value
@@ -37,13 +39,15 @@ func _on_animation_state_updated(animating:bool) -> void:
 var id:Constants.UnitID:
 	set(value):
 		id = value
-		var data:UnitData = Constants.unit_data[value]
-		(%Sprite as Sprite2D).frame_coords = data.texture_coord
-		(%Blink as Sprite2D).frame_coords = data.texture_coord
-		hp = data.base_health
+		var new_data:UnitData = Constants.unit_data[value]
+		(%Sprite as Sprite2D).frame_coords = new_data.texture_coord
+		(%Blink as Sprite2D).frame_coords = new_data.texture_coord
+		hp = new_data.base_health
 		animated_hp = hp
-		init_stat = data.base_stat
-		stat = data.base_stat
+		init_stat = new_data.base_stat
+		stat = new_data.base_stat
+var data:UnitData:
+	get(): return Constants.unit_data[id]
 var logical_position:Vector2i:
 	set(value):
 		logical_position = value
@@ -55,18 +59,19 @@ var prev_logical_position:Vector2i:
 		prev_logical_position = value
 		#%MovedInidicator.visible = logical_position != prev_logical_position
 
+var play_order:int
 var turns_in_play:int = 0
-var init_stat:float = 1.0
-var stat:float = 1.0
-var hp:float = 10.0
+var init_stat:int = 1
+var stat:int = 1
+var hp:int = 1
 var dead:bool = false
 
 var buy_price:int:
 	get():
-		return Constants.unit_data[id].base_shop_price
+		return data.base_shop_price
 var sell_price:int:
 	get():
-		return maxi(Constants.unit_data[id].base_shop_price >> 1, 1)
+		return maxi(data.base_shop_price >> 1, 1)
 #endregion
 
 #region Cursor interactions
@@ -104,6 +109,9 @@ func _on_interaction_mouse_exited() -> void:
 	#SignalBus.tooltip_try_close.emit(self)
 
 func _on_interaction_button_down() -> void:
+	if data.type == Constants.UnitType.boss:
+		SignalBus.message_under_cursor.emit("Bosses can't move")
+		return
 	hovered = true
 	drag_state = DragState.held
 	#z_index = 3
@@ -111,9 +119,11 @@ func _on_interaction_button_down() -> void:
 func _on_interaction_button_up() -> void:
 	drag_state = DragState.returning
 	#z_index = 1
-	SignalBus.move_unit_to_cursor.emit(self)
 	hovered = cursor_inside()
-
+	
+	if data.type == Constants.UnitType.boss: return
+	SignalBus.move_unit_to_cursor.emit(self)
+	
 func _process(delta: float) -> void:
 	var t:float = minf(delta * 13.0,1.0)
 	match drag_state:
@@ -153,9 +163,9 @@ func _process(delta: float) -> void:
 #endregion
 
 #region Animations
-func animate_type_effect(tween:Tween, animation_tick:int, units_evaluated:int) -> void:
+func animate_type_activation(tween:Tween, animation_tick:int) -> void:
 	
-	match Constants.unit_data[id].type:
+	match data.type:
 		Constants.UnitType.attacker:
 			message_animation(tween, animation_tick, "ATCK: " + str(stat) + "!")
 		Constants.UnitType.healer:
@@ -165,17 +175,6 @@ func animate_type_effect(tween:Tween, animation_tick:int, units_evaluated:int) -
 		Constants.UnitType.boss:
 			pass
 	
-	## move order indicator
-	
-	#tween.tween_callback(func () -> void: 
-		#%OrderValue.text = Util.int_ordinal_suffix(units_evaluated + 1)
-		#%OrderBadge.visible = true
-	#).set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
-	#
-	#tween.tween_callback(func () -> void: 
-		#%OrderBadge.visible = false
-	#).set_delay((animation_tick + 1) * Constants.ANIMATION_TICK_TIME)
-	#
 	## show the units AoE
 	tween.tween_callback(func () -> void: SignalBus.animate_unit_aoe.emit(self))\
 	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
@@ -334,5 +333,11 @@ func projectile_animation(tween:Tween, animation_tick:int, source_coord:Vector2i
 	.set_delay(animation_tick * Constants.ANIMATION_TICK_TIME)
 #func animate_effect(animation_tick:int) -> void:
 	#pass
-	
+
+func animate_ability_activated(tween:Tween, animation_tick:int) -> void:
+	## sprite squash & strech
+	## exclam point should pop up
+	## maybe some sparkles or something
+	## exclam/sparkles/whatever should be color coded to match with the "ability" text in the tooltip
+	pass
 #endregion

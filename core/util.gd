@@ -8,6 +8,43 @@ static func name_to_coord(_name:String) -> Vector2i:
 		int(_name.get_slice("_", 0)),
 		int(_name.get_slice("_", 1)),
 	)
+const MAXINT = 9223372036854775807
+
+func int_to_string(i:int) -> String:
+	if i == MAXINT:
+		return "MAXINT"
+	if i < 0:
+		return "lt0"
+	var p:int = floori(log(i)/log(10))
+	
+	var s:String = ""
+	var d:float
+	print(p)
+	match p:
+		3,4,5: 
+			s = "K"
+			d = 1_000
+		6,7,8:
+			s = "M"
+			d = 1_000_000
+		9,10,11:
+			s = "B"
+			d = 1_000_000_000
+		12,13,14:
+			s = "T"
+			d = 1_000_000_000_000
+		15,16,17:
+			s ="P"
+			d = 1_000_000_000_000_000
+		18,19,20:
+			s ="E"
+			d = 1_000_000_000_000_000_000
+		_: return str(i)
+	
+	return str(float(i) / d)\
+	.left(4)\
+	.trim_suffix(".")\
+	.trim_suffix(".0") + s
 
 static func board_evaluation_order() -> Array[Vector2i]: ## TODO: THIS SHOULD GO IN A/THE UTILITY SCRIPT
 	var diameter:int = 5

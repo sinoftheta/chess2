@@ -78,11 +78,12 @@ enum BoardID {
 
 ## The UnitTypes are like the card evaluations in balatro, they are guarenteed to happen a finite amount of times
 enum UnitType {
+	boss,
 	attacker,
+	adder,
 	healer,
 	multiplier,
-	adder,
-	boss,
+	
 	bonus,
 	item
 }

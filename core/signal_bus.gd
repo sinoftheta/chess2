@@ -45,7 +45,8 @@ signal logical_mouse_location_updated(board:Constants.BoardID, coord:Vector2i, i
 #endregion
 
 #region animations
-signal animate_unit_aoe(unit:Unit)
+signal animate_unit_aoe_on(unit:Unit)
+signal animate_unit_aoe_off()
 #animate money change
 #animate turn change
 #animate round change

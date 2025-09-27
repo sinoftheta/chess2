@@ -62,6 +62,7 @@ unique_name_in_owner = true
 position = Vector2(-110, -110)
 
 [node name="PlayBoard" parent="." instance=ExtResource("3_mmdvd")]
+unique_name_in_owner = true
 self_modulate = Color(1, 1, 1, 0)
 position = Vector2(-110, -110)
 texture = ExtResource("6_mad0u")

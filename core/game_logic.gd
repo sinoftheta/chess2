@@ -1,5 +1,7 @@
 extends Node
 
+const MAXINT = 9223372036854775807
+
 var unit_tscn :PackedScene = preload("res://unit/unit.tscn")
 var shop_rng  :RandomNumberGenerator
 var boss_rng  :RandomNumberGenerator
@@ -172,6 +174,7 @@ func unit_at(coord:Vector2i, board_id:Constants.BoardID) -> Unit:
 	if board_id == Constants.BoardID.none: return null
 	return boards[board_id].get_node_or_null(Util.coord_to_name(coord))
 
+## used as a helper to filter target unit lists
 func is_unit_alive(unit:Unit) -> bool:
 	return not unit.dead
 #endregion
@@ -277,6 +280,7 @@ func move_unit(unit:Unit, to_board_id:Constants.BoardID, to_coord:Vector2i) -> v
 
 var animation_tick :int = 0
 var unit_evaluation_order:Array[Unit]
+var valid_targets:Array[Unit]
 var boss_units:Array[Unit]
 func _on_play_button_pressed() -> void:
 	if animating:return
@@ -289,6 +293,9 @@ func _on_play_button_pressed() -> void:
 	clear_shop()
 
 	animation_tick = 0
+	
+	## this whole function should be thought of as "standard_board_evaluation"
+	
 	
 	var next_phase:Constants.GamePhase = Constants.GamePhase.end_of_turn
 	
@@ -316,7 +323,7 @@ func _on_play_button_pressed() -> void:
 	
 	game_event_pre_board_evaluation()
 	
-	## evaluate each unit on the board in order
+	## each unit on the play board takes its turn according to its play_order
 	for i:int in unit_evaluation_order.size():
 		var unit:Unit = unit_evaluation_order[i]
 		if unit.dead: continue
@@ -329,82 +336,125 @@ func _on_play_button_pressed() -> void:
 		)
 		animation_tick += 1
 		
-		## evaluate each target_unit in the units AoE
-		var valid_targets:Array[Unit] = []
+		
+		## Determine the units targets
+		valid_targets.clear()
 		for aoe_coord:Vector2i in unit_data.aoe:
 			var targeted_coord:Vector2i = aoe_coord
 			if not unit_data.aoe_is_absolute:
 				targeted_coord += unit.logical_position
-			
 			var targeted_unit:Unit = unit_at(targeted_coord, Constants.BoardID.play)
-			
-			## TODO: game_effect_unit_targeted() -> bool: (returns if its a valid target I guess) could be cool
-			## unit abilities should be able to influence target determination
-			
 			if not targeted_unit: continue
 			if targeted_unit == unit: continue
 			if targeted_unit.dead: continue
+			## Bosses cannot target bosses
+			if targeted_unit.data.type == Constants.UnitType.boss and unit.data.type == Constants.UnitType.boss: continue
 			valid_targets.push_back(targeted_unit)
 		
+		## ensure targets are evaluated in the correct order
+		valid_targets.sort_custom(
+			func(a:Unit, b:Unit) -> bool: return a.play_order > b.play_order
+		)
+		
 		if valid_targets.size() > 0:
-			unit.animate_type_activation(tween, animation_tick)
-		else:
-			unit.animate_type_activation(tween, animation_tick) ## temp
-			#unit.animate_type_miss(tween,animation_tick)
-			pass
-		animation_tick  += 1 ## in either case (miss or hit) we increase the animation tick
-		
+			unit.animate_turn_start(tween, animation_tick)
+			
+			var target_prev_hp:Array[int]
+			var target_prev_stat:Array[int]
+			
+			var target_delta_hp:Array[int]
+			var target_delta_stat:Array[int]
 
-		for affected_unit:Unit in valid_targets:
-			var affected_coord:Vector2i = affected_unit.logical_position
-			if affected_unit.dead: continue
-		
 			match unit_data.type:
 				Constants.UnitType.attacker:
-					var prev_hp:int = affected_unit.hp
 					
-					## apply the damage
-					affected_unit.hp = maxi(affected_unit.hp - unit.stat, 0.0)
+					## parallel targeting
+					for targeted_unit:Unit in valid_targets:
+						target_prev_hp.push_back(targeted_unit.hp)
+						target_delta_hp.push_back(-unit.stat)
+						
+						target_prev_stat.push_back(targeted_unit.stat)
+						target_delta_stat.push_back(0)
+						
+						targeted_unit.animate_targeted_start(tween, animation_tick, Constants.UnitType.attacker, unit.stat)
+						
+					## sequential resolutions...?!
+					animation_tick  += 1
 					
-					## animate
-					affected_unit.animate_attacked(tween, animation_tick, unit.logical_position, prev_hp)
-
+					for targeted_unit:Unit in valid_targets:
+						targeted_unit.animate_targeted_end(tween, animation_tick)
+						#targeted_unit.animate_take_damage()
+						animation_tick  += 1
+					
 				Constants.UnitType.healer:
-					## healing increases max hp
-					var prev_hp:int = affected_unit.hp
-					var prev_max_hp:int = affected_unit.max_hp
-					
-					affected_unit.hp = affected_unit.hp + unit.stat
-					if affected_unit.max_hp < affected_unit.hp:
-						affected_unit.max_hp = affected_unit.hp
-					
-					affected_unit.animate_healed(tween, animation_tick, unit.logical_position, prev_hp)
+					pass
+					#targeted_unit.hp = targeted_unit.hp + unit.stat
+						
 				Constants.UnitType.adder:
-					var prev_stat:int = affected_unit.stat
-					affected_unit.stat += unit.stat
-					affected_unit.animate_added(tween, animation_tick, unit.logical_position, unit.stat)
+					pass
+					#targeted_unit.stat += unit.stat
+						
 				Constants.UnitType.multiplier:
-					var prev_stat:int = affected_unit.stat
-					affected_unit.stat *= unit.stat
-					affected_unit.animate_multiplied(tween, animation_tick, unit.logical_position, unit.stat)
+					pass
+					#targeted_unit.stat *= unit.stat
+						
 				Constants.UnitType.boss:
-					apply_boss_effect(unit, affected_unit)
+					pass
+					#targeted_unit.hp  = maxi(get_boss_damage(unit, targeted_unit), 0)
+
+
+			#for affected_unit:Unit in valid_targets:
+				#match unit_data.type:
+					#Constants.UnitType.attacker:
+						#pass
+#
+						#
+					#Constants.UnitType.healer:
+						### healing increases max hp
+						#var prev_hp:int = affected_unit.hp
+						#
+						#affected_unit.hp = affected_unit.hp + unit.stat
+						#if affected_unit.max_hp < affected_unit.hp:
+							#affected_unit.max_hp = affected_unit.hp
+						#
+						#affected_unit.animate_healed(tween, animation_tick, unit.logical_position, prev_hp)
+					#Constants.UnitType.adder:
+						#var prev_stat:int = affected_unit.stat
+						#affected_unit.stat += unit.stat
+						#affected_unit.animate_added(tween, animation_tick, unit.logical_position, unit.stat)
+					#Constants.UnitType.multiplier:
+						#var prev_stat:int = affected_unit.stat
+						#affected_unit.stat *= unit.stat
+						#affected_unit.animate_multiplied(tween, animation_tick, unit.logical_position, unit.stat)
+					#Constants.UnitType.boss:
+						#get_boss_damage(unit, affected_unit)
+			#animation_tick  += 1
+			#for affected_unit:Unit in valid_targets:
+				#pass
+		else:
+			unit.animate_turn_miss(tween, animation_tick)
+			game_event_unit_missed(unit)
+			animation_tick  += 1
+		
+		
+		
 		
 		## check if any of the targets died
-		## dead units all share the same animation tick
-		var dead_units:Array[Unit] = []
-		for affected_unit:Unit in valid_targets:
-			if affected_unit.dead: continue
-			if affected_unit.hp == 0 and game_event_unit_pre_death(affected_unit):
-				affected_unit.dead = true
-				dead_units.push_back(affected_unit)
-
-		for dead_unit:Unit in dead_units:
-			dead_unit.animate_dead(tween, animation_tick)
-		if dead_units.size() > 0: animation_tick  += 1
 		
-		for dead_unit:Unit in dead_units:
-			game_event_unit_died(dead_unit)
+		## dead units all share the same animation tick
+		#var dead_units:Array[Unit] = []
+		#for affected_unit:Unit in valid_targets:
+			#if affected_unit.dead: continue
+			#if affected_unit.hp == 0 and game_event_unit_pre_death(affected_unit):
+				#affected_unit.dead = true
+				#dead_units.push_back(affected_unit)
+#
+		#for dead_unit:Unit in dead_units:
+			#dead_unit.animate_dead(tween, animation_tick)
+		#if dead_units.size() > 0: animation_tick  += 1
+		#
+		#for dead_unit:Unit in dead_units:
+			#game_event_unit_died(dead_unit)
 		
 	
 	## count total boss damage dealt
@@ -466,6 +516,8 @@ func _on_reroll_button_pressed() -> void:
 		SignalBus.message_under_cursor.emit("Not enough money!")
 		return
 
+	## this whole function should be thought of as "shop_reroll_board_evaluation"
+	
 	money -= reroll_price
 	reroll_price = reroll_price + 1
 	
@@ -625,27 +677,17 @@ func cycle_bonus() -> void:
 #endregion
 
 #region Boss mechanics
-func apply_boss_effect(boss_unit:Unit, affected_unit:Unit) -> void:
-	## bosses do not effect other bosses
-	#game_event_pre_boss_effect_application()
-	# maybe some ability could make bosses hurt each other but do double damage to your units
-	if affected_unit.data.type == Constants.UnitType.boss: return
-	
-	var prev_hp:int = affected_unit.hp
-	
+func get_boss_damage(boss_unit:Unit, affected_unit:Unit) -> int:
 	match boss_unit.id:
 		Constants.UnitID.catface:
-			## deals 2 damage to each of your mons
-			affected_unit.hp = maxi(0, affected_unit.hp - 2)
+			## deals 2 flat
+			return 2
 		Constants.UnitID.dumpling:
-			## deals each mon
-			print("affected units play order: ", affected_unit.play_order)
-			affected_unit.hp = maxi(0, affected_unit.hp - affected_unit.play_order)
-	
-	affected_unit.animate_attacked(
-		tween, animation_tick, 
-		boss_unit.logical_position, prev_hp
-	)
+			## deals each mon their play order
+			return affected_unit.play_order
+		_:
+			print("Boss: ", Constants.UnitID.keys()[boss_unit.id], " damage calc not impl")
+			return 0
 #endregion
 
 #region game event responses
@@ -670,6 +712,9 @@ func game_event_unit_pre_death(affected_unit:Unit) -> bool:
 		match unit.id:
 			pass
 	return not prevent_unit_death
+
+func game_event_unit_missed(unit:Unit) -> void:
+	pass
 
 func game_event_unit_died(dead_unit:Unit) -> void:
 	for unit:Unit in unit_evaluation_order:
@@ -716,10 +761,10 @@ func game_event_unit_died(dead_unit:Unit) -> void:
 ## your Monsters are called Allied Monsters or Allies
 ## the bosses are Enimy Monsters aka Enimies
 ## Monsters can be KO'd
-## when a Monster's HP reaches 0, it is KO'd (absent any Effect that may change this)
-## Monsters can also be KO'd by some Effects
-## Monsters have a Type and sometimes an Effect
-## each Effect is associated with a unique Monster
+## when a Monster's HP reaches 0, it is KO'd (absent any Ability that may change this)
+## Monsters can also be KO'd by some Abilitys
+## Monsters have a Type and sometimes an Ability
+## each Ability is associated with a unique Monster
 ## Monsters have HP
 ## Monsters have a Base Stat (the starting value of their Live Stat each Turn)
 ## Monsters have a Live Stat (Live Stat updates during the Turn and is used in board evaluation)
